@@ -3,7 +3,6 @@
 # include <set>
 # include <map>
 # include <vector>
-# include "CollisionSolver.hpp"
 # include "claws/container/vect.hpp"
 # include "Bullet.hpp"
 
@@ -54,12 +53,12 @@ namespace physic
       for (itPos[1] = begin[1] ; itPos[1] != end[1] + 1; ++itPos[1])
 	try
 	  {
-	    for (auto itBul = bulletIndexes.at(itPos).begin() ; itBul != bulletIndexes.at(itPos).end() ; ++itBul) {
-	      if (usedBullets.find(*itBul) != usedBullets.end())
+	    for (auto bulletIndex : bulletIndexes.at(itPos)) {
+	      if (usedBullets.find(bulletIndex) != usedBullets.end())
 		continue;
-	      usedBullets.insert(*itBul);
-	      if (haveCollision(entity, bullets[*itBul]))
-		solver(entity, bullets[*itBul]);
+	      usedBullets.insert(bulletIndex);
+	      if (haveCollision(entity, bullets[bulletIndex]))
+		solver(entity, bullets[bulletIndex]);
 	    }
 	  } catch (std::out_of_range const &) {}
   }
