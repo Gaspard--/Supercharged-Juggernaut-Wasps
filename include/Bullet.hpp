@@ -6,21 +6,13 @@
 
 #include <memory>
 
-#ifndef SMALL_BULLET
-#define SMALL_BULLET 3
-#endif
 
-#ifndef MEDIUM_BULLET
-#define MEDIUM_BULLET 5
-#endif
-
-#ifndef BIG_BULLET
-#define BIG_BULLET 10
-#endif
+static constexpr uint small_bullet  = 3u;
+static constexpr uint medium_bullet = 5u;
+static constexpr uint big_bullet    = 10u;
 
 class Bullet : Entity
 {
-
   float       speed;
   std::unique_ptr<Pattern> pattern;
 

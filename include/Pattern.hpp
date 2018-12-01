@@ -25,6 +25,7 @@ class SinCos : public Pattern
 {
   claws::vect<float, 2u>  prvPos;
   claws::vect<float, 2u>  direct;
+  uint                    lastUpdate;
 
 public:
   SinCos(float ogX, float ogY, float endX, float endY);
