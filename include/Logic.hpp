@@ -40,15 +40,15 @@ public:
   void handleMouse(Display const &, GLFWwindow *window, input::Mouse mouse);
   void handleButton(GLFWwindow *window, input::Button button);
   void checkEvents(input::Input& input);
+  void getObjectsToRender(DisplayData &displayData);
 
-  bool isRunning() const
+  bool isRunning() const noexcept
   {
     return running;
   }
 
-  bool &isRunning()
+  bool &isRunning() noexcept
   {
     return running;
   }
-
 };

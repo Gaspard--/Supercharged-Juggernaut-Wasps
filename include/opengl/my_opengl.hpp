@@ -3,6 +3,7 @@
 
 # include <string>
 # include <array>
+# include "claws/container/vect.hpp"
 
 # include "GL/gl3w.h"
 
@@ -78,6 +79,20 @@ namespace opengl
     operator GLuint() const;
   };
 
+  class Vao
+  {
+  public:
+    GLuint vao;
+  private:
+    unsigned int *count;
+  public:
+    Vao();
+    ~Vao();
+    Vao(Vao const &);
+    Vao &operator=(Vao);
+    operator GLuint() const;
+  };
+
   void		checkError();
   void		shaderError(GLenum const shadertype, GLuint const shader);
   Shader	createShader(GLenum const shadertype, GLchar const *src);
@@ -100,6 +115,11 @@ namespace opengl
       glDetachShader(program, shaders[i]);
     return (program);
   }
+  
+  void setUniform(claws::vect<float, 2> const data, char const *target, Program program);
+  void setUniform(claws::vect<float, 3> const data, char const *target, Program program);
+  void setUniform(claws::vect<float, 4> const data, char const *target, Program program);
+  void setUniform(int const data, char const *target, Program program);
 
 };
 

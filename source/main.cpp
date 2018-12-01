@@ -4,6 +4,7 @@
 # include "Display.hpp"
 # include "Input.hpp"
 # include "Logic.hpp"
+# include "DisplayData.hpp"
 
 int main()
 {
@@ -14,6 +15,7 @@ int main()
 
     glfwSwapInterval(1);
     Display display(input.getWindow());
+    display.resize({1920u, 1080u});
     Logic logic;
 
     std::mutex lock;
@@ -29,6 +31,8 @@ int main()
     try {
       while (display.isRunning())
 	{
+	  DisplayData displayData;
+
 	  glfwPollEvents();
           {
             std::lock_guard<std::mutex> scopedLock(lock);
@@ -37,9 +41,11 @@ int main()
 	      logic.handleEvent(display, ev);
 	    }
             logic.checkEvents(input);
-            display.copyRenderData(logic);
+	    logic.getObjectsToRender(displayData);
           }
-          display.render();
+	  if (auto sizeUpdate = input.consumeSizeUpdate())
+	    display.resize(*sizeUpdate);
+          display.render(displayData);
 	  glfwSwapBuffers(&input.getWindow());
         }
     } catch (std::runtime_error const &e) {

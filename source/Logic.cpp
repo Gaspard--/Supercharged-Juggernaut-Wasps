@@ -100,3 +100,8 @@ void Logic::checkEvents(input::Input &input)
   //check events there
   state->checkEvents(input);
 }
+
+void Logic::getObjectsToRender(DisplayData &displayData)
+{
+  state->getObjectsToRender(displayData);
+}

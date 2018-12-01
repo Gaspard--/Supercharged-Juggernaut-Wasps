@@ -46,6 +46,8 @@ namespace input
   {
     std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window;
     std::queue<Event> events;
+    claws::vect<uint32_t, 2u> size;
+    bool sizeUpdated;
 
   public:
     auto &getWindow() const
@@ -77,6 +79,12 @@ namespace input
 
 	  input.events.push(ev);
 	});
+      glfwSetFramebufferSizeCallback(&getWindow(), [](GLFWwindow *window, int width, int height) {
+	  Input &input(*static_cast<Input *>(glfwGetWindowUserPointer(window)));
+	  
+	  input.size = {uint32_t(width), uint32_t(height)};
+	  input.sizeUpdated = true;
+	});
     }
 
     Input(Input const &) = delete;
@@ -102,6 +110,21 @@ namespace input
     bool isKeyPressed(int key)
     {
       return glfwGetKey(&getWindow(), key) == GLFW_PRESS;
+    }
+
+    claws::vect<uint32_t, 2> getSize() const
+    {
+      return size;
+    }
+
+    std::optional<claws::vect<uint32_t, 2>> consumeSizeUpdate()
+    {
+      if (sizeUpdated)
+	{
+	  sizeUpdated = false;
+	  return getSize();
+	}
+      return {};
     }
   };
 };

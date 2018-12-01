@@ -13,29 +13,29 @@ namespace opengl
   void checkError()
   {
     if (int err = glGetError())
-    {
-      switch (err)
-	{
-	case GL_INVALID_ENUM:
-	  std::cerr << "GL_INVALID_ENUM\n";
-	  break;
-	case GL_INVALID_VALUE:
-	  std::cerr << "GL_INVALID_VALUE\n";
-	  break;
-	case GL_INVALID_OPERATION:
-	  std::cerr << "GL_INVALID_OPERATION\n";
-	  break;
-	case GL_INVALID_FRAMEBUFFER_OPERATION:
-	  std::cerr << "GL_INVALID_FRAMEBUFFER_OPERATION\n";
-	  break;
-	case GL_OUT_OF_MEMORY:
-	  std::cerr << "GL_OUT_OF_MEMORY\n";
-	  break;
-	default:
-	  std::cerr << "Unknown GL error\n";
-	}
-      assert(0);
-    }
+      {
+	switch (err)
+	  {
+	  case GL_INVALID_ENUM:
+	    std::cerr << "GL_INVALID_ENUM\n";
+	    break;
+	  case GL_INVALID_VALUE:
+	    std::cerr << "GL_INVALID_VALUE\n";
+	    break;
+	  case GL_INVALID_OPERATION:
+	    std::cerr << "GL_INVALID_OPERATION\n";
+	    break;
+	  case GL_INVALID_FRAMEBUFFER_OPERATION:
+	    std::cerr << "GL_INVALID_FRAMEBUFFER_OPERATION\n";
+	    break;
+	  case GL_OUT_OF_MEMORY:
+	    std::cerr << "GL_OUT_OF_MEMORY\n";
+	    break;
+	  default:
+	    std::cerr << "Unknown GL error\n";
+	  }
+	assert(0);
+      }
   }
 
   void shaderError(GLenum const shadertype, GLuint const shader)
@@ -265,5 +265,59 @@ namespace opengl
   Texture::operator GLuint() const
   {
     return texture;
+  }
+
+  Vao::Vao()
+    : vao(0u), count(new unsigned int(1u))
+  {
+    glGenVertexArrays(1, &vao);
+  }
+  
+  Vao::~Vao()
+  {
+    if (!--*count)
+      {
+	glDeleteVertexArrays(1, &vao);
+	delete count;
+      }
+  }
+
+  Vao::Vao(Vao const &s)
+    : vao(s.vao), count(s.count)
+  {
+    ++*count;
+  }
+
+  Vao &Vao::operator=(Vao s)
+  {
+    std::swap(s.count, count);
+    std::swap(s.vao, vao);
+    return *this;
+  }
+
+  Vao::operator GLuint() const
+  {
+    return vao;
+  }
+
+  
+  void setUniform(claws::vect<float, 2> const data, char const *target, Program program)
+  {
+    glUniform2f(glGetUniformLocation(program, target), data[0], data[1]);
+  }
+
+  void setUniform(claws::vect<float, 3> const data, char const *target, Program program)
+  {
+    glUniform3f(glGetUniformLocation(program, target), data[0], data[1], data[2]);
+  }
+
+  void setUniform(claws::vect<float, 4> const data, char const *target, Program program)
+  {
+    glUniform4f(glGetUniformLocation(program, target), data[0], data[1], data[2], data[3]);
+  }
+
+  void setUniform(int const data, char const *target, Program program)
+  {
+    glUniform1i(glGetUniformLocation(program, target), data);
   }
 }

@@ -23,6 +23,7 @@ namespace state
     virtual void handleMouse(Display const &, GLFWwindow *window, input::Mouse mouse) = 0;
     virtual void handleButton(GLFWwindow *window, input::Button button) = 0;
     virtual void checkEvents(input::Input& input) = 0;
+    virtual void getObjectsToRender(DisplayData &displayData) = 0;
   };
 
 }
