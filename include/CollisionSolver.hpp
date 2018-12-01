@@ -7,22 +7,25 @@ class CollisionSolver
 
 public:
 
-  template<class T, class U>
-  static void solve(T &t, U &u)
+  // template<class T, class U>
+  // static void solve(T &t, U &u)
+  // {
+  //   if constexpr (typeid(T) > typeid(U))
+  //     solver(t, u);
+  //   else
+  //     solver(u, t);
+  // }
+  void solve(Bullet const &bullet, Entity const &entity)
   {
-    if (std::type_index(typeid(T)) > std::type_index(typeid(U)))
-      solver(t, u);
-    else
-      solver(u, t);
   }
 
 private:
   //default
-  template<class A, class B>
-  static void solver(A &, B &)
-  {
-    //do_nothing
-  }
+  // template<class A, class B>
+  // static void solver(A &, B &)
+  // {
+  //   //do_nothing
+  // }
 
   //
   // include here different effect you want to have redefining 'solver'

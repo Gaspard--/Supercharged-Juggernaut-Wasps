@@ -1,6 +1,8 @@
 #include "GameState.hpp"
 #include "Physic.hpp"
 
+#include <iostream>
+
 namespace state
 {
   GameState::GameState()
@@ -27,11 +29,17 @@ namespace state
       claws::vect<uint32_t, 2u> end = {uint32_t((bullets[i].position[0] + bullets[i].size) / physic::gridUnitSize),
 				       uint32_t((bullets[i].position[1] + bullets[i].size) / physic::gridUnitSize)};
       claws::vect<uint32_t, 2u> itPos;
-      for (itPos[0] = begin[0] ; itPos[0] <= end[0] ; ++itPos[0])
-	for (itPos[1] = begin[1] ; itPos[1] <= end[1] ; ++itPos[1])
+      for (itPos[0] = begin[0] ; itPos[0] != end[0] + 1; ++itPos[0])
+	for (itPos[1] = begin[1] ; itPos[1] != end[1] + 1; ++itPos[1])
 	  bulletIndexes[itPos].push_back(i);
     }
-    physic::checkCollisionsBullets(bigWasp.entities, bulletIndexes, bullets);
+    for (auto &entity : bigWasp.entities)
+      {
+	physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [](auto &, Bullet &)
+								       {
+									 std::cout << "hit!" << std::endl;
+								       });
+      }
   }
 
   StateType GameState::update()

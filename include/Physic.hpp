@@ -29,39 +29,38 @@ namespace physic
     return (a - b.position).length2() < square(b.size);
   }
 
-  template<class A, class B>
-  void checkCollisionsEntities(A &a, B &b)
+  template<class A, class B, class Solver>
+  void checkCollisionsEntities(A &a, B &b, Solver &&solver)
   {
     for (auto itA = a.begin() ; itA != a.end() ; ++itA)
       for (auto itB = b.begin() ; itB != a.end() ; ++itB)
 	if (haveCollision(*itA, *itB))
-	  CollisionSolver::solve(*itA, *itB);
+	  solver(*itA, *itB);
   }
 
-  template<class A>
-  void checkCollisionsBullets(A &a,
-			      std::map<claws::vect<uint32_t, 2u>, std::vector<uint32_t>> const &bulletIndexes,
-			      std::vector<Bullet> &bullets)
+  template<class EntityType, class Solver>
+  void checkCollisionsBullets(std::map<claws::vect<uint32_t, 2u>, std::vector<uint32_t>> const &bulletIndexes,
+			      EntityType &entity,
+			      std::vector<Bullet> &bullets,
+			      Solver &&solver)
   {
     std::set<uint32_t> usedBullets;
-    for (auto itA = a.begin() ; itA != a.end() ; ++itA) {
-      claws::vect<uint32_t, 2u> begin({uint32_t((itA->position[0] - itA->size) / gridUnitSize),
-				       uint32_t((itA->position[1] - itA->size) / gridUnitSize)});
-      claws::vect<uint32_t, 2u> end({uint32_t((itA->position[0] + itA->size) / gridUnitSize),
-				     uint32_t((itA->position[1] + itA->size) / gridUnitSize)});
-      claws::vect<uint32_t, 2u> itPos;
-      for (itPos[0] = begin[0] ; itPos[0] != end[0] ; ++itPos[0])
-	for (itPos[1] = begin[1] ; itPos[1] != end[1] ; ++itPos[1])
-	  try
-	    {
-	      for (auto itBul = bulletIndexes.at(itPos).begin() ; itBul != bulletIndexes.at(itPos).end() ; ++itBul) {
-		if (usedBullets.find(*itBul) == usedBullets.end())
-		  continue;
-		usedBullets.insert(*itBul);
-		if (haveCollision(*itA, bullets[*itBul]))
-		  CollisionSolver::solve(*itA, bullets[*itBul]);
-	      }
-	    } catch (std::out_of_range const &) {}
-    }
+    claws::vect<uint32_t, 2u> begin({uint32_t((entity.position[0] - entity.size) / gridUnitSize),
+				     uint32_t((entity.position[1] - entity.size) / gridUnitSize)});
+    claws::vect<uint32_t, 2u> end({uint32_t((entity.position[0] + entity.size) / gridUnitSize),
+				   uint32_t((entity.position[1] + entity.size) / gridUnitSize)});
+    claws::vect<uint32_t, 2u> itPos;
+    for (itPos[0] = begin[0] ; itPos[0] != end[0] + 1; ++itPos[0])
+      for (itPos[1] = begin[1] ; itPos[1] != end[1] + 1; ++itPos[1])
+	try
+	  {
+	    for (auto itBul = bulletIndexes.at(itPos).begin() ; itBul != bulletIndexes.at(itPos).end() ; ++itBul) {
+	      if (usedBullets.find(*itBul) != usedBullets.end())
+		continue;
+	      usedBullets.insert(*itBul);
+	      if (haveCollision(entity, bullets[*itBul]))
+		solver(entity, bullets[*itBul]);
+	    }
+	  } catch (std::out_of_range const &) {}
   }
 }
