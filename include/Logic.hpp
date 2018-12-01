@@ -2,6 +2,7 @@
 
 # include <mutex>
 # include <memory>
+# include <chrono>
 # include "Input.hpp"
 # include "State.hpp"
 
@@ -9,6 +10,17 @@ class Display;
 
 class Logic
 {
+
+  using Clock = std::conditional<std::chrono::high_resolution_clock::is_steady,
+                                 std::chrono::high_resolution_clock,
+                                 std::chrono::steady_clock>::type;
+
+  decltype(Clock::now()) lastUpdate;
+
+  static constexpr std::chrono::microseconds const getTickTime()
+  {
+    return std::chrono::microseconds(1000000 / 120);
+  };
 
   bool running;
   std::unique_ptr<state::State> state;

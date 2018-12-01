@@ -2,6 +2,7 @@
 #include "Display.hpp"
 #include "GameState.hpp"
 
+#include <thread>
 #include <cassert>
 
 Logic::Logic()
@@ -9,21 +10,35 @@ Logic::Logic()
   , state(new state::GameState())
 {}
 
-void Logic::tick(std::mutex &)
+void Logic::tick(std::mutex &lock)
 {
-  state::StateType type = state->update();
-  switch (type)
+  auto const now(Clock::now());
+
+  if (now > lastUpdate + getTickTime() * 2)
     {
-    case state::GAME_STATE:
-      state.reset(new state::GameState());
-      break;
-    case state::BREAK:
-      running = false;
-      break;
-    case state::CONTINUE:
-    default:
-      break;
+      lastUpdate = now;
+      return ;
     }
+  lastUpdate += getTickTime();
+  if (now < lastUpdate)
+    std::this_thread::sleep_for(lastUpdate - now);
+
+  {
+    std::lock_guard<std::mutex> scopedLock(lock);
+    state::StateType type = state->update();
+    switch (type)
+      {
+      case state::GAME_STATE:
+	state.reset(new state::GameState());
+	break;
+      case state::BREAK:
+	running = false;
+	break;
+      case state::CONTINUE:
+      default:
+	break;
+      }
+  }
 }
 
 void Logic::handleEvent(Display const &, input::Event const& event, input::Key const &key)
