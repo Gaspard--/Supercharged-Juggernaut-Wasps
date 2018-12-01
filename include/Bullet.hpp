@@ -30,12 +30,13 @@ class Bullet : public Entity
 
 
 public:
-  template<class PatternImpl>
   Bullet(float size, claws::vect<float, 2> position, std::unique_ptr<Pattern> &&pattern)
-    : Entity(size, position)
+    : Entity{size, position}
     , pattern(std::move(pattern))
   {
   }
+
+  Bullet(Bullet &&) = default;
 
   ~Bullet() = default;
   void update(); // TODO

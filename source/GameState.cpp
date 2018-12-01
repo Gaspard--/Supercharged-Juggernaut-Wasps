@@ -7,6 +7,7 @@ namespace state
     : bigWasp{{Entity{0.1f, {0.0f, 0.0f}}, Entity{0.1f, {0.0f, -0.2f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
+    bullets.emplace_back(0.01, claws::vect<float, 2u>{0.0f, 0.0f}, std::make_unique<Straight>(0.0f, 0.0f, 1.0f, 1.0f));
   }
 
   float GameState::getGameSpeed()
