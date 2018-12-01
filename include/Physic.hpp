@@ -54,13 +54,16 @@ namespace physic
       claws::vect<uint32_t, 2u> itPos;
       for (itPos[0] = begin[0] ; itPos[0] <= end[0] ; ++itPos[0])
 	for (itPos[1] = begin[1] ; itPos[1] <= end[1] ; ++itPos[1])
-	  for (auto itBul = bulletIndexes.at(itPos).begin() ; itBul != bulletIndexes.at(itPos).end() ; ++itBul) {
-	    if (usedBullets.find(*itBul) == usedBullets.end())
-	      continue;
-	    usedBullets.insert(*itBul);
-	    if (haveCollision(*itA, bullets[*itBul]))
-	      CollisionSolver::solve(*itA, bullets[*itBul]);
-	  }
+	  try
+	    {
+	      for (auto itBul = bulletIndexes.at(itPos).begin() ; itBul != bulletIndexes.at(itPos).end() ; ++itBul) {
+		if (usedBullets.find(*itBul) == usedBullets.end())
+		  continue;
+		usedBullets.insert(*itBul);
+		if (haveCollision(*itA, bullets[*itBul]))
+		  CollisionSolver::solve(*itA, bullets[*itBul]);
+	      }
+	    } catch (std::out_of_range) {}
     }
   }
 }

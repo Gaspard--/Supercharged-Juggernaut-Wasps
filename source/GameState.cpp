@@ -32,7 +32,7 @@ namespace state
       claws::vect<uint32_t, 2u> itPos;
       for (itPos[0] = begin[0] ; itPos[0] <= end[0] ; ++itPos[0])
 	for (itPos[1] = begin[1] ; itPos[1] <= end[1] ; ++itPos[1])
-	  bulletIndexes.at(itPos).push_back(i);
+	  bulletIndexes[itPos].push_back(i);
     }
     physic::checkCollisionsBullets(bigWasp.entities, bulletIndexes, bullets);
   }
