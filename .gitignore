@@ -30,3 +30,19 @@
 *.exe
 *.out
 *.app
+
+# Build dirs
+debug/
+release/
+build/
+
+# Executable
+Supercharged-Juggernaut-Wasps
+
+# Automaticly generated files
+include/GL/
+source/gl3w.c
+
+# Emacs backup files and locks
+*~
+\#*
