@@ -2,17 +2,6 @@
 #include "Bullet.hpp"
 #include "claws/container/vect.hpp"
 
-Straight::Straight( float ogX, float ogY,
-                    float endX, float endY)
-{
-  this->prvPos[0] = ogX;
-  this->prvPos[1] = ogY;
-  this->direct[0] = endX - ogX;
-  this->direct[1] = endY - ogY;
-}
-
-Straight::~Straight() {}
-
 claws::vect<float, 2u> Straight::Update(float speed)
 {
   this->prvPos[0] += this->direct[0] * speed; 
@@ -20,35 +9,39 @@ claws::vect<float, 2u> Straight::Update(float speed)
   return this->prvPos;
 }
 
+claws::vect<float, 2u> SinCos::Update(float speed)
+{
+  if (this->lastUpdate %5 == 0)
+  {
+    claws::vect<float, 2u> tmpDirect{std::sin(static_cast<float>(this->lastUpdate)), 1.0f};
+    this->direct += tmpDirect;
+  }
 
-// SinCos::SinCos(float ogX, float ogY, float endX, float endY)
-// {
+  this->prvPos[0] += this->direct[0] * speed; 
+  this->prvPos[1] += this->direct[1] * speed;
+  this->lastUpdate++;
 
-// }
+  this->lastUpdate %= 90;
 
-// SinCos::~SinCos() {}
-
-// claws::vect<float, 2u> SinCos::Update(float x, float y)
-// {
-
-// }
+  return this->prvPos;
+}
 
 
-// Waypoints::Waypoints(float ogX, float ogY, float endX, float endY)
-// {
 
-// }
+Waypoints::~Waypoints()
+{
+  while (!this->directList.empty())
+    this->directList.pop_back();
+  while (!this->pointsList.empty())
+    this->pointsList.pop_back();
+}
 
-// Waypoints::~Waypoints(float x, float y)
-// {
-//   while (!this->directList.empty())
-//     this->directList.pop_back();
-//   while (!this->pointList.empty())
-//     this->pointList.pop_back();
-// }
+claws::vect<float, 2u> Waypoints::Update(float speed)
+{
+  this->prvPos[0] += this->directList[0][0] * speed; 
+  this->prvPos[1] += this->directList[0][1] * speed;
 
-// claws::vect<float, 2u> Waypoints::Update()
-// {
 
-// }
+  return this->prvPos;
+}
 

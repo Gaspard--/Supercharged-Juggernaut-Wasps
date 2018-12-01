@@ -3,38 +3,47 @@
 #include <array>
 #include "claws/container/vect.hpp"
 
-class Straight
+class Pattern
+{
+public:
+  virtual claws::vect<float, 2u> Update(float speed);
+};
+
+class Straight : Pattern
 {
   claws::vect<float, 2u>  prvPos;
   claws::vect<float, 2u>  direct;
 
 public:
-  const bool is_pattern = true;
-  Straight(float ogX, float ogY, float endX, float endY);
-  ~Straight();
+  Straight(float ogX, float ogY, float endX, float endY)
+    : prvPos{ogX, ogY},
+      direct{endX - ogX, endY - ogY}
+  {}
   claws::vect<float, 2u> Update(float speed);
 };
 
-class SinCos
+class SinCos : Pattern
 {
   claws::vect<float, 2u>  prvPos;
   claws::vect<float, 2u>  direct;
+  uint                    lastUpdate;
 
 public:
-  const bool is_pattern = true;
-  SinCos(float ogX, float ogY, float endX, float endY);
-  ~SinCos();
+  SinCos(float ogX, float ogY, float endX, float endY)
+    : prvPos{ogX, ogY},
+      direct{endX - ogX, endY - ogY},
+      lastUpdate{0}
+  {}
   claws::vect<float, 2u> Update(float speed);
 };
 
-class Waypoints
+class Waypoints : Pattern
 {
   claws::vect<float, 2u>              prvPos;
   std::vector<std::array<uint, 2u>>   pointsList;
   std::vector<claws::vect<float, 2u>> directList;
 
 public:
-  const bool is_pattern = true;
   Waypoints(float ogX, float ogY, float endX, float endY);
   ~Waypoints();
   claws::vect<float, 2u> Update(float speed);

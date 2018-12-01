@@ -1,48 +1,29 @@
 #pragma once
+
 #include "Entity.hpp"
+#include "Pattern.hpp"
 #include "claws/container/vect.hpp"
 
-#ifndef SMALL_BULLET
-#define SMALL_BULLET 3
-#endif
+#include <memory>
 
-#ifndef MEDIUM_BULLET
-#define MEDIUM_BULLET 5
-#endif
 
-#ifndef BIG_BULLET
-#define BIG_BULLET 10
-#endif
+static constexpr uint small_bullet  = 3u;
+static constexpr uint medium_bullet = 5u;
+static constexpr uint big_bullet    = 10u;
 
-template <class Pattern>
 class Bullet : Entity
 {
-  static_assert(Pattern::is_pattern,
-    "Bullet didn't received a Pattern");
-
-  float       speed;
-  Pattern     *pattern;
-
-  // ideas :
-  // follow a straight line:
-  //   set a point and draw a vector from origin to this point
-  // follow a sin/cos:
-  //   set a equation f(x) with x pixel parcoured from origin (in height only)
-  //   change vector every 5/10 pixel
-  // movement then follow straight line:
-  //   set Bullet on a path then if a certain height is crossed
-  //   stop changing vector
-  // follow waypoints:
-  //   set some points (max 5) then draw rect from one to another and follow
-
+  float                     speed;
+  std::unique_ptr<Pattern>  pattern;
 
 public:
-  Bullet(float x, float y) {
-    this->size        = MEDIUM_BULLET;
-    this->position[0] = x;
-    this->position[1] = y;
-  }
+  template <typename P>
+  Bullet( float ogX, float ogY,
+          float endX, float endY,
+          uint size = medium_bullet)
+    : Entity(size, {ogX, ogY}),
+      pattern{new P(ogX, ogY, endX, endY)}
+    {}
   ~Bullet();
   void Update();
-	
 };
