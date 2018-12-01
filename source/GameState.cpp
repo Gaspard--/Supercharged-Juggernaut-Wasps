@@ -21,14 +21,10 @@ namespace state
   {
     std::map<claws::vect<uint32_t, 2u>, std::vector<uint32_t>> bulletIndexes;
     for (uint32_t i = 0 ; i != bullets.size() ; ++i) {
-      claws::vect<uint32_t, 2u> begin = {(bullets[i].position[0] - bullets[i].size) / physic::gridUnitSize,
-					 (bullets[i].position[1] - bullets[i].size) / physic::gridUnitSize};
-      if (bullets[i].position[0] - bullets[i].size < 0)
-	begin[0] = 0;
-      if (bullets[i].position[1] - bullets[i].size < 0)
-	begin[1] = 0;
-      claws::vect<uint32_t, 2u> end = {(bullets[i].position[0] + bullets[i].size) / physic::gridUnitSize,
-				       (bullets[i].position[1] + bullets[i].size) / physic::gridUnitSize};
+      claws::vect<uint32_t, 2u> begin = {uint32_t((bullets[i].position[0] - bullets[i].size) / physic::gridUnitSize),
+					 uint32_t((bullets[i].position[1] - bullets[i].size) / physic::gridUnitSize)};
+      claws::vect<uint32_t, 2u> end = {uint32_t((bullets[i].position[0] + bullets[i].size) / physic::gridUnitSize),
+				       uint32_t((bullets[i].position[1] + bullets[i].size) / physic::gridUnitSize)};
       claws::vect<uint32_t, 2u> itPos;
       for (itPos[0] = begin[0] ; itPos[0] <= end[0] ; ++itPos[0])
 	for (itPos[1] = begin[1] ; itPos[1] <= end[1] ; ++itPos[1])

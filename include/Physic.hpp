@@ -9,7 +9,7 @@
 
 namespace physic
 {
-  const uint32_t gridUnitSize = 50;
+  constexpr float const gridUnitSize = 0.2f;
 
   template<class T>
   constexpr T square(T const &t)
@@ -45,15 +45,13 @@ namespace physic
   {
     std::set<uint32_t> usedBullets;
     for (auto itA = a.begin() ; itA != a.end() ; ++itA) {
-      claws::vect<uint32_t, 2u> begin = {(itA->position[0] - itA->size) / gridUnitSize, (itA->position[1] - itA->size) / gridUnitSize};
-      if (itA->position[0] - itA->size < 0)
-	begin[0] = 0;
-      if (itA->position[1] - itA->size < 0)
-	begin[1] = 0;
-      claws::vect<uint32_t, 2u> end = {(itA->position[0] + itA->size) / gridUnitSize, (itA->position[1] + itA->size) / gridUnitSize};
+      claws::vect<uint32_t, 2u> begin({uint32_t((itA->position[0] - itA->size) / gridUnitSize),
+				       uint32_t((itA->position[1] - itA->size) / gridUnitSize)});
+      claws::vect<uint32_t, 2u> end({uint32_t((itA->position[0] + itA->size) / gridUnitSize),
+				     uint32_t((itA->position[1] + itA->size) / gridUnitSize)});
       claws::vect<uint32_t, 2u> itPos;
-      for (itPos[0] = begin[0] ; itPos[0] <= end[0] ; ++itPos[0])
-	for (itPos[1] = begin[1] ; itPos[1] <= end[1] ; ++itPos[1])
+      for (itPos[0] = begin[0] ; itPos[0] != end[0] ; ++itPos[0])
+	for (itPos[1] = begin[1] ; itPos[1] != end[1] ; ++itPos[1])
 	  try
 	    {
 	      for (auto itBul = bulletIndexes.at(itPos).begin() ; itBul != bulletIndexes.at(itPos).end() ; ++itBul) {
@@ -63,7 +61,7 @@ namespace physic
 		if (haveCollision(*itA, bullets[*itBul]))
 		  CollisionSolver::solve(*itA, bullets[*itBul]);
 	      }
-	    } catch (std::out_of_range) {}
+	    } catch (std::out_of_range const &) {}
     }
   }
 }
