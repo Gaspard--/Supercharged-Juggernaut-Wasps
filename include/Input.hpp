@@ -102,17 +102,22 @@ namespace input
       return event;
     }
 
-    bool windowShouldClose() const
+    bool windowShouldClose() const noexcept
     {
       return glfwWindowShouldClose(&getWindow());
     }
 
-    bool isKeyPressed(int key)
+    bool isKeyPressed(int key) const noexcept
     {
       return glfwGetKey(&getWindow(), key) == GLFW_PRESS;
     }
 
-    claws::vect<uint32_t, 2> getSize() const
+    bool isMouseButtonPressed(int button) const noexcept
+    {
+      return glfwGetMouseButton(&getWindow(), button) == GLFW_PRESS;
+    }
+
+    claws::vect<uint32_t, 2> getSize() const noexcept
     {
       return size;
     }

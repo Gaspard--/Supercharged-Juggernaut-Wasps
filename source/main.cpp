@@ -19,10 +19,12 @@ int main()
     Logic logic;
 
     std::mutex lock;
-    std::thread thread([&logic, &lock]() {
+    std::thread thread([&logic, &lock, &input]() {
       try {
 	while (logic.isRunning())
-	  logic.tick(lock);
+	  {
+	    logic.tick(lock);
+	  }
       } catch (std::runtime_error const &e) {
 	std::cerr << "Logic thread encoutered runtime error:" << std::endl
 		  << e.what() << std::endl;
@@ -34,13 +36,13 @@ int main()
 	  DisplayData displayData;
 
 	  glfwPollEvents();
+	  logic.checkEvents(input);
           {
             std::lock_guard<std::mutex> scopedLock(lock);
 
             for (input::Event ev = input.pollEvent(); ev; ev = input.pollEvent()) {
-	      logic.handleEvent(display, ev);
+	      logic.handleEvent(input, ev);
 	    }
-            logic.checkEvents(input);
 	    logic.getObjectsToRender(displayData);
           }
 	  if (auto sizeUpdate = input.consumeSizeUpdate())
