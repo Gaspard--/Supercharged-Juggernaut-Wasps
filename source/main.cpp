@@ -28,12 +28,11 @@ int main()
     try {
       while (display.isRunning())
 	{
+	  glfwPollEvents();
           {
             std::lock_guard<std::mutex> scopedLock(lock);
 
-            // handle events
             for (input::Event ev = input.pollEvent(); ev; ev = input.pollEvent()) {
-	      std::cout << "EVENT" << std::endl;
 	      logic.handleEvent(display, ev);
 	    }
             logic.checkEvents(input);
