@@ -1,6 +1,8 @@
-# include "Logic.hpp"
-# include "Display.hpp"
-# include "GameState.hpp"
+#include "Logic.hpp"
+#include "Display.hpp"
+#include "GameState.hpp"
+
+#include <cassert>
 
 Logic::Logic()
   : running(true)
@@ -24,28 +26,32 @@ void Logic::tick(std::mutex &)
     }
 }
 
+void Logic::handleEvent(Display const &, input::Event const& event, input::Key const &key)
+{
+  handleKey(event.window, key);
+}
+
+void Logic::handleEvent(Display const &display, input::Event const& event, input::Mouse const &mouse)
+{
+  handleMouse(display, event.window, mouse);
+}
+
+void Logic::handleEvent(Display const &, input::Event const& event, input::Button const &button)
+{
+  handleButton(event.window, button);
+}
+
+void Logic::handleEvent(Display const &, input::Event const&, input::None const &)
+{
+  assert(!"A non-event was passed to logic: this should never happen.");
+}
+
 void Logic::handleEvent(Display const &display, input::Event const& event)
 {
-  //
-  // @Kellen : this is ugly, help me to remove that pls
-  //
-  if (event)
-    {
-      switch (event.data.index())
-        {
-        case 1:
-          handleKey(event.window, std::get<input::Key>(event.data));
-          break;
-        case 2:
-          handleMouse(display, event.window, std::get<input::Mouse>(event.data));
-          break;
-        case 3:
-          handleButton(event.window, std::get<input::Button>(event.data));
-          break;
-        default:
-          break;
-        }
-    }
+  std::visit([&](auto const &data) noexcept
+	     {
+	       handleEvent(display, event, data);
+	     }, event.data);
 }
 
 void Logic::handleKey(GLFWwindow *window, input::Key key)

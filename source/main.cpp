@@ -8,7 +8,6 @@
 int main()
 {
   try {
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     GlfwContext glfwContext{};
 
     input::Input input(glfwContext.createWindow({1920u, 1080u}, std::string{"Supercharged Juggernaut Wasps"}));

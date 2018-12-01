@@ -3,7 +3,8 @@
 
 Display::Display(GLFWwindow &window)
   : window(&window)
-{}
+{
+}
 
 void Display::render()
 {

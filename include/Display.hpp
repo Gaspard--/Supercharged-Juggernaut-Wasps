@@ -11,6 +11,8 @@ class Display
 public:
 
   Display(GLFWwindow&);
+  Display(Display const &) = delete;
+  Display(Display &&) = delete;
 
   void render();
   void copyRenderData(Logic const&);
