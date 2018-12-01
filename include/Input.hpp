@@ -58,7 +58,7 @@ namespace input
       , events()
     {
       glfwSetWindowUserPointer(&getWindow(), this);
-      glfwSetInputMode(&getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+      // glfwSetInputMode(&getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
       glfwSetKeyCallback(&getWindow(), [](GLFWwindow *window, int key, int scancode, int action, int mode) {
 	  Input &input(*static_cast<Input *>(glfwGetWindowUserPointer(window)));
 	  Event ev = {window, Key{key, scancode, action, mode}};
