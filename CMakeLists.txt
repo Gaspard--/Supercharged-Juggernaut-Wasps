@@ -46,16 +46,14 @@ if (WIN32)
 else()
   find_package(PkgConfig REQUIRED)
   find_package(Freetype REQUIRED)
-  find_package(OpenGLES3 REQUIRED)
   pkg_search_module(GLFW REQUIRED glfw3)
 endif(WIN32)
 
 include_directories(
-  ${OPENGL_INCLUDE_DIRS}
   ${GLFW_INCLUDE_DIRS}
   ${HEADER_DIRECTORY}
   ${FREETYPE_INCLUDE_DIRS}
-  ${OPENGLES3_INCLUDE_DIR}
+  ${OPENGL_INCLUDE_DIR}
 )
 
 if (WIN32)
@@ -76,5 +74,3 @@ endif(WIN32)
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${GLFW_STATIC_LIBRARIES})
-
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR})
