@@ -46,6 +46,8 @@ namespace input
   {
     std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window;
     std::queue<Event> events;
+    claws::vect<uint32_t, 2u> size;
+    bool sizeUpdated;
 
   public:
     auto &getWindow() const
@@ -77,6 +79,12 @@ namespace input
 
 	  input.events.push(ev);
 	});
+      glfwSetFramebufferSizeCallback(&getWindow(), [](GLFWwindow *window, int width, int height) {
+	  Input &input(*static_cast<Input *>(glfwGetWindowUserPointer(window)));
+	  
+	  input.size = {uint32_t(width), uint32_t(height)};
+	  input.sizeUpdated = true;
+	});
     }
 
     Input(Input const &) = delete;
@@ -94,14 +102,34 @@ namespace input
       return event;
     }
 
-    bool windowShouldClose() const
+    bool windowShouldClose() const noexcept
     {
       return glfwWindowShouldClose(&getWindow());
     }
 
-    bool isKeyPressed(int key)
+    bool isKeyPressed(int key) const noexcept
     {
       return glfwGetKey(&getWindow(), key) == GLFW_PRESS;
+    }
+
+    bool isMouseButtonPressed(int button) const noexcept
+    {
+      return glfwGetMouseButton(&getWindow(), button) == GLFW_PRESS;
+    }
+
+    claws::vect<uint32_t, 2> getSize() const noexcept
+    {
+      return size;
+    }
+
+    std::optional<claws::vect<uint32_t, 2>> consumeSizeUpdate()
+    {
+      if (sizeUpdated)
+	{
+	  sizeUpdated = false;
+	  return getSize();
+	}
+      return {};
     }
   };
 };

@@ -20,9 +20,10 @@ namespace state
     virtual ~State() = default;
     virtual StateType update() = 0;
     virtual void handleKey(GLFWwindow *window, input::Key key) = 0;
-    virtual void handleMouse(Display const &, GLFWwindow *window, input::Mouse mouse) = 0;
+    virtual void handleMouse(input::Input const &, GLFWwindow *window, input::Mouse mouse) = 0;
     virtual void handleButton(GLFWwindow *window, input::Button button) = 0;
     virtual void checkEvents(input::Input& input) = 0;
+    virtual void getObjectsToRender(DisplayData &displayData) = 0;
   };
 
 }

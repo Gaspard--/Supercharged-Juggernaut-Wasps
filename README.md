@@ -1,4 +1,4 @@
-# Supercharged-Juggernaut-Wasps
+# *Supercharged Juggernaut Wasps*
 
 
 ## Note

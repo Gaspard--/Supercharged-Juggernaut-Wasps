@@ -4,6 +4,7 @@
 # include "Display.hpp"
 # include "Input.hpp"
 # include "Logic.hpp"
+# include "DisplayData.hpp"
 
 int main()
 {
@@ -14,13 +15,16 @@ int main()
 
     glfwSwapInterval(1);
     Display display(input.getWindow());
+    display.resize({1920u, 1080u});
     Logic logic;
 
     std::mutex lock;
-    std::thread thread([&logic, &lock]() {
+    std::thread thread([&logic, &lock, &input]() {
       try {
 	while (logic.isRunning())
-	  logic.tick(lock);
+	  {
+	    logic.tick(lock);
+	  }
       } catch (std::runtime_error const &e) {
 	std::cerr << "Logic thread encoutered runtime error:" << std::endl
 		  << e.what() << std::endl;
@@ -29,17 +33,21 @@ int main()
     try {
       while (display.isRunning())
 	{
+	  DisplayData displayData;
+
 	  glfwPollEvents();
+	  logic.checkEvents(input);
           {
             std::lock_guard<std::mutex> scopedLock(lock);
 
             for (input::Event ev = input.pollEvent(); ev; ev = input.pollEvent()) {
-	      logic.handleEvent(display, ev);
+	      logic.handleEvent(input, ev);
 	    }
-            logic.checkEvents(input);
-            display.copyRenderData(logic);
+	    logic.getObjectsToRender(displayData);
           }
-          display.render();
+	  if (auto sizeUpdate = input.consumeSizeUpdate())
+	    display.resize(*sizeUpdate);
+          display.render(displayData);
 	  glfwSwapBuffers(&input.getWindow());
         }
     } catch (std::runtime_error const &e) {
