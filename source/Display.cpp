@@ -132,6 +132,38 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
   }
 }
 
+void Display::renderBullets(std::vector<Entity> const &bullets)
+{
+  {
+    Bind bind(rectContext);
+
+    glBindBuffer(GL_ARRAY_BUFFER, rectBuffer);
+
+    std::vector<float> data;
+
+    data.reserve(bullets.size() * 12);
+
+    for (auto const &bullet : bullets)
+      {
+	std::array<float, 12> corner({-1.0f, -1.0f,
+				      1.0f, -1.0f,
+				      -1.0f, 1.0f,
+				      1.0f, -1.0f,
+				      -1.0f, 1.0f,
+				      1.0f, 1.0f});
+
+	for (uint32_t i(0u); i != 6; ++i)
+	  for (uint32_t j(0u); j != 2; ++j)
+	    data.emplace_back(corner[i * 2 + j] * bullet.size + bullet.position[j]);
+      }
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
+    opengl::setUniform(dim, "dim", rectContext.program);
+    opengl::setUniform({1.0f, 0.0f, 1.0f, 1.0f}, "rect_color", rectContext.program);
+    glDrawArrays(GL_TRIANGLES, 0, bullets.size() * 6);
+  }
+}
+
+
 void Display::render(DisplayData const &data)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -142,6 +174,8 @@ void Display::render(DisplayData const &data)
     renderBigWasp(*data.bigWasp);
   if (data.smolWasp)
     renderSmolWasp(*data.smolWasp);
+  if (!data.bullets.empty())
+    renderBullets(data.bullets);
 }
 
 void Display::resize(claws::vect<uint32_t, 2u> size)

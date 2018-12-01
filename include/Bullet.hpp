@@ -13,7 +13,7 @@ static constexpr uint big_bullet    = 10u;
 
 class Bullet : public Entity
 {
-  float       speed;
+  float       speed{0.001f};
   std::unique_ptr<Pattern> pattern;
 
   // ideas :

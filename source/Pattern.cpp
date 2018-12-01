@@ -13,7 +13,7 @@ Straight::Straight( float ogX, float ogY,
 
 claws::vect<float, 2u> Straight::update(float speed)
 {
-  this->prvPos[0] += this->direct[0] * speed; 
+  this->prvPos[0] += this->direct[0] * speed;
   this->prvPos[1] += this->direct[1] * speed;
   return this->prvPos;
 }
