@@ -3,4 +3,4 @@
 
 ## Note
 
-To avoid having people intall claws, portions of the code were taken and adpated from it.
+To avoid having people install claws, portions of the code were taken and adpated from it.
