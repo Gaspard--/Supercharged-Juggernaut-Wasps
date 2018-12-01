@@ -11,9 +11,7 @@ Straight::Straight( float ogX, float ogY,
   this->direct[1] = endY - ogY;
 }
 
-Straight::~Straight() {}
-
-claws::vect<float, 2u> Straight::Update(float speed)
+claws::vect<float, 2u> Straight::update(float speed)
 {
   this->prvPos[0] += this->direct[0] * speed; 
   this->prvPos[1] += this->direct[1] * speed;
@@ -21,34 +19,24 @@ claws::vect<float, 2u> Straight::Update(float speed)
 }
 
 
-// SinCos::SinCos(float ogX, float ogY, float endX, float endY)
-// {
+SinCos::SinCos(float ogX, float ogY, float endX, float endY)
+{
 
-// }
+}
 
-// SinCos::~SinCos() {}
+claws::vect<float, 2u> SinCos::update(float speed)
+{
 
-// claws::vect<float, 2u> SinCos::Update(float x, float y)
-// {
-
-// }
+}
 
 
-// Waypoints::Waypoints(float ogX, float ogY, float endX, float endY)
-// {
+Waypoints::Waypoints(float ogX, float ogY, float endX, float endY)
+{
 
-// }
+}
 
-// Waypoints::~Waypoints(float x, float y)
-// {
-//   while (!this->directList.empty())
-//     this->directList.pop_back();
-//   while (!this->pointList.empty())
-//     this->pointList.pop_back();
-// }
+claws::vect<float, 2u> Waypoints::update(float speed)
+{
 
-// claws::vect<float, 2u> Waypoints::Update()
-// {
-
-// }
+}
 

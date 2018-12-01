@@ -1,6 +1,10 @@
 #pragma once
+
 #include "Entity.hpp"
+#include "Pattern.hpp"
 #include "claws/container/vect.hpp"
+
+#include <memory>
 
 #ifndef SMALL_BULLET
 #define SMALL_BULLET 3
@@ -14,14 +18,11 @@
 #define BIG_BULLET 10
 #endif
 
-template <class Pattern>
 class Bullet : Entity
 {
-  static_assert(Pattern::is_pattern,
-    "Bullet didn't received a Pattern");
 
   float       speed;
-  Pattern     *pattern;
+  std::unique_ptr<Pattern> pattern;
 
   // ideas :
   // follow a straight line:
@@ -37,12 +38,14 @@ class Bullet : Entity
 
 
 public:
-  Bullet(float x, float y) {
-    this->size        = MEDIUM_BULLET;
-    this->position[0] = x;
-    this->position[1] = y;
+  template<class PatternImpl>
+  Bullet(float size, claws::vect<float, 2> position, std::unique_ptr<Pattern> &&pattern)
+    : Entity(size, position)
+    , pattern(std::move(pattern))
+  {
   }
-  ~Bullet();
-  void Update();
+
+  ~Bullet() = default;
+  void update(); // TODO
 	
 };
