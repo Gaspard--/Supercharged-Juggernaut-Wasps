@@ -1,5 +1,6 @@
 #pragma once
 
+# include "opengl/my_opengl.hpp"
 # include "my_glfw.hpp"
 
 class Logic;

@@ -1,9 +1,9 @@
 # include <iostream>
 # include <thread>
 # include <mutex>
+# include "Display.hpp"
 # include "Input.hpp"
 # include "Logic.hpp"
-# include "Display.hpp"
 
 int main()
 {
@@ -11,6 +11,8 @@ int main()
     GlfwContext glfwContext{};
 
     input::Input input(glfwContext.createWindow({1920u, 1080u}, std::string{"Supercharged Juggernaut Wasps"}));
+
+    glfwSwapInterval(1);
     Display display(input.getWindow());
     Logic logic;
 
@@ -38,6 +40,7 @@ int main()
             display.copyRenderData(logic);
           }
           display.render();
+	  glfwSwapBuffers(&input.getWindow());
         }
     } catch (std::runtime_error const &e) {
       std::cerr << "Display thread encoutered runtime error:" << std::endl

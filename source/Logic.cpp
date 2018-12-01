@@ -1,5 +1,6 @@
-#include "Logic.hpp"
 #include "Display.hpp"
+
+#include "Logic.hpp"
 #include "GameState.hpp"
 
 #include <thread>
