@@ -11,7 +11,7 @@ static constexpr uint small_bullet  = 3u;
 static constexpr uint medium_bullet = 5u;
 static constexpr uint big_bullet    = 10u;
 
-class Bullet : Entity
+class Bullet : public Entity
 {
   float       speed;
   std::unique_ptr<Pattern> pattern;
@@ -39,5 +39,5 @@ public:
 
   ~Bullet() = default;
   void update(); // TODO
-	
+
 };

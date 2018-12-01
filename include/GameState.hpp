@@ -1,18 +1,24 @@
 #pragma once
 
 #include <optional>
+#include <vector>
 
 #include "State.hpp"
 #include "Wasp.hpp"
+#include "Bullet.hpp"
 
 namespace state
 {
   class GameState : public State
   {
+    std::vector<Bullet> bullets;
     BigWasp bigWasp;
     std::optional<SmolWasp> smolWasp;
     claws::vect<float, 2u> target;
     bool gotoTarget{false};
+
+    void makeCollisions();
+
   public:
     GameState();
     StateType update() override;
