@@ -15,7 +15,6 @@ int main()
 
     glfwSwapInterval(1);
     Display display(input.getWindow());
-    display.resize({1920u, 1080u});
     Logic logic;
 
     std::mutex lock;

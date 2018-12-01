@@ -182,4 +182,5 @@ void Display::resize(claws::vect<uint32_t, 2u> size)
 {
   this->size = size;
   this->dim = {float(size[0]) / float(size[1]), 1.0f};
+  glViewport(0, 0, size[0], size[1]);
 }
