@@ -1,11 +1,27 @@
 # include "Logic.hpp"
 # include "Display.hpp"
+# include "GameState.hpp"
 
-Logic::Logic(): running(true) {}
+Logic::Logic()
+  : running(true)
+  , state(new state::GameState())
+{}
 
 void Logic::tick(std::mutex &)
 {
-  //do logic
+  state::StateType type = state->update();
+  switch (type)
+    {
+    case state::GAME_STATE:
+      state.reset(new state::GameState());
+      break;
+    case state::BREAK:
+      running = false;
+      break;
+    case state::CONTINUE:
+    default:
+      break;
+    }
 }
 
 void Logic::handleEvent(Display const &display, input::Event const& event)
@@ -42,19 +58,23 @@ void Logic::handleKey(GLFWwindow *window, input::Key key)
     default:
       break;
     }
+  state->handleKey(window, key);
 }
 
-void Logic::handleMouse(Display const &, GLFWwindow *, input::Mouse)
+void Logic::handleMouse(Display const &disp, GLFWwindow *win, input::Mouse mouse)
 {
   //handle mouse moving here
+  state->handleMouse(disp, win, mouse);
 }
 
-void Logic::handleButton(GLFWwindow *, input::Button)
+void Logic::handleButton(GLFWwindow *win, input::Button button)
 {
   //handle mouse button here
+  state->handleButton(win, button);
 }
 
-void Logic::checkEvents(input::Input&)
+void Logic::checkEvents(input::Input &input)
 {
   //check events there
+  state->checkEvents(input);
 }
