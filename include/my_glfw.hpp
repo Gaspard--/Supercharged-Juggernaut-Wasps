@@ -33,6 +33,10 @@ struct GlfwContext
       throw std::runtime_error("my_glfw: failed to open window");
     glfwMakeContextCurrent(window.get());
     glfwSwapInterval(1);
+    if (gl3wInit())
+      throw std::runtime_error("opengl: failed to initialize 3.0 bindings");
+    if (!gl3wIsSupported(3, 0))
+      throw std::runtime_error("opengl: Opengl 3.0 not supported");
     return window;
   }
 };
