@@ -1,6 +1,7 @@
 #pragma once
 
 # include "State.hpp"
+# include "Entity.hpp"
 
 namespace state
 {
