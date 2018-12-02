@@ -8,7 +8,7 @@ SoundHandler::SoundHandler() {}
 void SoundHandler::initSoundHandler()
 {
   _instance.reset(new SoundHandler());
-  if (!_instance->mainMusic.openFromFile("resources/Heatman.ogg"))
+  if (!_instance->mainMusic.openFromFile("resources/Wasp in the frost.wav"))
     throw ("Music not charged");
   _instance->addSoundBuffer(waspTakeHit, "resources/wasp.ogg");
   _instance->addSoundBuffer(mobTakeHit, "resources/mobKill.ogg");
