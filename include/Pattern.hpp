@@ -3,34 +3,32 @@
 #include <array>
 #include "claws/container/vect.hpp"
 
+class Bullet;
+
 class Pattern
 {
 public:
   virtual ~Pattern() = default;
-  virtual claws::vect<float, 2u> update(float speed) = 0;
+  virtual claws::vect<float, 2u> update(Bullet &, float speed) = 0;
 };
 
-class Straight : public Pattern
+class NoPattern : public Pattern
 {
-  claws::vect<float, 2u>  prvPos;
-  claws::vect<float, 2u>  direct;
-
 public:
-  Straight(float ogX, float ogY, float endX, float endY);
-  ~Straight() = default;
-  claws::vect<float, 2u> update(float speed) override;
+  NoPattern() = default;
+  claws::vect<float, 2u> update(Bullet &, float speed) override;
 };
 
 class SinCos : public Pattern
 {
-  claws::vect<float, 2u>  prvPos;
-  claws::vect<float, 2u>  direct;
-  uint                    lastUpdate;
+  float rate;
+  float strength;
+  float time;
 
 public:
-  SinCos(float ogX, float ogY, float endX, float endY);
+  SinCos(float rate, float strength, float time = 0.0f);
   ~SinCos() = default;
-  claws::vect<float, 2u> update(float speed) override;
+  claws::vect<float, 2u> update(Bullet &, float speed) override;
 };
 
 class Waypoints : public Pattern
@@ -42,5 +40,5 @@ class Waypoints : public Pattern
 public:
   Waypoints(float ogX, float ogY, float endX, float endY);
   ~Waypoints() = default;
-  claws::vect<float, 2u> update(float speed) override;
+  claws::vect<float, 2u> update(Bullet &, float speed) override;
 };

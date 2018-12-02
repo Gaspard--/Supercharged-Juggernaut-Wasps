@@ -6,14 +6,17 @@
 
 #include <memory>
 
+#include <iostream>
 
 static constexpr uint small_bullet  = 3u;
 static constexpr uint medium_bullet = 5u;
 static constexpr uint big_bullet    = 10u;
 
 class Bullet : public Entity
-{
-  float       speed{0.001f};
+{ 
+public:
+  claws::vect<float, 2u> speed;
+private:
   std::unique_ptr<Pattern> pattern;
 
   // ideas :
@@ -30,8 +33,9 @@ class Bullet : public Entity
 
 
 public:
-  Bullet(float size, claws::vect<float, 2> position, std::unique_ptr<Pattern> &&pattern)
+  Bullet(float size, claws::vect<float, 2> position, claws::vect<float, 2> speed, std::unique_ptr<Pattern> &&pattern)
     : Entity{size, position}
+    , speed(speed)
     , pattern(std::move(pattern))
   {
   }
@@ -39,6 +43,6 @@ public:
   Bullet(Bullet &&) = default;
 
   ~Bullet() = default;
-  void update(); // TODO
+  void update(float gameSpeed);
 
 };

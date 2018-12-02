@@ -1,6 +1,8 @@
 #include "Bullet.hpp"
 
-void Bullet::update()
+#include <iostream>
+
+void Bullet::update(float gameSpeed)
 {
-  this->position = this->pattern->update(this->speed);
+  this->position += this->pattern->update(*this, gameSpeed) + this->speed * gameSpeed;
 }

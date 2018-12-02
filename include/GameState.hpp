@@ -6,16 +6,19 @@
 #include "State.hpp"
 #include "Wasp.hpp"
 #include "Bullet.hpp"
+#include "Mob.hpp"
 
 namespace state
 {
   class GameState : public State
   {
     std::vector<Bullet> bullets;
+    std::vector<Mob> mobs;
     BigWasp bigWasp;
     std::optional<SmolWasp> smolWasp;
     claws::vect<float, 2u> target;
     bool gotoTarget{false};
+    float gameSpeed;
 
     void makeCollisions();
 

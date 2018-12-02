@@ -163,6 +163,36 @@ void Display::renderBullets(std::vector<Entity> const &bullets)
   }
 }
 
+void Display::renderMobs(std::vector<Entity> const &mobs)
+{
+  {
+    Bind bind(rectContext);
+
+    glBindBuffer(GL_ARRAY_BUFFER, rectBuffer);
+
+    std::vector<float> data;
+
+    data.reserve(mobs.size() * 12);
+
+    for (auto const &mob : mobs)
+      {
+	std::array<float, 12> corner({-1.0f, -1.0f,
+				      1.0f, -1.0f,
+				      -1.0f, 1.0f,
+				      1.0f, -1.0f,
+				      -1.0f, 1.0f,
+				      1.0f, 1.0f});
+
+	for (uint32_t i(0u); i != 6; ++i)
+	  for (uint32_t j(0u); j != 2; ++j)
+	    data.emplace_back(corner[i * 2 + j] * mob.size + mob.position[j]);
+      }
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
+    opengl::setUniform(dim, "dim", rectContext.program);
+    opengl::setUniform({1.0f, 0.0f, 1.0f, 1.0f}, "rect_color", rectContext.program);
+    glDrawArrays(GL_TRIANGLES, 0, mobs.size() * 6);
+  }
+}
 
 void Display::render(DisplayData const &data)
 {
@@ -176,6 +206,8 @@ void Display::render(DisplayData const &data)
     renderSmolWasp(*data.smolWasp);
   if (!data.bullets.empty())
     renderBullets(data.bullets);
+  if (!data.mobs.empty())
+    renderMobs(data.mobs);
 }
 
 void Display::resize(claws::vect<uint32_t, 2u> size)

@@ -28,13 +28,12 @@ namespace physic
     return (a - b.position).length2() < square(b.size);
   }
 
-  template<class A, class B, class Solver>
-  void checkCollisionsEntities(A &a, B &b, Solver &&solver)
+  template<class EntityType, class B, class Solver>
+  void checkCollisionsEntities(EntityType &entity, B &bs, Solver &&solver)
   {
-    for (auto itA = a.begin() ; itA != a.end() ; ++itA)
-      for (auto itB = b.begin() ; itB != a.end() ; ++itB)
-	if (haveCollision(*itA, *itB))
-	  solver(*itA, *itB);
+    for (auto &b : bs)
+      if (haveCollision(entity, b))
+	solver(entity, b);
   }
 
   template<class EntityType, class Solver>
