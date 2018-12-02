@@ -5,6 +5,7 @@
 # include "Input.hpp"
 # include "Logic.hpp"
 # include "DisplayData.hpp"
+# include "SoundHandler.hpp"
 
 int main()
 {
@@ -16,6 +17,21 @@ int main()
     glfwSwapInterval(1);
     Display display(input.getWindow());
     Logic logic;
+
+    struct SoundHandlerInit
+    {
+      SoundHandlerInit()
+      {
+        SoundHandler::initSoundHandler();
+      }
+
+      ~SoundHandlerInit()
+      {
+        SoundHandler::destroySoundHandler();
+      }
+    } SoundHandlerIniter;
+
+    SoundHandler::getInstance().playMainMusic();
 
     std::mutex lock;
     std::thread thread([&logic, &lock, &input]() {

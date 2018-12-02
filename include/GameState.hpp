@@ -40,7 +40,7 @@ namespace state
     void handleButton(GLFWwindow *window, input::Button button) override;
     void checkEvents(input::Input& input) override;
     void getObjectsToRender(DisplayData &display) override;
-
+    
     float getGameSpeed();
   };
 

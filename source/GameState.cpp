@@ -1,6 +1,7 @@
 #include "GameState.hpp"
 #include "Physic.hpp"
 #include "RepetitiveShotAI.hpp"
+#include "SoundHandler.hpp"
 
 #include <iostream>
 #include <algorithm>
@@ -33,18 +34,22 @@ namespace state
 	for (itPos[1] = begin[1] ; itPos[1] != end[1] + 1; ++itPos[1])
 	  bulletIndexes[itPos].push_back(i);
     }
-    for (auto &entity : bigWasp.entities)
+    if (bigWasp.invulnFrames <= 0.0f)
       {
-	physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [](auto &, Bullet &)
-								       {
-									 std::cout << "hit!" << std::endl;
-								       });
+	for (auto &entity : bigWasp.entities)
+	  physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [&](auto &, Bullet &)
+									 {
+									   bigWasp.invulnFrames = maxInvuln;
+									   SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit);
+									   std::cout << "hit!" << std::endl;
+									 });
+	physic::checkCollisionsEntities(bigWasp.entities[0], mobs, [](auto &, Mob &mob)
+								   {
+								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
+								     mob.dead = true;
+								     std::cout << "munch\n";
+								   });
       }
-    physic::checkCollisionsEntities(bigWasp.entities[0], mobs, [](auto &, Mob &mob)
-							       {
-								 mob.dead = true;
-								 std::cout << "munch\n";
-							       });
     if (smolWasp)
       {
 	if (smolWasp->dieCounter)
@@ -159,6 +164,11 @@ namespace state
 	spawnWave();
       }
 
+    if (bigWasp.invulnFrames > 0)
+      {
+	bigWasp.invulnFrames -= getGameSpeed();
+      }
+
     if (smolWasp)
       {
 	if (gotoTarget)
@@ -192,14 +202,14 @@ namespace state
 								   return false;
 								 }), bullets.end());
     mobs.erase(std::remove_if(mobs.begin(), mobs.end(), [](Mob const &mob)
-								 {
-								   if (mob.dead)
-								     return true;
-								   for (uint32_t i(0u); i != 2; ++i)
-								     if (mob.position[i] > 1.0f || mob.position[i] < -1.0f)
-								       return true;
-								   return false;
-								 }), mobs.end());
+							{
+							  if (mob.dead)
+							    return true;
+							  for (uint32_t i(0u); i != 2; ++i)
+							    if (mob.position[i] > 1.0f || mob.position[i] < -1.0f)
+							      return true;
+							  return false;
+							}), mobs.end());
     return StateType::CONTINUE;
   }
 
