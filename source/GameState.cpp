@@ -173,7 +173,7 @@ namespace state
 	if (gotoTarget)
 	  smolWasp->speed += (target - smolWasp->position) * 0.5f * getGameSpeed() * getGameSpeed();
 	else if (joystickInUse)
-	  smolWasp->speed = joystickVect * 0.08f;
+	  smolWasp->speed = joystickVect * 0.03f;
 	smolWasp->speed *= std::pow(0.7f, getGameSpeed());
       }
     else
@@ -245,7 +245,11 @@ namespace state
     if (axes.size() && axes[0].length2() > 0.1) {
       joystickInUse = true;
       gotoTarget = false;
-      joystickVect = {axes[0][0], axes[0][1]};
+      joystickVect = {axes[0][0], axes[0][1]
+#ifndef _WIN32
+		      * -1
+#endif
+      };
     } else {
       joystickInUse = false;
     }
