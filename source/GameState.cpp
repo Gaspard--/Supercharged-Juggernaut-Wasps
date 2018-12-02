@@ -96,10 +96,12 @@ namespace state
 	    gameState.bullets.emplace_back(0.007f,
 					   mob.position,
 					   claws::vect<float, 2u>{i * 0.0004f, -0.0006f * (5.0F - i)},
+					   claws::vect{0.0f, 1.0f, 1.0f, 1.0f},
 					   std::make_unique<NoPattern>());
 	    gameState.bullets.emplace_back(0.007f,
 					   mob.position,
 					   claws::vect<float, 2u>{-i * 0.0004f, -0.0006f * (5.0F - i)},
+					   claws::vect{0.0f, 1.0f, 1.0f, 1.0f},
 					   std::make_unique<NoPattern>());
 	  }
       }
@@ -130,6 +132,7 @@ namespace state
 	gameState.bullets.emplace_back(0.005f,
 				       mob.position,
 				       claws::vect<float, 2u>{sin(angle), cos(angle)} * 0.002f,
+				       claws::vect{1.0f, 0.0f, 1.0f, 1.0f},
 				       std::make_unique<NoPattern>());
       }
     };
@@ -161,7 +164,7 @@ namespace state
 	if (gotoTarget)
 	  smolWasp->speed += (target - smolWasp->position) * 0.5f * getGameSpeed() * getGameSpeed();
 	else if (joystickInUse)
-	  smolWasp->speed = joystickVect * 0.08;
+	  smolWasp->speed = joystickVect * 0.08f;
 	smolWasp->speed *= std::pow(0.7f, getGameSpeed());
       }
     else
@@ -169,7 +172,7 @@ namespace state
 	if (gotoTarget)
 	  bigWasp.speed += (target - bigWasp.entities[0].position) * 0.01f * getGameSpeed() * getGameSpeed();
 	else if (joystickInUse)
-	  bigWasp.speed = joystickVect * 0.008;
+	  bigWasp.speed = joystickVect * 0.008f;
       }
     bigWasp.speed *= std::pow(0.7f, getGameSpeed());
     for (Entity &entity : bigWasp.entities)
@@ -264,7 +267,7 @@ namespace state
     displayData.bigWasp = bigWasp;
     displayData.smolWasp = smolWasp;
     for (auto const &bullet : bullets)
-      displayData.bullets.emplace_back(static_cast<Entity>(bullet));
+      displayData.bullets.emplace_back(static_cast<BulletInfo>(bullet));
     for (auto const &mob : mobs)
       displayData.mobs.emplace_back(static_cast<Entity>(mob));
   }

@@ -21,7 +21,7 @@ class Display
 
   void renderBigWasp(BigWasp const &bigWasp);
   void renderSmolWasp(SmolWasp const &smolWasp);
-  void renderBullets(std::vector<Entity> const &bullets);
+  void renderBullets(std::vector<BulletInfo> const &bullets);
   void renderMobs(std::vector<Entity> const &mobs);
 public:
 

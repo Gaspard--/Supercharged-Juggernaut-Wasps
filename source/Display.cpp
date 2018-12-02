@@ -132,7 +132,7 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
   }
 }
 
-void Display::renderBullets(std::vector<Entity> const &bullets)
+void Display::renderBullets(std::vector<BulletInfo> const &bullets)
 {
   {
     Bind bind(rectContext);
@@ -159,7 +159,7 @@ void Display::renderBullets(std::vector<Entity> const &bullets)
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
     opengl::setUniform(dim, "dim", rectContext.program);
     opengl::setUniform({1.0f, 0.0f, 1.0f, 1.0f}, "rect_color", rectContext.program);
-    glDrawArrays(GL_TRIANGLES, 0, bullets.size() * 6);
+    glDrawArrays(GL_TRIANGLES, 0, uint32_t(bullets.size() * 6));
   }
 }
 
@@ -190,7 +190,7 @@ void Display::renderMobs(std::vector<Entity> const &mobs)
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
     opengl::setUniform(dim, "dim", rectContext.program);
     opengl::setUniform({1.0f, 0.0f, 1.0f, 1.0f}, "rect_color", rectContext.program);
-    glDrawArrays(GL_TRIANGLES, 0, mobs.size() * 6);
+    glDrawArrays(GL_TRIANGLES, 0, uint32_t(mobs.size() * 6));
   }
 }
 
