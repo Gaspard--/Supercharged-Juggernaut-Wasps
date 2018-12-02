@@ -4,10 +4,13 @@
 
 #include <optional>
 
+static constexpr float maxInvuln  = 1000.0f; // time in ms
+
 struct BigWasp
 {
   claws::vect<Entity, 2u> entities;
   claws::vect<float, 2u> speed;
+  float invulnFrames{0.0f};
 };
 
 struct SmolWasp : public Entity

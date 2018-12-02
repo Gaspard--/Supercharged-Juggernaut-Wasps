@@ -29,15 +29,15 @@ void Logic::tick(std::mutex &lock)
     state::StateType type = state->update();
     switch (type)
       {
-      case state::GAME_STATE:
-	state.reset(new state::GameState());
-	break;
-      case state::BREAK:
-	running = false;
-	break;
-      case state::CONTINUE:
-      default:
-	break;
+        case state::GAME_STATE:
+          state.reset(new state::GameState());
+          break;
+        case state::BREAK:
+          running = false;
+          break;
+        case state::CONTINUE:
+        default:
+          break;
       }
   }
 }
