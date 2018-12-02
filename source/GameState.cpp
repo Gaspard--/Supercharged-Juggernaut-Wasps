@@ -1,6 +1,7 @@
 #include "GameState.hpp"
 #include "Physic.hpp"
 #include "RepetitiveShotAI.hpp"
+#include "SoundHandler.hpp"
 
 #include <iostream>
 #include <algorithm>
@@ -31,51 +32,57 @@ void GameState::makeCollisions()
       for (itPos[1] = begin[1] ; itPos[1] != end[1] + 1; ++itPos[1])
         bulletIndexes[itPos].push_back(i);
   }
-    for (auto &entity : bigWasp.entities)
-      physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [](auto &, Bullet &)
-            {
-              std::cout << "hit!" << std::endl;
-            });
-    physic::checkCollisionsEntities(bigWasp.entities[0], mobs, [](auto &, Mob &mob)
-            {
-              mob.dead = true;
-              std::cout << "munch\n";
-            });
-  if (smolWasp)
+    if (bigWasp.invulnFrames <= 0.0f)
     {
-if (smolWasp->dieCounter)
+      for (auto &entity : bigWasp.entities)
+        physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [&](auto &, Bullet &)
+              {
+                bigWasp.invulnFrames = maxInvuln;
+                SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit);
+                std::cout << "hit!" << std::endl;
+              });
+      physic::checkCollisionsEntities(bigWasp.entities[0], mobs, [](auto &, Mob &mob)
+              {
+                SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
+                mob.dead = true;
+                std::cout << "munch\n";
+              });
+    }
+  if (smolWasp)
   {
-    ++smolWasp->dieCounter;
-    smolWasp->size *= 1.1f;
-  }
-if (smolWasp->dieCounter == 15)
-  {
-    for (auto &bullet : bullets)
-      {
-        auto diff(bullet.position - smolWasp->position);
-        bullet.speed += diff * 0.001f / std::sqrt(diff.length2());
-      }
+    if (smolWasp->dieCounter)
+    {
+      ++smolWasp->dieCounter;
+      smolWasp->size *= 1.1f;
+    }
+    if (smolWasp->dieCounter == 15)
+    {
+        for (auto &bullet : bullets)
+          {
+            auto diff(bullet.position - smolWasp->position);
+            bullet.speed += diff * 0.001f / std::sqrt(diff.length2());
+          }
     smolWasp->size = 0.4f;
     physic::checkCollisionsBullets(bulletIndexes, *smolWasp, bullets, [](auto &smolWasp, Bullet &bullet)
-                      {
-                  auto diff(bullet.position - smolWasp.position);
-                  if (diff.length2() < 0.0016)
-                    bullet.speed += diff * 0.0002f / std::sqrt(diff.length2());
-                  else
-                    bullet.speed += diff * 0.0002f / (diff.length2());
-                      });
-    physic::checkCollisionsEntities(*smolWasp, mobs, [](auto &smolWasp, Mob &mob)
-                 {
-                   auto diff(mob.position - smolWasp.position);
-                   if (diff.length2() < 0.0016)
-               mob.speed += diff * 0.0002f / std::sqrt(diff.length2());
-                   else
-               mob.speed += diff * 0.0002f / (diff.length2());
-                 });
-    // TODO: shockwave
-    smolWasp.reset();
+            {
+          auto diff(bullet.position - smolWasp.position);
+          if (diff.length2() < 0.0016)
+            bullet.speed += diff * 0.0002f / std::sqrt(diff.length2());
+          else
+            bullet.speed += diff * 0.0002f / (diff.length2());
+                });
+        physic::checkCollisionsEntities(*smolWasp, mobs, [](auto &smolWasp, Mob &mob)
+                     {
+                       auto diff(mob.position - smolWasp.position);
+                       if (diff.length2() < 0.0016)
+                   mob.speed += diff * 0.0002f / std::sqrt(diff.length2());
+                       else
+                   mob.speed += diff * 0.0002f / (diff.length2());
+                     });
+        // TODO: shockwave
+        smolWasp.reset();
+      }
   }
-    }
 }
 
 void GameState::spawnWave()
@@ -150,6 +157,11 @@ StateType GameState::update()
   {
     spawnTimer -= spawnInterval;
     spawnWave();
+  }
+
+  if (bigWasp.invulnFrames > 0)
+  {
+    bigWasp.invulnFrames -= getGameSpeed();
   }
 
   if (smolWasp)
@@ -234,6 +246,7 @@ void GameState::checkEvents(input::Input &input)
 
 void GameState::getObjectsToRender(DisplayData &displayData)
 {
+  displayData.bigWasp = bigWasp;
   displayData.smolWasp = smolWasp;
   for (auto const &bullet : bullets)
     displayData.bullets.emplace_back(static_cast<Entity>(bullet));

@@ -18,7 +18,7 @@ public:
   static void destroySoundHandler();
 
   void playMainMusic();
-  void playSound(sfxList, float = 50.0f);
+  void playSound(sfxList, float = 100.0f);
   void deleteSounds();
   void addSoundBuffer(sfxList, std::string const&);
   sf::SoundBuffer* getSoundBuffer(sfxList) const;

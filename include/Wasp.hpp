@@ -4,7 +4,7 @@
 
 #include <optional>
 
-static constexpr float maxInvuln  = 1000.0f; // time in ms
+static constexpr float maxInvuln  = 100.0f; // time in ms
 
 struct BigWasp
 {

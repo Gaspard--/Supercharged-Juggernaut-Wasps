@@ -18,18 +18,20 @@ int main()
     Display display(input.getWindow());
     Logic logic;
 
-    SoundHandler::initSoundHandler();
-    // struct SoundHandlerInit
-    // {
-    //   SoundHandlerInit()
-    //   {
-    //   }
+    struct SoundHandlerInit
+    {
+      SoundHandlerInit()
+      {
+        SoundHandler::initSoundHandler();
+      }
 
-    //   ~SoundHandlerInit()
-    //   {
-    //     SoundHandler::destroySoundHandler();
-    //   }
-    // } SoundHandlerIniter;
+      ~SoundHandlerInit()
+      {
+        SoundHandler::destroySoundHandler();
+      }
+    } SoundHandlerIniter;
+
+    SoundHandler::getInstance().playMainMusic();
 
     std::mutex lock;
     std::thread thread([&logic, &lock, &input]() {

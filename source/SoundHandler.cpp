@@ -10,8 +10,8 @@ void SoundHandler::initSoundHandler()
   _instance.reset(new SoundHandler());
   if (!_instance->mainMusic.openFromFile("resources/Heatman.ogg"))
     throw ("Music not charged");
-  _instance->addSoundBuffer(waspTakeHit, "resources/wasp.wav");
-  _instance->addSoundBuffer(mobTakeHit, "resources/mobKill.wav");
+  _instance->addSoundBuffer(waspTakeHit, "resources/wasp.ogg");
+  _instance->addSoundBuffer(mobTakeHit, "resources/mobKill.ogg");
 }
 
 SoundHandler& SoundHandler::getInstance()
@@ -27,7 +27,7 @@ void SoundHandler::destroySoundHandler()
 void SoundHandler::playMainMusic()
 {
   mainMusic.setLoop(true);
-  mainMusic.setVolume(30);
+  mainMusic.setVolume(25);
   mainMusic.play();
 }
 
