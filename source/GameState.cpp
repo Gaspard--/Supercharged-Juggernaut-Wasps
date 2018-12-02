@@ -150,7 +150,7 @@ namespace state
   StateType GameState::update()
   {
     gameSpeed *= 0.98f;
-    gameSpeed += 0.02f * (smolWasp ? 0.3 : 1.0f);
+    gameSpeed += 0.02f * (smolWasp ? 0.3f : 1.0f);
     SoundHandler::getInstance().setGlobalPitch(getGameSpeed());
 
     constexpr float const spawnInterval{30.0f};
@@ -169,6 +169,7 @@ namespace state
 
     if (smolWasp)
       {
+	smolWasp->animationFrame += getGameSpeed() * 0.5;
 	if (gotoTarget)
 	  smolWasp->speed += (target - smolWasp->position) * 0.5f * getGameSpeed() * getGameSpeed();
 	else if (joystickInUse)
