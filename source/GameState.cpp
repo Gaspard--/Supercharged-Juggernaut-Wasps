@@ -8,7 +8,7 @@
 namespace state
 {
   GameState::GameState()
-    : bigWasp{{Entity{0.03f, {0.0f, 0.0f}}, Entity{0.05f, {0.0f, -0.08f}}}, {0.0f, 0.0f}}
+    : bigWasp{{Entity{0.03f, {0.0f, 0.0f}}, Entity{0.04f, {0.0f, -0.06f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
   }
@@ -91,11 +91,11 @@ namespace state
       {
 	for (float i(0.1f); i < 2.5f; i += 1.0f)
 	  {
-	    gameState.bullets.emplace_back(0.01f,
+	    gameState.bullets.emplace_back(0.007f,
 					   mob.position,
 					   claws::vect<float, 2u>{i * 0.0004f, -0.0006f * (5.0F - i)},
 					   std::make_unique<NoPattern>());
-	    gameState.bullets.emplace_back(0.01f,
+	    gameState.bullets.emplace_back(0.007f,
 					   mob.position,
 					   claws::vect<float, 2u>{-i * 0.0004f, -0.0006f * (5.0F - i)},
 					   std::make_unique<NoPattern>());
@@ -104,14 +104,14 @@ namespace state
     };
     if (rand() % 24 == 0)
       {
-	mobs.emplace_back(0.05f,
+	mobs.emplace_back(0.02f,
 			  claws::vect<float, 2u>{-1.0f, 0.5f},
 			  claws::vect<float, 2u>{0.003f, 0.0007f},
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f));
       }
     if (rand() % 24 == 0)
       {
-	mobs.emplace_back(0.05f,
+	mobs.emplace_back(0.02f,
 			  claws::vect<float, 2u>{1.0f, 0.5f},
 			  claws::vect<float, 2u>{-0.003f, 0.0007f},
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f));
@@ -125,7 +125,7 @@ namespace state
       void operator()(GameState &gameState, Mob &mob)
       {
 	angle += 0.3f;
-	gameState.bullets.emplace_back(0.01f,
+	gameState.bullets.emplace_back(0.005f,
 				       mob.position,
 				       claws::vect<float, 2u>{sin(angle), cos(angle)} * 0.002f,
 				       std::make_unique<NoPattern>());
@@ -133,7 +133,7 @@ namespace state
     };
     if (rand() % 24 == 0)
       {
-	mobs.emplace_back(0.1f,
+	mobs.emplace_back(0.05f,
 			  claws::vect<float, 2u>{0.0f, 0.99f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  std::make_unique<RepetitiveShotAi<RotateShots>>(30.0f));
