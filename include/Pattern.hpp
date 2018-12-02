@@ -34,7 +34,7 @@ public:
 class Waypoints : public Pattern
 {
   claws::vect<float, 2u>              prvPos;
-  std::vector<std::array<uint, 2u>>   pointsList;
+  std::vector<std::array<uint32_t, 2u>>   pointsList;
   std::vector<claws::vect<float, 2u>> directList;
 
 public:

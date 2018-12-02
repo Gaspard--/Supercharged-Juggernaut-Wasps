@@ -88,10 +88,10 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
     glBindBuffer(GL_ARRAY_BUFFER, rectBuffer);
 
     {
-      std::array<float, 8> data({-1.0f, -1.0f,
-				 1.0f, -1.0f,
-				 -1.0f, 1.0f,
-				 1.0f, 1.0f});
+		std::array<float, 8> data{ {-1.0f, -1.0f,
+									 1.0f, -1.0f,
+									-1.0f, 1.0f,
+									 1.0f, 1.0f} };
 
       for (uint32_t i(0u); i != 4; ++i)
 	for (uint32_t j(0u); j != 2; ++j)
@@ -113,10 +113,10 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
     glBindBuffer(GL_ARRAY_BUFFER, rectBuffer);
 
     {
-      std::array<float, 8> data({-1.0f, -1.0f,
-				 1.0f, -1.0f,
-				 -1.0f, 1.0f,
-				 1.0f, 1.0f});
+		std::array<float, 8> data{ {-1.0f, -1.0f,
+									1.0f, -1.0f,
+									-1.0f, 1.0f,
+									1.0f, 1.0f} };
 
       for (uint32_t i(0u); i != 4; ++i)
 	for (uint32_t j(0u); j != 2; ++j)
@@ -129,10 +129,10 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     {
-      std::array<float, 8> data({-1.0f, -1.0f,
+		std::array<float, 8> data{ {-1.0f, -1.0f,
 				 1.0f, -1.0f,
 				 -1.0f, 1.0f,
-				 1.0f, 1.0f});
+				 1.0f, 1.0f} };
 
       for (uint32_t i(0u); i != 4; ++i)
 	for (uint32_t j(0u); j != 2; ++j)
@@ -158,12 +158,12 @@ void Display::renderBullets(std::vector<BulletInfo> const &bullets)
 
     for (auto const &bullet : bullets)
       {
-	std::array<float, 12> corner({-1.0f, -1.0f,
-				      1.0f, -1.0f,
-				      0.0f, 1.0f,
-				      1.0f, -1.0f,
-				      -1.0f, 1.0f,
-				      1.0f, 1.0f});
+		std::array<float, 12> corner{ {-1.0f, -1.0f,
+					  1.0f, -1.0f,
+					  0.0f, 1.0f,
+					  1.0f, -1.0f,
+					  -1.0f, 1.0f,
+					  1.0f, 1.0f} };
 
 	for (uint32_t i(0u); i != 6; ++i)
 	  {
@@ -192,12 +192,12 @@ void Display::renderMobs(std::vector<Entity> const &mobs)
 
     for (auto const &mob : mobs)
       {
-	std::array<float, 12> corner({-1.0f, -1.0f,
-				      1.0f, -1.0f,
-				      -1.0f, 1.0f,
-				      1.0f, -1.0f,
-				      -1.0f, 1.0f,
-				      1.0f, 1.0f});
+		std::array<float, 12> corner{ {-1.0f, -1.0f,
+					  1.0f, -1.0f,
+					  -1.0f, 1.0f,
+					  1.0f, -1.0f,
+					  -1.0f, 1.0f,
+					  1.0f, 1.0f} };
 
 	for (uint32_t i(0u); i != 6; ++i)
 	  for (uint32_t j(0u); j != 2; ++j)

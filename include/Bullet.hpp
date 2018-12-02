@@ -8,9 +8,9 @@
 
 #include <iostream>
 
-static constexpr uint small_bullet  = 3u;
-static constexpr uint medium_bullet = 5u;
-static constexpr uint big_bullet    = 10u;
+static constexpr uint8_t small_bullet  = 3u;
+static constexpr uint8_t medium_bullet = 5u;
+static constexpr uint8_t big_bullet    = 10u;
 
 struct BulletInfo : public Entity
 {
