@@ -177,7 +177,7 @@ void Display::renderBullets(std::vector<BulletInfo> const &bullets)
       {
 	std::array<float, 12> corner{{-1.0f, -1.0f,
 				      1.0f, -1.0f,
-				      0.0f, 1.0f,
+				      -1.0f, 1.0f,
 				      1.0f, -1.0f,
 				      -1.0f, 1.0f,
 				      1.0f, 1.0f}};
