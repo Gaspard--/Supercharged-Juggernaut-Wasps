@@ -18,6 +18,8 @@ namespace state
     std::optional<SmolWasp> smolWasp;
     claws::vect<float, 2u> target;
     bool gotoTarget{false};
+    bool joystickInUse{false};
+    claws::vect<float, 2u> joystickVect;
     float gameSpeed;
     float spawnTimer{0.0f};
 

@@ -1,9 +1,13 @@
 #pragma once
 
-#include "my_glfw.hpp"
-
 #include <variant>
 #include <queue>
+#include <iostream>
+#include <optional>
+#include <vector>
+
+#include "claws/container/vect.hpp"
+#include "my_glfw.hpp"
 
 namespace input
 {
@@ -48,8 +52,20 @@ namespace input
     std::queue<Event> events;
     claws::vect<uint32_t, 2u> size;
     bool sizeUpdated;
+    int joystickId;
+
+    void detectJoystick()
+    {
+      joystickId = GLFW_JOYSTICK_1;
+      while (!glfwJoystickPresent(joystickId) && joystickId < GLFW_JOYSTICK_LAST)
+	joystickId++;
+      if (joystickId == GLFW_JOYSTICK_LAST)
+	joystickId = -1;
+      std::cout << "Joystick[" << joystickId << "]  will be used" << std::endl;
+    }
 
   public:
+
     auto &getWindow() const
     {
       return *window;
@@ -58,7 +74,9 @@ namespace input
     explicit Input(std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> &&window)
       : window(std::move(window))
       , events()
+      , joystickId(-1)
     {
+      detectJoystick();
       glfwSetWindowUserPointer(&getWindow(), this);
       // glfwSetInputMode(&getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
       glfwSetKeyCallback(&getWindow(), [](GLFWwindow *window, int key, int scancode, int action, int mode) {
@@ -81,7 +99,7 @@ namespace input
 	});
       glfwSetFramebufferSizeCallback(&getWindow(), [](GLFWwindow *window, int width, int height) {
 	  Input &input(*static_cast<Input *>(glfwGetWindowUserPointer(window)));
-	  
+
 	  input.size = {uint32_t(width), uint32_t(height)};
 	  input.sizeUpdated = true;
 	});
@@ -105,6 +123,18 @@ namespace input
     bool windowShouldClose() const noexcept
     {
       return glfwWindowShouldClose(&getWindow());
+    }
+
+    std::vector<claws::vect<float, 2>> getJoystickAxes() const noexcept
+    {
+      int count;
+      std::vector<claws::vect<float, 2>> axes;
+      if (joystickId != -1) {
+	const float *brutAxes = glfwGetJoystickAxes(joystickId, &count);
+	for (int i = 0 ; i < count - 1 ; i += 2)
+	  axes.push_back({brutAxes[i], brutAxes[i + 1]});
+      }
+      return axes;
     }
 
     bool isKeyPressed(int key) const noexcept

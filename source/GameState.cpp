@@ -141,7 +141,7 @@ namespace state
   }
 
   StateType GameState::update()
-  { 
+  {
     gameSpeed *= 0.95f;
     gameSpeed += 0.05f * (smolWasp ? 0.1f : 1.0f);
 
@@ -158,12 +158,16 @@ namespace state
       {
 	if (gotoTarget)
 	  smolWasp->speed += (target - smolWasp->position) * 0.5f * getGameSpeed() * getGameSpeed();
+	else if (joystickInUse)
+	  smolWasp->speed = joystickVect * 0.08;
 	smolWasp->speed *= std::pow(0.7f, getGameSpeed());
       }
     else
       {
 	if (gotoTarget)
 	  bigWasp.speed += (target - bigWasp.entities[0].position) * 0.01f * getGameSpeed() * getGameSpeed();
+	else if (joystickInUse)
+	  bigWasp.speed = joystickVect * 0.008;
       }
     bigWasp.speed *= std::pow(0.7f, getGameSpeed());
     for (Entity &entity : bigWasp.entities)
@@ -220,6 +224,14 @@ namespace state
   void GameState::checkEvents(input::Input &input)
   {
     gotoTarget = (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT));
+    std::vector<claws::vect<float, 2>> axes = input.getJoystickAxes();
+    if (axes.size() && axes[0].length2() > 0.1) {
+      joystickInUse = true;
+      gotoTarget = false;
+      joystickVect = {axes[0][0], axes[0][1] * -1};
+    } else {
+      joystickInUse = false;
+    }
   }
 
   void GameState::getObjectsToRender(DisplayData &displayData)
