@@ -101,7 +101,6 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
 	    }
 	  (data[i * 4 + 3] += animationOffset) /= animationFrameCount;
 	}
-
       glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
     }
     opengl::setUniform(dim, "dim", textureContext.program);
