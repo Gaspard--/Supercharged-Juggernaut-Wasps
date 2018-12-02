@@ -33,6 +33,7 @@ Display::Display(GLFWwindow &window)
   , textureContext(contextFromFiles("texture"))
   , rectContext(contextFromFiles("rect"))
   , textContext(contextFromFiles("text"))
+  , bulletContext(contextFromFiles("bullet"))
 {
   
   {
@@ -46,6 +47,16 @@ Display::Display(GLFWwindow &window)
     glVertexAttribPointer(0, 2, GL_FLOAT, false, 5 * sizeof(float), nullptr);
     glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
     glVertexAttribPointer(2, 1, GL_FLOAT, false, 5 * sizeof(float), reinterpret_cast<void *>(4u * sizeof(float)));
+  }
+  {
+    Bind bind(bulletContext);
+
+    glBindBuffer(GL_ARRAY_BUFFER, bulletBuffer);
+    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(0, 2, GL_FLOAT, false, 6 * sizeof(float), nullptr);
+    glVertexAttribPointer(1, 4, GL_FLOAT, false, 6 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
   }
   {
     Bind bind(rectContext);
@@ -135,30 +146,33 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
 void Display::renderBullets(std::vector<BulletInfo> const &bullets)
 {
   {
-    Bind bind(rectContext);
+    Bind bind(bulletContext);
 
-    glBindBuffer(GL_ARRAY_BUFFER, rectBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, bulletBuffer);
 
     std::vector<float> data;
 
-    data.reserve(bullets.size() * 12);
+    data.reserve(bullets.size() * 6 * 6);
 
     for (auto const &bullet : bullets)
       {
 	std::array<float, 12> corner({-1.0f, -1.0f,
 				      1.0f, -1.0f,
-				      -1.0f, 1.0f,
+				      0.0f, 1.0f,
 				      1.0f, -1.0f,
 				      -1.0f, 1.0f,
 				      1.0f, 1.0f});
 
 	for (uint32_t i(0u); i != 6; ++i)
-	  for (uint32_t j(0u); j != 2; ++j)
-	    data.emplace_back(corner[i * 2 + j] * bullet.size + bullet.position[j]);
+	  {
+	    for (uint32_t j(0u); j != 2; ++j)
+	      data.emplace_back(corner[i * 2 + j] * bullet.size + bullet.position[j]);
+	    for (uint32_t j(0u); j != 4; ++j)
+	      data.emplace_back(bullet.color[j]);
+	  }
       }
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
-    opengl::setUniform(dim, "dim", rectContext.program);
-    opengl::setUniform({1.0f, 0.0f, 1.0f, 1.0f}, "rect_color", rectContext.program);
+    opengl::setUniform(dim, "dim", bulletContext.program);
     glDrawArrays(GL_TRIANGLES, 0, uint32_t(bullets.size() * 6));
   }
 }

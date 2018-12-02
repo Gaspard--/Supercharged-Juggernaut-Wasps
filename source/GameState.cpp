@@ -132,7 +132,7 @@ namespace state
 	gameState.bullets.emplace_back(0.005f,
 				       mob.position,
 				       claws::vect<float, 2u>{sin(angle), cos(angle)} * 0.002f,
-				       claws::vect{1.0f, 0.0f, 1.0f, 1.0f},
+				       claws::vect{1.0f, 0.0f, 0.5f, 1.0f},
 				       std::make_unique<NoPattern>());
       }
     };
