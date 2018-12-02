@@ -245,7 +245,7 @@ namespace state
     if (axes.size() && axes[0].length2() > 0.1) {
       joystickInUse = true;
       gotoTarget = false;
-      joystickVect = {axes[0][0], axes[0][1] * -1};
+      joystickVect = {axes[0][0], axes[0][1]};
     } else {
       joystickInUse = false;
     }
