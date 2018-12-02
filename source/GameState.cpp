@@ -102,19 +102,41 @@ namespace state
 	  }
       }
     };
-    if (rand() % 12 == 0)
+    if (rand() % 24 == 0)
       {
 	mobs.emplace_back(0.05f,
 			  claws::vect<float, 2u>{-1.0f, 0.5f},
 			  claws::vect<float, 2u>{0.003f, 0.0007f},
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f));
       }
-    if (rand() % 12 == 0)
+    if (rand() % 24 == 0)
       {
 	mobs.emplace_back(0.05f,
 			  claws::vect<float, 2u>{1.0f, 0.5f},
 			  claws::vect<float, 2u>{-0.003f, 0.0007f},
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f));
+      }
+    class RotateShots
+    {
+      float angle{0.0f};
+    public:
+      RotateShots() = default;
+
+      void operator()(GameState &gameState, Mob &mob)
+      {
+	angle += 0.3f;
+	gameState.bullets.emplace_back(0.01f,
+				       mob.position,
+				       claws::vect<float, 2u>{sin(angle), cos(angle)} * 0.002f,
+				       std::make_unique<NoPattern>());
+      }
+    };
+    if (rand() % 24 == 0)
+      {
+	mobs.emplace_back(0.1f,
+			  claws::vect<float, 2u>{0.0f, 0.99f},
+			  claws::vect<float, 2u>{0.0f, -0.0007f},
+			  std::make_unique<RepetitiveShotAi<RotateShots>>(30.0f));
       }
   }
 
