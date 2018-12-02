@@ -10,17 +10,21 @@ namespace state
   class GameState;
 }
 
-class Mob : public Entity
+struct MobInfo : public Entity
+{
+  claws::vect<float, 2u> speed;
+  float animationFrame{0.0f};
+};
+
+class Mob : public MobInfo
 {
 public:
-  claws::vect<float, 2u> speed;
   bool dead{false};
 private:
   std::unique_ptr<AI> ai;
 public:
   Mob(float size, claws::vect<float, 2> position, claws::vect<float, 2u> speed, std::unique_ptr<AI> &&ai)
-    : Entity{size, position}
-    , speed(speed)
+    : MobInfo{{size, position}, speed}
     , ai(std::move(ai))
   {
   }

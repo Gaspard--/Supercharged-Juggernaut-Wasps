@@ -41,10 +41,13 @@ Display::Display(GLFWwindow &window)
 
     glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 2, GL_FLOAT, false, 4 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
+
+    uint32_t attrib0 = textureContext.program.getAttribLocation("pos");
+    uint32_t attrib1 = textureContext.program.getAttribLocation("coord");
+    glEnableVertexAttribArray(attrib0);
+    glEnableVertexAttribArray(attrib1);
+    glVertexAttribPointer(attrib0, 2, GL_FLOAT, false, 4 * sizeof(float), nullptr);
+    glVertexAttribPointer(attrib1, 2, GL_FLOAT, false, 4 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
   }
   {
     Bind bind(bulletContext);
@@ -86,7 +89,7 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
     glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
 
     {
-      float animationFrameCount(spriteManager[SpriteId::SmolWaspIdle].imageCount);
+      float animationFrameCount(float(spriteManager[SpriteId::SmolWaspIdle].imageCount));
       float animationOffset(float(uint32_t(smolWasp.animationFrame)));
       std::array<float, 16> data{{-1.0f, -1.0f, 0.0f, 0.0f,
 				  1.0f, -1.0f, 1.0f, 0.0f,
@@ -97,7 +100,7 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
 	{
 	  for (uint32_t j(0u); j != 2; ++j)
 	    {
-	      (data[i * 4 + j] *= 0.03) += smolWasp.position[j];
+	      (data[i * 4 + j] *= 0.03f) += smolWasp.position[j];
 	    }
 	  (data[i * 4 + 3] += animationOffset) /= animationFrameCount;
 	}
@@ -164,12 +167,12 @@ void Display::renderBullets(std::vector<BulletInfo> const &bullets)
 
     for (auto const &bullet : bullets)
       {
-		std::array<float, 12> corner{ {-1.0f, -1.0f,
-					  1.0f, -1.0f,
-					  0.0f, 1.0f,
-					  1.0f, -1.0f,
-					  -1.0f, 1.0f,
-					  1.0f, 1.0f} };
+	std::array<float, 12> corner{{-1.0f, -1.0f,
+				      1.0f, -1.0f,
+				      0.0f, 1.0f,
+				      1.0f, -1.0f,
+				      -1.0f, 1.0f,
+				      1.0f, 1.0f}};
 
 	for (uint32_t i(0u); i != 6; ++i)
 	  {
@@ -185,7 +188,7 @@ void Display::renderBullets(std::vector<BulletInfo> const &bullets)
   }
 }
 
-void Display::renderMobs(std::vector<Entity> const &mobs)
+void Display::renderMobs(std::vector<MobInfo> const &mobs)
 {
   {
     Bind bind(rectContext);

@@ -35,6 +35,8 @@ namespace opengl
     Program(Program const &);
     Program &operator=(Program);
     operator GLuint() const;
+
+    GLint getAttribLocation(char const *) const;
   };
 
   class Buffer

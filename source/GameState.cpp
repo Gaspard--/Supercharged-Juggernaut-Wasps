@@ -169,7 +169,7 @@ namespace state
 
     if (smolWasp)
       {
-	smolWasp->animationFrame += getGameSpeed() * 0.5;
+	smolWasp->animationFrame += getGameSpeed() * 0.5f;
 	if (gotoTarget)
 	  smolWasp->speed += (target - smolWasp->position) * 0.5f * getGameSpeed() * getGameSpeed();
 	else if (joystickInUse)
@@ -280,6 +280,6 @@ namespace state
     for (auto const &bullet : bullets)
       displayData.bullets.emplace_back(static_cast<BulletInfo>(bullet));
     for (auto const &mob : mobs)
-      displayData.mobs.emplace_back(static_cast<Entity>(mob));
+      displayData.mobs.emplace_back(static_cast<MobInfo>(mob));
   }
 }

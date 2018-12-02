@@ -168,6 +168,14 @@ namespace opengl
     return program;
   }
 
+  GLint Program::getAttribLocation(char const *name) const
+  {
+    GLint result = glGetAttribLocation(*this, name);
+    if (result == -1)
+      throw std::runtime_error(std::string("Failed to retrieve shader input variable: ") + name);
+    return result;
+  }
+
   Buffer::Buffer()
     : buffer(0u), count(new unsigned int(1u))
   {
