@@ -6,7 +6,7 @@
 
 enum class SpriteId : uint32_t
   {
-   BigWaspIdle,
+   SmolWaspIdle,
    SpriteCount
   };
 

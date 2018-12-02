@@ -14,8 +14,8 @@ inline Animation getAnimation()
 {
   switch (SpriteId(index))
     {
-    case SpriteId::BigWaspIdle:
-      loadAnim("resources/bigWasp-spritesheet.bmp", 4);
+    case SpriteId::SmolWaspIdle:
+      return loadAnim("resources/bigWasp-spritesheet.bmp", 4);
       break;
     default:
       assert("missing animation definition");
