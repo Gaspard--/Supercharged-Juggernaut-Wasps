@@ -51,7 +51,7 @@ namespace input
     std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)> window;
     std::queue<Event> events;
     claws::vect<uint32_t, 2u> size;
-    bool sizeUpdated;
+	bool sizeUpdated{false};
     int joystickId;
 
     void detectJoystick()
@@ -99,6 +99,10 @@ namespace input
 	});
       glfwSetFramebufferSizeCallback(&getWindow(), [](GLFWwindow *window, int width, int height) {
 	  Input &input(*static_cast<Input *>(glfwGetWindowUserPointer(window)));
+#ifdef _WIN32
+	  if (!(width + height))
+		  return;
+#endif
 
 	  input.size = {uint32_t(width), uint32_t(height)};
 	  input.sizeUpdated = true;
@@ -163,6 +167,11 @@ namespace input
     {
       return size;
     }
+
+	void setSize(const claws::vect<uint32_t, 2>& newSize) noexcept
+	{
+		size = newSize;
+	}
 
     std::optional<claws::vect<uint32_t, 2>> consumeSizeUpdate()
     {
