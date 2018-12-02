@@ -10,31 +10,6 @@ namespace state
     : bigWasp{{Entity{0.05f, {0.0f, 0.0f}}, Entity{0.05f, {0.0f, -0.1f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
-    class VShots
-    {
-    public:
-      VShots() = default;
-
-      void operator()(GameState &gameState, Mob &mob)
-      {
-	for (float i(0.1f); i < 2.5f; i += 1.0f)
-	  {
-	    gameState.bullets.emplace_back(0.01f,
-					   mob.position,
-					   claws::vect<float, 2u>{i * 0.0004f, -0.0005f * (5.0F - i)},
-					   std::make_unique<NoPattern>());
-	    gameState.bullets.emplace_back(0.01f,
-					   mob.position,
-					   claws::vect<float, 2u>{-i * 0.0004f, -0.0005f * (5.0F - i)},
-					   std::make_unique<NoPattern>());
-	  }
-      }
-    };
-    mobs.emplace_back(0.05f,
-		      claws::vect<float, 2u>{-1.0f, 0.9f},
-		      claws::vect<float, 2u>{0.003f, 0.0f},
-		      std::make_unique<RepetitiveShotAi<VShots>>(120.0f));
-      
   }
 
   float GameState::getGameSpeed()
@@ -94,10 +69,58 @@ namespace state
       }
   }
 
-  StateType GameState::update()
+  void GameState::spawnWave()
   {
+    class VShots
+    {
+    public:
+      VShots() = default;
+
+      void operator()(GameState &gameState, Mob &mob)
+      {
+	for (float i(0.1f); i < 2.5f; i += 1.0f)
+	  {
+	    gameState.bullets.emplace_back(0.01f,
+					   mob.position,
+					   claws::vect<float, 2u>{i * 0.0004f, -0.0005f * (5.0F - i)},
+					   std::make_unique<NoPattern>());
+	    gameState.bullets.emplace_back(0.01f,
+					   mob.position,
+					   claws::vect<float, 2u>{-i * 0.0004f, -0.0005f * (5.0F - i)},
+					   std::make_unique<NoPattern>());
+	  }
+      }
+    };
+    if (rand() % 8 == 0)
+      {
+	mobs.emplace_back(0.05f,
+			  claws::vect<float, 2u>{-1.0f, 0.9f},
+			  claws::vect<float, 2u>{0.003f, 0.0f},
+			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f));      
+      }
+    if (rand() % 8 == 0)
+      {
+	mobs.emplace_back(0.05f,
+			  claws::vect<float, 2u>{1.0f, 0.9f},
+			  claws::vect<float, 2u>{-0.003f, 0.0f},
+			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f));
+      }
+  }
+
+  StateType GameState::update()
+  { 
     gameSpeed *= 0.95f;
     gameSpeed += 0.05f * (smolWasp ? 0.1f : 1.0f);
+
+    constexpr float const spawnInterval{30.0f};
+
+    spawnTimer += getGameSpeed();
+    if (spawnTimer > spawnInterval)
+      {
+	spawnTimer -= spawnInterval;
+	spawnWave();
+      }
+
     if (smolWasp)
       {
 	if (gotoTarget)

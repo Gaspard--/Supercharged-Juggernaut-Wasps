@@ -19,8 +19,10 @@ namespace state
     claws::vect<float, 2u> target;
     bool gotoTarget{false};
     float gameSpeed;
+    float spawnTimer{0.0f};
 
     void makeCollisions();
+    void spawnWave();
 
   public:
     GameState();
