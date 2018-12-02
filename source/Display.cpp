@@ -43,10 +43,8 @@ Display::Display(GLFWwindow &window)
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(0, 2, GL_FLOAT, false, 5 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
-    glVertexAttribPointer(2, 1, GL_FLOAT, false, 5 * sizeof(float), reinterpret_cast<void *>(4u * sizeof(float)));
+    glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * sizeof(float), nullptr);
+    glVertexAttribPointer(1, 2, GL_FLOAT, false, 4 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
   }
   {
     Bind bind(bulletContext);
@@ -83,24 +81,32 @@ Display::Display(GLFWwindow &window)
 void Display::renderSmolWasp(SmolWasp const &smolWasp)
 {
   {
-    Bind bind(rectContext);
+    Bind bind(textureContext);
 
-    glBindBuffer(GL_ARRAY_BUFFER, rectBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
 
     {
-		std::array<float, 8> data{ {-1.0f, -1.0f,
-									 1.0f, -1.0f,
-									-1.0f, 1.0f,
-									 1.0f, 1.0f} };
+      float animationFrameCount(spriteManager[SpriteId::SmolWaspIdle].imageCount);
+      float animationOffset(float(uint32_t(smolWasp.animationFrame)));
+      std::array<float, 16> data{{-1.0f, -1.0f, 0.0f, 0.0f,
+				  1.0f, -1.0f, 1.0f, 0.0f,
+				 -1.0f, 1.0f, 0.0f, 1.0f,
+				  1.0f, 1.0f, 1.0f, 1.0f}};
 
       for (uint32_t i(0u); i != 4; ++i)
-	for (uint32_t j(0u); j != 2; ++j)
-	  (data[i * 2 + j] *= smolWasp.size) += smolWasp.position[j];
-
+	{
+	  for (uint32_t j(0u); j != 2; ++j)
+	    {
+	      (data[i * 4 + j] *= 0.03) += smolWasp.position[j];
+	    }
+	  (data[i * 4 + 3] += animationOffset) /= animationFrameCount;
+	}
       glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
     }
-    opengl::setUniform(dim, "dim", rectContext.program);
-    opengl::setUniform({1.0f, 0.8f, 0.0f, 1.0f}, "rect_color", rectContext.program);
+    opengl::setUniform(dim, "dim", textureContext.program);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, spriteManager[SpriteId::SmolWaspIdle].texture);
+    opengl::setUniform(0u, "tex", textureContext.program);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   }
 }
@@ -113,10 +119,10 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
     glBindBuffer(GL_ARRAY_BUFFER, rectBuffer);
 
     {
-		std::array<float, 8> data{ {-1.0f, -1.0f,
-									1.0f, -1.0f,
-									-1.0f, 1.0f,
-									1.0f, 1.0f} };
+      std::array<float, 8> data{{-1.0f, -1.0f,
+				 1.0f, -1.0f,
+				 -1.0f, 1.0f,
+				 1.0f, 1.0f}};
 
       for (uint32_t i(0u); i != 4; ++i)
 	for (uint32_t j(0u); j != 2; ++j)
@@ -129,10 +135,10 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     {
-		std::array<float, 8> data{ {-1.0f, -1.0f,
+      std::array<float, 8> data{{-1.0f, -1.0f,
 				 1.0f, -1.0f,
 				 -1.0f, 1.0f,
-				 1.0f, 1.0f} };
+				 1.0f, 1.0f}};
 
       for (uint32_t i(0u); i != 4; ++i)
 	for (uint32_t j(0u); j != 2; ++j)

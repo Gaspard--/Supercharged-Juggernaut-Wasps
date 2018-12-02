@@ -16,5 +16,6 @@ struct BigWasp
 struct SmolWasp : public Entity
 {
   claws::vect<float, 2u> speed;
+  float animationFrame{0.0f};
   uint32_t dieCounter{0};
 };
