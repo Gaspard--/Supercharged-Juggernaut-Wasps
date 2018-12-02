@@ -202,12 +202,12 @@ void Display::render(DisplayData const &data)
   glClear(GL_COLOR_BUFFER_BIT);
   if (data.bigWasp)
     renderBigWasp(*data.bigWasp);
-  if (data.smolWasp)
-    renderSmolWasp(*data.smolWasp);
   if (!data.bullets.empty())
     renderBullets(data.bullets);
   if (!data.mobs.empty())
     renderMobs(data.mobs);
+  if (data.smolWasp)
+    renderSmolWasp(*data.smolWasp);
 }
 
 void Display::resize(claws::vect<uint32_t, 2u> size)

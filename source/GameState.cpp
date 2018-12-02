@@ -3,11 +3,12 @@
 #include "RepetitiveShotAI.hpp"
 
 #include <iostream>
+#include <algorithm>
 
 namespace state
 {
   GameState::GameState()
-    : bigWasp{{Entity{0.05f, {0.0f, 0.0f}}, Entity{0.05f, {0.0f, -0.1f}}}, {0.0f, 0.0f}}
+    : bigWasp{{Entity{0.03f, {0.0f, 0.0f}}, Entity{0.05f, {0.0f, -0.08f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
   }
@@ -37,8 +38,9 @@ namespace state
 									 std::cout << "hit!" << std::endl;
 								       });
       }
-    physic::checkCollisionsEntities(bigWasp.entities[0], mobs, [](auto &, Mob &)
+    physic::checkCollisionsEntities(bigWasp.entities[0], mobs, [](auto &, Mob &mob)
 							       {
+								 mob.dead = true;
 								 std::cout << "munch\n";
 							       });
     if (smolWasp)
@@ -58,11 +60,20 @@ namespace state
 	    smolWasp->size = 0.4f;
 	    physic::checkCollisionsBullets(bulletIndexes, *smolWasp, bullets, [](auto &smolWasp, Bullet &bullet)
 									      {
-										if (!smolWasp.dieCounter)
-										  smolWasp.dieCounter = 10;
 										auto diff(bullet.position - smolWasp.position);
-										bullet.speed += diff * 0.0001f / (diff.length2());
+										if (diff.length2() < 0.0016)
+										  bullet.speed += diff * 0.0002f / std::sqrt(diff.length2());
+										else
+										  bullet.speed += diff * 0.0002f / (diff.length2());
 									      });
+	    physic::checkCollisionsEntities(*smolWasp, mobs, [](auto &smolWasp, Mob &mob)
+							     {
+							       auto diff(mob.position - smolWasp.position);
+							       if (diff.length2() < 0.0016)
+								 mob.speed += diff * 0.0002f / std::sqrt(diff.length2());
+							       else
+								 mob.speed += diff * 0.0002f / (diff.length2());
+							     });
 	    // TODO: shockwave
 	    smolWasp.reset();
 	  }
@@ -82,27 +93,27 @@ namespace state
 	  {
 	    gameState.bullets.emplace_back(0.01f,
 					   mob.position,
-					   claws::vect<float, 2u>{i * 0.0004f, -0.0005f * (5.0F - i)},
+					   claws::vect<float, 2u>{i * 0.0004f, -0.0006f * (5.0F - i)},
 					   std::make_unique<NoPattern>());
 	    gameState.bullets.emplace_back(0.01f,
 					   mob.position,
-					   claws::vect<float, 2u>{-i * 0.0004f, -0.0005f * (5.0F - i)},
+					   claws::vect<float, 2u>{-i * 0.0004f, -0.0006f * (5.0F - i)},
 					   std::make_unique<NoPattern>());
 	  }
       }
     };
-    if (rand() % 8 == 0)
+    if (rand() % 12 == 0)
       {
 	mobs.emplace_back(0.05f,
-			  claws::vect<float, 2u>{-1.0f, 0.9f},
-			  claws::vect<float, 2u>{0.003f, 0.0f},
-			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f));      
+			  claws::vect<float, 2u>{-1.0f, 0.5f},
+			  claws::vect<float, 2u>{0.003f, 0.0007f},
+			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f));
       }
-    if (rand() % 8 == 0)
+    if (rand() % 12 == 0)
       {
 	mobs.emplace_back(0.05f,
-			  claws::vect<float, 2u>{1.0f, 0.9f},
-			  claws::vect<float, 2u>{-0.003f, 0.0f},
+			  claws::vect<float, 2u>{1.0f, 0.5f},
+			  claws::vect<float, 2u>{-0.003f, 0.0007f},
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f));
       }
   }
@@ -142,6 +153,22 @@ namespace state
     for (auto &bullet : bullets)
       bullet.update(getGameSpeed());
     makeCollisions();
+    bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](Bullet const &bullet)
+								 {
+								   for (uint32_t i(0u); i != 2; ++i)
+								     if (bullet.position[i] > 1.0f || bullet.position[i] < -1.0f)
+								       return true;
+								   return false;
+								 }), bullets.end());
+    mobs.erase(std::remove_if(mobs.begin(), mobs.end(), [](Mob const &mob)
+								 {
+								   if (mob.dead)
+								     return true;
+								   for (uint32_t i(0u); i != 2; ++i)
+								     if (mob.position[i] > 1.0f || mob.position[i] < -1.0f)
+								       return true;
+								   return false;
+								 }), mobs.end());
     return StateType::CONTINUE;
   }
 

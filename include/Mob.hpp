@@ -14,6 +14,7 @@ class Mob : public Entity
 {
 public:
   claws::vect<float, 2u> speed;
+  bool dead{false};
 private:
   std::unique_ptr<AI> ai;
 public:

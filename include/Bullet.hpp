@@ -41,6 +41,7 @@ public:
   }
 
   Bullet(Bullet &&) = default;
+  Bullet& operator=(Bullet &&) = default;
 
   ~Bullet() = default;
   void update(float gameSpeed);
