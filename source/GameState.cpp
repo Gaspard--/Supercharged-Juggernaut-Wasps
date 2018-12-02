@@ -150,7 +150,7 @@ namespace state
   StateType GameState::update()
   {
     gameSpeed *= 0.98f;
-    gameSpeed += 0.02f * (smolWasp ? 0.1f : 1.0f);
+    gameSpeed += 0.02f * (smolWasp ? 0.3 : 1.0f);
     SoundHandler::getInstance().setGlobalPitch(getGameSpeed());
 
     constexpr float const spawnInterval{30.0f};
