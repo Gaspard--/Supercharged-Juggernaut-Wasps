@@ -54,28 +54,36 @@ Display::Display(GLFWwindow &window)
 
     glBindBuffer(GL_ARRAY_BUFFER, bulletBuffer);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(0, 2, GL_FLOAT, false, 6 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 4, GL_FLOAT, false, 6 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
+
+    uint32_t attrib0 = bulletContext.program.getAttribLocation("pos");
+    uint32_t attrib1 = bulletContext.program.getAttribLocation("color");
+    glEnableVertexAttribArray(attrib0);
+    glEnableVertexAttribArray(attrib1);
+    glVertexAttribPointer(attrib0, 2, GL_FLOAT, false, 6 * sizeof(float), nullptr);
+    glVertexAttribPointer(attrib1, 4, GL_FLOAT, false, 6 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
   }
   {
     Bind bind(rectContext);
 
     glBindBuffer(GL_ARRAY_BUFFER, rectBuffer);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, false, 2 * sizeof(float), nullptr);
+
+    uint32_t attrib0 = rectContext.program.getAttribLocation("pos");
+    glEnableVertexAttribArray(attrib0);
+    glVertexAttribPointer(attrib0, 2, GL_FLOAT, false, 2 * sizeof(float), nullptr);
   }
   {
     Bind bind(textContext);
 
     glBindBuffer(GL_ARRAY_BUFFER, textBuffer);
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * sizeof(float), nullptr);
-    glVertexAttribPointer(1, 2, GL_FLOAT, false, 4 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
+
+    uint32_t attrib0 = textContext.program.getAttribLocation("pos");
+    uint32_t attrib1 = textContext.program.getAttribLocation("coord");
+    glEnableVertexAttribArray(attrib0);
+    glEnableVertexAttribArray(attrib1);
+    glVertexAttribPointer(attrib0, 2, GL_FLOAT, false, 4 * sizeof(float), nullptr);
+    glVertexAttribPointer(attrib1, 2, GL_FLOAT, false, 4 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
   }
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);
