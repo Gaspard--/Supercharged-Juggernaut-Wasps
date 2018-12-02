@@ -12,10 +12,14 @@ static constexpr uint small_bullet  = 3u;
 static constexpr uint medium_bullet = 5u;
 static constexpr uint big_bullet    = 10u;
 
-class Bullet : public Entity
-{ 
-public:
+struct BulletInfo : public Entity
+{
   claws::vect<float, 2u> speed;
+  claws::vect<float, 4u> color;
+};
+
+class Bullet : public BulletInfo
+{
 private:
   std::unique_ptr<Pattern> pattern;
 
@@ -33,9 +37,8 @@ private:
 
 
 public:
-  Bullet(float size, claws::vect<float, 2> position, claws::vect<float, 2> speed, std::unique_ptr<Pattern> &&pattern)
-    : Entity{size, position}
-    , speed(speed)
+  Bullet(float size, claws::vect<float, 2> position, claws::vect<float, 2> speed, claws::vect<float, 4> color, std::unique_ptr<Pattern> &&pattern)
+    : BulletInfo{Entity{size, position}, speed, color}
     , pattern(std::move(pattern))
   {
   }
@@ -45,5 +48,4 @@ public:
 
   ~Bullet() = default;
   void update(float gameSpeed);
-
 };

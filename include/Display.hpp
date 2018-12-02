@@ -13,15 +13,17 @@ class Display
   opengl::RenderContext textureContext;
   opengl::RenderContext rectContext;
   opengl::RenderContext textContext;
+  opengl::RenderContext bulletContext;
   opengl::Buffer textureBuffer;
   opengl::Buffer rectBuffer;
   opengl::Buffer textBuffer;
+  opengl::Buffer bulletBuffer;
   claws::vect<uint32_t, 2u> size{0u, 0u};
   claws::vect<float, 2u> dim{1.0f, 0.0f};
 
   void renderBigWasp(BigWasp const &bigWasp);
   void renderSmolWasp(SmolWasp const &smolWasp);
-  void renderBullets(std::vector<Entity> const &bullets);
+  void renderBullets(std::vector<BulletInfo> const &bullets);
   void renderMobs(std::vector<Entity> const &mobs);
 public:
 

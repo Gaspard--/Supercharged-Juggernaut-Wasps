@@ -12,6 +12,8 @@ namespace state
     : bigWasp{{Entity{0.03f, {0.0f, 0.0f}}, Entity{0.04f, {0.0f, -0.06f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
+    for (auto i = jsButtonWasPressed.begin() ; i != jsButtonWasPressed.end() ; ++i)
+      *i = false;
   }
 
   float GameState::getGameSpeed()
@@ -99,10 +101,12 @@ namespace state
 	    gameState.bullets.emplace_back(0.007f,
 					   mob.position,
 					   claws::vect<float, 2u>{i * 0.0004f, -0.0006f * (5.0F - i)},
+					   claws::vect{0.0f, 1.0f, 1.0f, 1.0f},
 					   std::make_unique<NoPattern>());
 	    gameState.bullets.emplace_back(0.007f,
 					   mob.position,
 					   claws::vect<float, 2u>{-i * 0.0004f, -0.0006f * (5.0F - i)},
+					   claws::vect{0.0f, 1.0f, 1.0f, 1.0f},
 					   std::make_unique<NoPattern>());
 	  }
       }
@@ -133,6 +137,7 @@ namespace state
 	gameState.bullets.emplace_back(0.005f,
 				       mob.position,
 				       claws::vect<float, 2u>{sin(angle), cos(angle)} * 0.002f,
+				       claws::vect{1.0f, 0.0f, 0.5f, 1.0f},
 				       std::make_unique<NoPattern>());
       }
     };
@@ -169,7 +174,7 @@ namespace state
 	if (gotoTarget)
 	  smolWasp->speed += (target - smolWasp->position) * 0.5f * getGameSpeed() * getGameSpeed();
 	else if (joystickInUse)
-	  smolWasp->speed = joystickVect * 0.08;
+	  smolWasp->speed = joystickVect * 0.08f;
 	smolWasp->speed *= std::pow(0.7f, getGameSpeed());
       }
     else
@@ -177,7 +182,7 @@ namespace state
 	if (gotoTarget)
 	  bigWasp.speed += (target - bigWasp.entities[0].position) * 0.01f * getGameSpeed() * getGameSpeed();
 	else if (joystickInUse)
-	  bigWasp.speed = joystickVect * 0.008;
+	  bigWasp.speed = joystickVect * 0.008f;
       }
     bigWasp.speed *= std::pow(0.7f, getGameSpeed());
     for (Entity &entity : bigWasp.entities)
@@ -225,9 +230,9 @@ namespace state
     if (button.button == GLFW_MOUSE_BUTTON_RIGHT && button.action == GLFW_PRESS)
       {
 	if (smolWasp)
-	  smolWasp->dieCounter = true;
+	  makeSmolExplode();
 	else
-	  smolWasp.emplace(SmolWasp{Entity{0.01f, bigWasp.entities[1].position}, {0.0f, 0.0f}});
+	  spawnSmol();
       }
   }
 
@@ -235,6 +240,7 @@ namespace state
   {
     gotoTarget = (input.isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT));
     std::vector<claws::vect<float, 2>> axes = input.getJoystickAxes();
+    std::vector<unsigned char> buttons = input.getJoystickButtons();
     if (axes.size() && axes[0].length2() > 0.1) {
       joystickInUse = true;
       gotoTarget = false;
@@ -242,6 +248,28 @@ namespace state
     } else {
       joystickInUse = false;
     }
+    if (buttons.size()) {
+      if (buttons[0] == GLFW_PRESS && !jsButtonWasPressed[0]) {
+	jsButtonWasPressed[0] = true;
+	if (smolWasp)
+	  makeSmolExplode();
+	else
+	  spawnSmol();
+      }
+      for (unsigned i = 0 ; i < buttons.size() && i < jsButtonWasPressed.size() ; ++i)
+	if (buttons[i] == GLFW_RELEASE)
+	  jsButtonWasPressed[i] = false;
+    }
+  }
+
+  void GameState::makeSmolExplode()
+  {
+    smolWasp->dieCounter = true;
+  }
+
+  void GameState::spawnSmol()
+  {
+    smolWasp.emplace(SmolWasp{Entity{0.01f, bigWasp.entities[1].position}, {0.0f, 0.0f}});
   }
 
   void GameState::getObjectsToRender(DisplayData &displayData)
@@ -249,7 +277,7 @@ namespace state
     displayData.bigWasp = bigWasp;
     displayData.smolWasp = smolWasp;
     for (auto const &bullet : bullets)
-      displayData.bullets.emplace_back(static_cast<Entity>(bullet));
+      displayData.bullets.emplace_back(static_cast<BulletInfo>(bullet));
     for (auto const &mob : mobs)
       displayData.mobs.emplace_back(static_cast<Entity>(mob));
   }

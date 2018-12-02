@@ -125,7 +125,7 @@ namespace input
       return glfwWindowShouldClose(&getWindow());
     }
 
-    std::vector<claws::vect<float, 2>> getJoystickAxes() const noexcept
+    std::vector<claws::vect<float, 2>> getJoystickAxes() const
     {
       int count;
       std::vector<claws::vect<float, 2>> axes;
@@ -135,6 +135,18 @@ namespace input
 	  axes.push_back({brutAxes[i], brutAxes[i + 1]});
       }
       return axes;
+    }
+
+    std::vector<unsigned char> getJoystickButtons() const
+    {
+      int count;
+      std::vector<unsigned char> buttons;
+      if (joystickId != -1) {
+	const unsigned char *brutButtons = glfwGetJoystickButtons(joystickId, &count);
+	for (int i = 0 ; i < count ; ++i)
+	  buttons.push_back(brutButtons[i]);
+      }
+      return buttons;
     }
 
     bool isKeyPressed(int key) const noexcept

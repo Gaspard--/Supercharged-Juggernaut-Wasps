@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <vector>
+#include <array>
 
 #include "State.hpp"
 #include "Wasp.hpp"
@@ -20,11 +21,16 @@ namespace state
     bool gotoTarget{false};
     bool joystickInUse{false};
     claws::vect<float, 2u> joystickVect;
+    std::array<bool, 1> jsButtonWasPressed;
+
     float gameSpeed;
     float spawnTimer{0.0f};
 
     void makeCollisions();
     void spawnWave();
+
+    void makeSmolExplode();
+    void spawnSmol();
 
   public:
     GameState();
