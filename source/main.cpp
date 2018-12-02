@@ -6,7 +6,7 @@
 # include "Logic.hpp"
 # include "DisplayData.hpp"
 # include "SoundHandler.hpp"
-
+# include "my_glfw.hpp"
 int main()
 {
   try {
@@ -16,6 +16,12 @@ int main()
 
     glfwSwapInterval(1);
     Display display(input.getWindow());
+#ifdef _WIN32
+	int x, y;
+	glfwGetFramebufferSize(&input.getWindow(), &x, &y);
+	display.resize({(uint32_t)x, (uint32_t)y});
+	input.setSize({ (uint32_t)x, (uint32_t)y });
+#endif
     Logic logic;
 
     struct SoundHandlerInit

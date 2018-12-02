@@ -24,7 +24,7 @@ namespace state
     std::array<bool, 1> jsButtonWasPressed;
 
     float gameSpeed;
-    float spawnTimer{0.0f};
+    float spawnTimer{100.0f};
 
     void makeCollisions();
     void spawnWave();

@@ -17,6 +17,8 @@ public:
   static SoundHandler& getInstance();
   static void destroySoundHandler();
 
+  float sfxPitch{100.0f};
+
   void playMainMusic();
   void playSound(sfxList, float = 100.0f);
   void deleteSounds();

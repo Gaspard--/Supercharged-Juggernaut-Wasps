@@ -37,6 +37,7 @@ void SoundHandler::playSound(sfxList id, float volume)
   sound->setBuffer(*_instance->getSoundBuffer(id));
   sound->setLoop(false);
   sound->setVolume(volume);
+  sound->setPitch(sfxPitch);
   sound->play();
   _instance->_soundsPlaying.push_back(std::move(sound));
 }
@@ -64,5 +65,6 @@ sf::SoundBuffer* SoundHandler::getSoundBuffer(sfxList id) const
 
 void SoundHandler::setGlobalPitch(float pitch)
 {
+  sfxPitch = pitch;
   mainMusic.setPitch(pitch);
 }
