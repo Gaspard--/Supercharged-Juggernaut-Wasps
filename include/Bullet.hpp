@@ -37,6 +37,8 @@ private:
 
 
 public:
+  bool dead{false};
+
   Bullet(float size, claws::vect<float, 2> position, claws::vect<float, 2> speed, claws::vect<float, 4> color, std::unique_ptr<Pattern> &&pattern)
     : BulletInfo{Entity{size, position}, speed, color}
     , pattern(std::move(pattern))

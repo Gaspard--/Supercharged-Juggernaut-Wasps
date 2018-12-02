@@ -23,6 +23,8 @@ public:
   void addSoundBuffer(sfxList, std::string const&);
   sf::SoundBuffer* getSoundBuffer(sfxList) const;
 
+  void setGlobalPitch(float pitch);
+
 private:
   std::map<sfxList, sf::SoundBuffer*> soundList;
   SoundHandler();
@@ -33,7 +35,6 @@ private:
   std::map<sfxList, sf::SoundBuffer*> _sound;
   std::vector<std::unique_ptr<sf::Sound>> _soundsPlaying;
 
-  
 };
 
 #endif

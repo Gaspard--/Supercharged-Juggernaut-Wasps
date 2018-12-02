@@ -76,6 +76,8 @@ Display::Display(GLFWwindow &window)
     glVertexAttribPointer(0, 2, GL_FLOAT, false, 4 * sizeof(float), nullptr);
     glVertexAttribPointer(1, 2, GL_FLOAT, false, 4 * sizeof(float), reinterpret_cast<void *>(2u * sizeof(float)));
   }
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND);
 }
 
 void Display::renderSmolWasp(SmolWasp const &smolWasp)

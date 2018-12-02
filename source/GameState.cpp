@@ -34,15 +34,17 @@ namespace state
 	for (itPos[1] = begin[1] ; itPos[1] != end[1] + 1; ++itPos[1])
 	  bulletIndexes[itPos].push_back(i);
     }
+    for (auto &entity : bigWasp.entities)
+      physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [&](auto &, Bullet &bullet)
+								     {
+								       if (bigWasp.invulnFrames <= 0.0f)
+									 bigWasp.invulnFrames = maxInvuln;
+								       bullet.dead = true;
+								       SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit);
+								       std::cout << "hit!" << std::endl;
+								     });
     if (bigWasp.invulnFrames <= 0.0f)
       {
-	for (auto &entity : bigWasp.entities)
-	  physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [&](auto &, Bullet &)
-									 {
-									   bigWasp.invulnFrames = maxInvuln;
-									   SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit);
-									   std::cout << "hit!" << std::endl;
-									 });
 	physic::checkCollisionsEntities(bigWasp.entities[0], mobs, [](auto &, Mob &mob)
 								   {
 								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
@@ -59,29 +61,24 @@ namespace state
 	  }
 	if (smolWasp->dieCounter == 15)
 	  {
-	    for (auto &bullet : bullets)
-	      {
-		auto diff(bullet.position - smolWasp->position);
-		bullet.speed += diff * 0.001f / std::sqrt(diff.length2());
-	      }
+	    static constexpr float noScaleLimit(0.016f);
 	    smolWasp->size = 0.4f;
 	    physic::checkCollisionsBullets(bulletIndexes, *smolWasp, bullets, [](auto &smolWasp, Bullet &bullet)
 									      {
 										auto diff(bullet.position - smolWasp.position);
-										if (diff.length2() < 0.0016)
-										  bullet.speed += diff * 0.0002f / std::sqrt(diff.length2());
+										if (diff.length2() < noScaleLimit)
+										  bullet.speed += diff * 0.0001f / (std::sqrt(diff.length2()) * noScaleLimit);
 										else
-										  bullet.speed += diff * 0.0002f / (diff.length2());
+										  bullet.speed += diff * 0.0001f / diff.length2();
 									      });
 	    physic::checkCollisionsEntities(*smolWasp, mobs, [](auto &smolWasp, Mob &mob)
 							     {
 							       auto diff(mob.position - smolWasp.position);
-							       if (diff.length2() < 0.0016)
-								 mob.speed += diff * 0.0002f / std::sqrt(diff.length2());
+							       if (diff.length2() < noScaleLimit)
+								 mob.speed += diff * 0.0001f / (std::sqrt(diff.length2()) * noScaleLimit);
 							       else
-								 mob.speed += diff * 0.0002f / (diff.length2());
+								 mob.speed += diff * 0.0001f / (diff.length2());
 							     });
-	    // TODO: shockwave
 	    smolWasp.reset();
 	  }
       }
@@ -152,8 +149,9 @@ namespace state
 
   StateType GameState::update()
   {
-    gameSpeed *= 0.95f;
-    gameSpeed += 0.05f * (smolWasp ? 0.1f : 1.0f);
+    gameSpeed *= 0.98f;
+    gameSpeed += 0.02f * (smolWasp ? 0.1f : 1.0f);
+    SoundHandler::getInstance().setGlobalPitch(getGameSpeed());
 
     constexpr float const spawnInterval{30.0f};
 
@@ -196,6 +194,8 @@ namespace state
     makeCollisions();
     bullets.erase(std::remove_if(bullets.begin(), bullets.end(), [](Bullet const &bullet)
 								 {
+								   if (bullet.dead)
+								     return true;
 								   for (uint32_t i(0u); i != 2; ++i)
 								     if (bullet.position[i] > 1.0f || bullet.position[i] < -1.0f)
 								       return true;

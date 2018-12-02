@@ -61,3 +61,8 @@ sf::SoundBuffer* SoundHandler::getSoundBuffer(sfxList id) const
 {
   return (_instance->_sound[id]);
 }
+
+void SoundHandler::setGlobalPitch(float pitch)
+{
+  mainMusic.setPitch(pitch);
+}
