@@ -61,7 +61,7 @@ namespace input
 	joystickId++;
       if (joystickId == GLFW_JOYSTICK_LAST)
 	joystickId = -1;
-      std::cout << "Joystick[" << joystickId << "]  will be used" << std::endl;
+      std::cout << "Joystick[" << joystickId << "], \"" << (joystickId == -1 ? "No Joystick inserted" : glfwGetJoystickName(joystickId)) << "\"  will be used" << std::endl;
     }
 
   public:
