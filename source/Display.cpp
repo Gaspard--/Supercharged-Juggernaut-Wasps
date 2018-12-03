@@ -179,21 +179,9 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
     opengl::setUniform({1.0f, 0.9f, 0.0f, 1.0f}, "rect_color", rectContext.program);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    {
-      std::array<float, 8> data{{-1.0f, -1.0f,
-				 1.0f, -1.0f,
-				 -1.0f, 1.0f,
-				 1.0f, 1.0f}};
-
-      for (uint32_t i(0u); i != 4; ++i)
-	for (uint32_t j(0u); j != 2; ++j)
-	  (data[i * 2 + j] *= bigWasp.entities[1].size) += bigWasp.entities[1].position[j];
-
-      glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
-    }
-    opengl::setUniform({0.0f, 0.0f, 0.0f, 1.0f}, "rect_color", rectContext.program);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
+    renderSingleAnim({bigWasp.entities[1].position + bigWasp.entities[1].size,
+		      bigWasp.entities[1].position - bigWasp.entities[1].size,
+		      0}, SpriteId::WaspBody);
     renderSingleAnim({bigWasp.entities[2].position + bigWasp.entities[2].size,
 		      bigWasp.entities[2].position - bigWasp.entities[2].size,
 		      0}, SpriteId::WaspAbdomen);

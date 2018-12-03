@@ -20,6 +20,9 @@ inline Animation getAnimation()
     case SpriteId::WaspAbdomen:
       return loadAnim("resources/wasp abdomen mirrored.bmp", 1);
       break;
+    case SpriteId::WaspBody:
+      return loadAnim("resources/wasp body.bmp", 1);
+      break;
     default:
       assert("missing animation definition");
     }
