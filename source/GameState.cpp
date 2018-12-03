@@ -197,13 +197,11 @@ namespace state
     class BossAi : public AI
     {
       float time{0.0f};
-      float interval;
       uint32_t phaseCounter{0u};
       uint32_t phase{0u};
 
     public:
-      BossAi(float interval)
-	: interval(interval)
+      BossAi()
       {
       }
 
@@ -211,10 +209,10 @@ namespace state
       {
 	auto speed(gameState.bigWasp.entities[1].position - mob.position);
 	claws::vect<float, 2u> side({speed[1], -speed[0]});
-	if (time > interval)
+	if (time < 0)
 	  {
 	    if (!(++phaseCounter %= 10))
-	      ++phase %= 2;
+	      ++phase %= 3;
 	    switch(phase)
 	      {
 	      case 0:
@@ -230,7 +228,8 @@ namespace state
 						   -side * i * 0.0004f + speed * 0.0006f * (5.0f - i),
 						   SpriteId::Fireball,
 						   std::make_unique<NoPattern>());
-		  }
+		  }	
+		time += 50.0f;
 		break;
 	      case 1:
 		gameState.bullets.emplace_back(0.02f,
@@ -238,12 +237,36 @@ namespace state
 					       speed * 0.012f,
 					       SpriteId::Fireball,
 					       std::make_unique<NoPattern>());
+		time += 80.0f;
+		break;
+	      case 2:
+		for (float i(0.1f); i < 2.5; i += 1.0f)
+		  {
+		    gameState.bullets.emplace_back(0.04f,
+						   mob.position,
+						   side * i * 0.0004f + speed * 0.0024f * (5.0f - i),
+						   SpriteId::Fireball,
+						   std::make_unique<NoPattern>());
+		    gameState.bullets.emplace_back(0.04f,
+						   mob.position,
+						   -side * i * 0.0004f + speed * 0.0024f * (5.0f - i),
+						   SpriteId::Fireball,
+						   std::make_unique<NoPattern>());
+		  }
+		time += 240.0f;
+		break;
+	      case 3:
+		gameState.bullets.emplace_back(0.02f,
+					       mob.position,
+					       speed * 0.012f,
+					       SpriteId::Fireball,
+					       std::make_unique<NoPattern>());
+		time += 10.0f;
 		break;
 
 	      }
-	    time -= interval;
 	  }
-	time += gameState.getGameSpeed();
+	time -= gameState.getGameSpeed();
 	mob.speed *= std::pow(0.9f, gameState.getGameSpeed());
 	mob.speed += speed * 0.0001f * gameState.getGameSpeed();
       }
@@ -262,7 +285,7 @@ namespace state
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  SpriteId::SmolWasp,
 			  Behavior::LookAtPlayer,
-			  std::make_unique<BossAi>(50.0f));
+			  std::make_unique<BossAi>());
       }
       
   }
