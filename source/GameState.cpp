@@ -9,7 +9,7 @@
 namespace state
 {
   GameState::GameState()
-    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.025f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
+    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.25f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
     for (uint32_t i(0); i < 200; ++i)
