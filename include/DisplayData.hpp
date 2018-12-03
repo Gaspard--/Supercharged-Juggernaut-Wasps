@@ -17,6 +17,7 @@ struct DisplayData
 {
   std::optional<BigWasp> bigWasp{};
   std::optional<SmolWasp> smolWasp{};
+  bool gameOverHud{false};
   std::string stringedTime;
   uint32_t gameScore;
   std::vector<BulletInfo> bullets{};

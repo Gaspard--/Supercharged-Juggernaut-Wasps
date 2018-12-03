@@ -164,7 +164,7 @@ namespace state
       }
   }
 
-  StateType GameState::update(unsigned int time)
+  StateType GameState::update(unsigned int &time)
   {
     gameSpeed *= 0.98f;
     gameSpeed += 0.02f * (smolWasp ? 0.3f : 1.0f);
@@ -228,7 +228,9 @@ namespace state
 							}), mobs.end());
     if (!(time % 500))
       gameScore += uint32_t(bigWasp.size * 1000.f);
-    // TODO: if (bigWasp.size < bigWasp::minSize) gameover
+
+    if (bigWasp.size < BigWasp::minSize)
+      return GAME_OVER_STATE;
     return StateType::CONTINUE;
   }
 

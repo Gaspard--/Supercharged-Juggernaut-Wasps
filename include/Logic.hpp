@@ -24,6 +24,7 @@ class Logic
     return std::chrono::microseconds(1000000 / 120);
   };
 
+  DisplayData lastDispData;
   bool running;
   std::unique_ptr<state::State> state;
 

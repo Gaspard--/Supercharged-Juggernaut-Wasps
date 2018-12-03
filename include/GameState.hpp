@@ -35,7 +35,7 @@ namespace state
 
   public:
     GameState();
-    StateType update(unsigned int time) override;
+    StateType update(unsigned int &time) override;
     void handleKey(GLFWwindow *window, input::Key key) override;
     void handleMouse(input::Input const &, GLFWwindow *window, input::Mouse mouse) override;
     void handleButton(GLFWwindow *window, input::Button button) override;

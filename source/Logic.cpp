@@ -2,6 +2,7 @@
 
 #include "Logic.hpp"
 #include "GameState.hpp"
+#include "GameOverState.hpp"
 
 #include <thread>
 #include <cassert>
@@ -47,7 +48,11 @@ void Logic::tick(std::mutex &lock)
     switch (type)
       {
         case state::GAME_STATE:
+	  time = 0;
           state.reset(new state::GameState());
+          break;
+        case state::GAME_OVER_STATE:
+          state.reset(new state::GameOverState(time, lastDispData));
           break;
         case state::BREAK:
           running = false;
@@ -122,4 +127,5 @@ void Logic::getObjectsToRender(DisplayData &displayData)
 {
   state->getObjectsToRender(displayData);
   displayData.stringedTime = getTime();
+  lastDispData = displayData;
 }
