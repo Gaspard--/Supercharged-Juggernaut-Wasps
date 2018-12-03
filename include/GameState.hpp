@@ -22,6 +22,7 @@ namespace state
     bool joystickInUse{false};
     claws::vect<float, 2u> joystickVect;
     std::array<bool, 1> jsButtonWasPressed;
+    uint32_t gameScore{0};
 
     float gameSpeed{1.0f};
     float spawnTimer{100.0f};
@@ -40,7 +41,7 @@ namespace state
     void handleButton(GLFWwindow *window, input::Button button) override;
     void checkEvents(input::Input& input) override;
     void getObjectsToRender(DisplayData &display) override;
-    
+
     float getGameSpeed();
   };
 

@@ -57,6 +57,7 @@ namespace state
 								   {
 								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
 								     mob.dead = true;
+								     gameScore += uint32_t(mob.size / bigWasp.size) * 1000;
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
 								   }
@@ -297,6 +298,7 @@ namespace state
 
   void GameState::getObjectsToRender(DisplayData &displayData)
   {
+    displayData.gameScore = gameScore;
     displayData.bigWasp = bigWasp;
     displayData.smolWasp = smolWasp;
     for (auto const &bullet : bullets)

@@ -36,7 +36,7 @@ Display::Display(GLFWwindow &window)
   , bulletContext(contextFromFiles("bullet"))
   , fontHandler("./resources/ObelixPro-Broken-cyr.ttf")
 {
-  
+
   {
     Bind bind(textureContext);
 
@@ -150,7 +150,7 @@ void Display::renderText(std::string const &text, unsigned int fontSize, claws::
 				   {
 				     claws::vect<float, 2u> corner{static_cast<float>(i & 1u), static_cast<float>(i >> 1u)};
 				     claws::vect<float, 2u> destCorner(pen + textPos + corner * size);
-	
+
 				     data[i * 4 + 0] = destCorner[0];
 				     data[i * 4 + 1] = destCorner[1];
 				     data[i * 4 + 2] = corner[0];

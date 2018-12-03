@@ -17,6 +17,7 @@ struct DisplayData
 {
   std::optional<BigWasp> bigWasp{};
   std::optional<SmolWasp> smolWasp{};
+  uint32_t gameScore;
   std::vector<BulletInfo> bullets{};
   std::array<std::vector<AnimInfo>, size_t(SpriteId::SpriteCount)> anims;
 };
