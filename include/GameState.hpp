@@ -30,6 +30,7 @@ namespace state
     float timer{0.0f};
     float lastSpawn{0.0f};
     bool bossSpawned{false};
+    float lastScore{0.0f};
 
     void makeCollisions();
     void spawnWave();
