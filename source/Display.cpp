@@ -213,10 +213,10 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
     renderSingleAnim({bigWasp.entities[2].position - bigWasp.entities[2].size,
 		      bigWasp.entities[2].position + bigWasp.entities[2].size,
 		      0}, SpriteId::WaspAbdomen);
-    claws::vect<float, 2u> offset{0.0f, -bigWasp.size * 1.5};
+    claws::vect<float, 2u> offset{0.0f, -bigWasp.size * 1.5f};
     renderSingleAnim({bigWasp.entities[1].position - bigWasp.size * 2.5f + offset,
 		      bigWasp.entities[1].position + bigWasp.size * 2.5f + offset,
-		      bigWasp.frame}, SpriteId::WaspWing);
+		      uint32_t(bigWasp.frame)}, SpriteId::WaspWing);
   }
 }
 
@@ -372,6 +372,18 @@ void Display::renderGameOver(uint32_t score, std::string const &strTime)
   renderText("Final Score " + std::to_string(score), 200, {0.05f, 0.05f}, {-0.18f, -0.05f}, {1.0f, 1.0f, 1.0f});
 }
 
+void Display::renderDeadScreen(const std::vector<std::pair<std::string, std::string>>& fellows)
+{
+  renderText("Died for Motherland", 300, {0.07f, 0.07f}, {-1.8f, 0.855f}, {1.0f, 1.0f, 1.0f});
+  float y = 0.75f;
+  for (auto i = fellows.begin() ; i != fellows.end() ; ++i) {
+    renderText(i->first + " " + i->second, 200, {0.05f, 0.05f}, {-1.8f, y}, {1.0f, 1.0f, 1.0f});
+    y -= 0.05f;
+    if (y <= -1.0f)
+      break;
+  }
+}
+
 void Display::render(DisplayData const &data)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -395,6 +407,8 @@ void Display::render(DisplayData const &data)
   renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore, data.stringedTime, data.timer);
   if (data.gameOverHud)
     renderGameOver(data.gameScore, data.stringedTime);
+  if (data.deadFellows.size())
+    renderDeadScreen(data.deadFellows);
 }
 
 void Display::resize(claws::vect<uint32_t, 2u> size)
