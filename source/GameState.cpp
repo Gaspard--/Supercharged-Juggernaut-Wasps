@@ -25,6 +25,36 @@ namespace state
     return gameSpeed;
   }
 
+  void GameState::explosion(std::map<claws::vect<uint32_t, 2u>, std::vector<uint32_t>> const &bulletIndexes, claws::vect<float, 2u> position, float power)
+  {
+    static constexpr float noScaleLimit(0.04f);
+
+    Entity entity{power, position};
+
+    physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [](auto &entity, Bullet &bullet)
+								      {
+									auto diff(bullet.position - entity.position);
+									if (diff.length2() < noScaleLimit * noScaleLimit)
+									  diff /= (std::sqrt(diff.length2()) * noScaleLimit);
+									else
+									  diff /= diff.length2();
+									bullet.speed += diff * 0.001f * entity.size; 
+									bullet.position += diff * 0.002f * entity.size;
+								      });
+    physic::checkCollisionsEntities(entity, mobs, [](auto &entity, Mob &mob)
+						     {
+						       auto diff(mob.position - entity.position);
+
+						       if (diff.length2() < noScaleLimit * noScaleLimit)
+							 diff /= (std::sqrt(diff.length2()) * noScaleLimit);
+						       else
+							 diff /= diff.length2();
+						       mob.speed += diff * 0.001f * entity.size; 
+						       mob.position += diff * 0.002f * entity.size;
+						       mob.size *= 0.9f;
+						     });
+  }
+
   void GameState::makeCollisions()
   {
     std::map<claws::vect<uint32_t, 2u>, std::vector<uint32_t>> bulletIndexes;
@@ -71,30 +101,7 @@ namespace state
 	  }
 	if (smolWasp->dieCounter == 15)
 	  {
-	    static constexpr float noScaleLimit(0.04f);
-	    smolWasp->size *= 20.0f;
-	    physic::checkCollisionsBullets(bulletIndexes, *smolWasp, bullets, [](auto &smolWasp, Bullet &bullet)
-									      {
-										auto diff(bullet.position - smolWasp.position);
-										if (diff.length2() < noScaleLimit * noScaleLimit)
-										  diff /= (std::sqrt(diff.length2()) * noScaleLimit);
-										else
-										  diff /= diff.length2();
-										bullet.speed += diff * 0.001f * smolWasp.size; 
-										bullet.position += diff * 0.002f * smolWasp.size;
-									      });
-	    physic::checkCollisionsEntities(*smolWasp, mobs, [](auto &smolWasp, Mob &mob)
-							     {
-							       auto diff(mob.position - smolWasp.position);
-
-							       if (diff.length2() < noScaleLimit * noScaleLimit)
-								 diff /= (std::sqrt(diff.length2()) * noScaleLimit);
-							       else
-								 diff /= diff.length2();
-							       mob.speed += diff * 0.001f * smolWasp.size; 
-							       mob.position += diff * 0.002f * smolWasp.size;
-							       mob.size *= 0.9f;
-							     });
+	    explosion(bulletIndexes, smolWasp->position, smolWasp->size * 20.0f);
 	    smolWasp.reset();
 	  }
       }

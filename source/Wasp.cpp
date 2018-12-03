@@ -9,6 +9,7 @@ static constexpr float leftLimit    = -0.99f;
 
 void BigWasp::update(float gameSpeed) noexcept
 {
+  frame += gameSpeed * 0.2;
   constexpr std::array<float, 3u> const flow{{0.05f, 0.02f, 0.002f}};
   constexpr std::array<float, 3u> const ratio{{0.25f, 0.25f, 0.5f}};
   std::array<float, 3u> area{{entities[0].size * entities[0].size,

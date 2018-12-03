@@ -3,6 +3,7 @@
 #include <optional>
 #include <vector>
 #include <array>
+#include <map>
 
 #include "State.hpp"
 #include "Wasp.hpp"
@@ -33,6 +34,8 @@ namespace state
 
     void makeSmolExplode();
     void spawnSmol();
+    void explosion(std::map<claws::vect<uint32_t, 2u>, std::vector<uint32_t>> const &bulletIndexes, claws::vect<float, 2u> position, float power);
+
 
   public:
     GameState();

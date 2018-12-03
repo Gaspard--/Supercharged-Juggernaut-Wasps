@@ -14,7 +14,8 @@ struct BigWasp
   claws::vect<Entity, 3u> entities;
   claws::vect<float, 2u> speed;
   float invulnFrames{0.0f};
-  float size{0.00f};
+  float size{0.0f};
+  float frame{0.0f};
 
   void update(float speed) noexcept;
 };

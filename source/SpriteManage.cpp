@@ -29,6 +29,9 @@ inline Animation getAnimation()
     case SpriteId::WaspLegs:
       return loadAnim("resources/wasp legs.bmp", 1);
       break;
+    case SpriteId::WaspWing:
+      return loadAnim("resources/wasp wing.bmp", 9);
+      break;
     case SpriteId::Fireball :
       return loadAnim("resources/fireball-spriteSheet.bmp", 5);
       break;
