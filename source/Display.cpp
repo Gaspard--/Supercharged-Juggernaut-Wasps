@@ -154,7 +154,7 @@ void Display::renderText(std::string const &text, unsigned int fontSize, claws::
 				     data[i * 4 + 0] = destCorner[0];
 				     data[i * 4 + 1] = destCorner[1];
 				     data[i * 4 + 2] = corner[0];
-				     data[i * 4 + 3] = 1.0f - corner[1];
+				     data[i * 4 + 3] = corner[1];
 				   }
 				 glBindBuffer(GL_ARRAY_BUFFER, textBuffer);
 				 glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
@@ -335,22 +335,37 @@ void Display::renderRotatedAnims(std::vector<RotatedAnimInfo> const &rotatedAnim
 }
 
 
-void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &strTime)
+void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &strTime, float timer)
 {
-  uint32_t hps = uint32_t((bigWaspSize - BigWasp::minSize) * 10000);
+  
+  uint32_t hps = uint32_t((std::log(BigWasp::minSize) - std::log(bigWaspSize)) / std::log(BigWasp::hitPenality)) + 1;
   if (bigWaspSize < BigWasp::minSize)
     hps = 0;
 
-  renderText("Hps   : " + std::to_string(hps), 1000, {0.025f, 0.05f}, {0.62f / dim[0], 0.855f}, {1.0f, 1.0f, 1.0f});
-  renderText("Score : " + std::to_string(score), 1000, {0.025f, 0.05f}, {0.62f / dim[0], 0.755f}, {1.0f, 1.0f, 1.0f});
-  renderText("Time  : " + strTime, 1000, {0.025f, 0.05f}, {0.62f / dim[0], 0.655f}, {1.0f, 1.0f, 1.0f});
+  renderText("Size  : " + std::to_string(uint32_t(bigWaspSize * 1000.0f)), 400, {0.05f, 0.05f}, {1.0f, 0.855f}, {1.0f, 1.0f, 1.0f});
+  renderText("Hps   : " + std::to_string(hps), 400, {0.05f, 0.05f}, {1.0f, 0.755f}, {1.0f, 1.0f, 1.0f});
+  renderText("Score : " + std::to_string(score), 400, {0.05f, 0.05f}, {1.0f, 0.655f}, {1.0f, 1.0f, 1.0f});
+  renderText("Time  : " + strTime, 400, {0.05f, 0.05f}, {1.0f, 0.555f}, {1.0f, 1.0f, 1.0f});
+  auto secondTime((uint32_t(timer) * Logic::getTickTime().count()) / 1000000);
+  std::string inGameTime;
+
+  if (secondTime / 60 >= 10)
+    inGameTime = std::to_string(secondTime / 60) + " m ";
+  else if (secondTime / 60)
+    inGameTime = "0" + std::to_string(secondTime / 60) + " m ";
+  if ((secondTime) % 60 >= 10)
+    inGameTime += std::to_string((secondTime) % 60) + " s";
+  else
+    inGameTime += "0" + std::to_string((secondTime) % 60) + " s";
+  renderText("In game time : " + inGameTime, 400, {0.05f, 0.05f}, {1.0f, 0.455f}, {1.0f, 1.0f, 1.0f});
+
 }
 
 void Display::renderGameOver(uint32_t score, std::string const &strTime)
 {
-  renderText("Game Over", 300, {0.03f, 0.05f}, {-0.06f, 0.25f}, {1.0f, 1.0f, 1.0f});
-  renderText("Final Time  " + strTime, 200, {0.015f, 0.025f}, {-0.06f, 0.05f}, {1.0f, 1.0f, 1.0f});
-  renderText("Final Score " + std::to_string(score), 200, {0.015f, 0.025f}, {-0.06f, -0.05f}, {1.0f, 1.0f, 1.0f});
+  renderText("Game Over", 300, {0.07f, 0.07f}, {-0.06f, 0.25f}, {1.0f, 1.0f, 1.0f});
+  renderText("Final Time  " + strTime, 200, {0.05f, 0.05f}, {-0.06f, 0.05f}, {1.0f, 1.0f, 1.0f});
+  renderText("Final Score " + std::to_string(score), 200, {0.05f, 0.05f}, {-0.06f, -0.05f}, {1.0f, 1.0f, 1.0f});
 }
 
 void Display::render(DisplayData const &data)
@@ -371,7 +386,9 @@ void Display::render(DisplayData const &data)
     renderColors(data.colors);
   if (data.smolWasp)
     renderSmolWasp(*data.smolWasp);
-  renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore, data.stringedTime);
+  renderColors({{-dim, claws::vect<float, 2u>(-1.0f, 1.0f), claws::vect<float, 4u>{0.0f, 0.0f, 0.0f, 1.0f}},
+		{dim, claws::vect<float, 2u>(1.0f, -1.0f), claws::vect<float, 4u>{0.0f, 0.0f, 0.0f, 1.0f}}});
+  renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore, data.stringedTime, data.timer);
   if (data.gameOverHud)
     renderGameOver(data.gameScore, data.stringedTime);
 }

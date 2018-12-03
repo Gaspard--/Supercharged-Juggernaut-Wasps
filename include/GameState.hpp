@@ -25,7 +25,8 @@ namespace state
     uint32_t gameScore{0};
 
     float gameSpeed{1.0f};
-    float spawnTimer{100.0f};
+    float timer{0.0f};
+    float lastSpawn{0.0f};
 
     void makeCollisions();
     void spawnWave();

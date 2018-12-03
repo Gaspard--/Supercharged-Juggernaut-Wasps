@@ -12,7 +12,7 @@ namespace state
     : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.025f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
-    for (uint32_t i(0); i < 1000; ++i)
+    for (uint32_t i(0); i < 10000; ++i)
       bigWasp.update(1);
     for (auto i = jsButtonWasPressed.begin() ; i != jsButtonWasPressed.end() ; ++i)
       *i = false;
@@ -43,9 +43,9 @@ namespace state
 									 {
 									   SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit);
 									   bigWasp.invulnFrames = maxInvuln;
-									   bigWasp.size *= std::sqrt(0.5f);
+									   bigWasp.size *= BigWasp::hitPenality;
 									   for (auto &entity : bigWasp.entities)
-									     entity.size *= std::sqrt(0.5f);
+									     entity.size *= BigWasp::hitPenality;
 									 }
 								       bullet.dead = true;
 								       std::cout << "hit!" << std::endl;
@@ -94,6 +94,7 @@ namespace state
 
   void GameState::spawnWave()
   {
+    gameScore += uint32_t(bigWasp.size * 1000.f);
     class VShots
     {
       float spreadMax;
@@ -174,10 +175,10 @@ namespace state
 
     constexpr float const spawnInterval{30.0f};
 
-    spawnTimer += getGameSpeed();
-    if (spawnTimer > spawnInterval)
+    timer += getGameSpeed();
+    if (timer > lastSpawn + spawnInterval)
       {
-	spawnTimer -= spawnInterval;
+	lastSpawn += spawnInterval;
 	spawnWave();
       }
 
@@ -228,9 +229,6 @@ namespace state
 							      return true;
 							  return false;
 							}), mobs.end());
-    if (!(time % 500))
-      gameScore += uint32_t(bigWasp.size * 1000.f);
-
     if (bigWasp.size < BigWasp::minSize)
       return GAME_OVER_STATE;
     return StateType::CONTINUE;
@@ -307,6 +305,7 @@ namespace state
     displayData.gameScore = gameScore;
     displayData.bigWasp = bigWasp;
     displayData.smolWasp = smolWasp;
+    displayData.timer = timer;
     for (auto const &bullet : bullets)
       std::visit([&](auto const &renderData)
 	{
@@ -342,6 +341,15 @@ namespace state
 	    break;
 	  default:
 	    ;
+	  }
+	if (mob.size < bigWasp.size)
+	  {
+	    claws::vect<float, 2u> offset(0.0f, (std::sin(mob.animationFrame * 0.4f) + 1.0f) * mob.size * 0.2f);
+	    displayData.rotatedAnims[size_t(SpriteId::Target)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f + offset,
+											     mob.position + mob.size * 2.0f + offset,
+											     uint32_t(mob.animationFrame)},
+											    claws::vect<float, 2>{std::sin(mob.animationFrame * 0.1f), cos(mob.animationFrame * 0.1f)}
+	      });
 	  }
       }
   }

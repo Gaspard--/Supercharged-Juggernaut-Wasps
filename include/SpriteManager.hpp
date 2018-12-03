@@ -15,6 +15,7 @@ enum class SpriteId : uint32_t
    Libeflux,
    Monarch,
    SmolWasp,
+   Target,
    SpriteCount
   };
 

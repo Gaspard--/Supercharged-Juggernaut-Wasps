@@ -10,5 +10,5 @@ out vec2 vert_coord;
 void main()
 {
   vert_coord = coord;
-  gl_Position = vec4(pos.xy * dim, 0.0f, 1.0f);
+  gl_Position = vec4(pos.xy / dim, 0.0f, 1.0f);
 }

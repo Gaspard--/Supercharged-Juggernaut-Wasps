@@ -31,15 +31,17 @@ public:
   {
     FT_Set_Pixel_Sizes(face, 0, size);
     claws::vect<float, 2u> pen(0.0f, 0.0f);
+    step[1] *= -1;
 
-    for (auto it(text.begin()); it != text.end(); ++it)
+    for (auto c : text)
       {
 	FT_GlyphSlot &slot(face->glyph);
-	FT_Load_Char(face, static_cast<FT_ULong>(*it), FT_LOAD_RENDER);
-    	renderBuffer((pen + claws::vect<float, 2u>{float(slot->bitmap_left), float(slot->bitmap_top)}) * step / float(size),
+	FT_Load_Char(face, static_cast<FT_ULong>(c), FT_LOAD_RENDER);
+    	renderBuffer((pen + claws::vect<float, 2u>{float(slot->bitmap_left), -float(slot->bitmap_top)}) * step / float(size),
 		     claws::vect<float, 2u>{float(slot->bitmap.pitch), float(slot->bitmap.rows)} * step / float(size),
 		     slot->bitmap.buffer, {int(slot->bitmap.pitch), int(slot->bitmap.rows)});
 	pen[0] += float(face->glyph->advance.x >> 6u);
+	pen[1] += float(face->glyph->advance.y >> 6u);
       }
   }
 };

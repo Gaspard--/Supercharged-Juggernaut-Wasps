@@ -21,10 +21,6 @@ class Logic
 
   decltype(Clock::now()) lastUpdate;
 
-  static constexpr std::chrono::microseconds const getTickTime()
-  {
-    return std::chrono::microseconds(1000000 / 120);
-  };
 
   DisplayData lastDispData;
   bool running;
@@ -35,6 +31,10 @@ class Logic
   void handleEvent(input::Input const &display, input::Event const& event, input::Button const &key);
   void handleEvent(input::Input const &display, input::Event const& event, input::None const &key);
 public:
+  static constexpr std::chrono::microseconds const getTickTime()
+  {
+    return std::chrono::microseconds(1000000 / 120);
+  };
 
   Logic();
 

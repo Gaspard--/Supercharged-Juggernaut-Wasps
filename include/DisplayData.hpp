@@ -30,6 +30,7 @@ struct DisplayData
   std::optional<BigWasp> bigWasp{};
   std::optional<SmolWasp> smolWasp{};
   bool gameOverHud{false};
+  float timer;
   std::string stringedTime;
   uint32_t gameScore;
   std::vector<ColorInfo> colors{};

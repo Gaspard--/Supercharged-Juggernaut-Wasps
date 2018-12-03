@@ -41,6 +41,9 @@ inline Animation getAnimation()
     case SpriteId::SmolWasp :
       return loadAnim("resources/smolWasp-spriteSheet.bmp", 6);
       break;
+    case SpriteId::Target:
+      return loadAnim("resources/target.bmp", 1);
+      break;
     default:
       assert("missing animation definition");
     }
