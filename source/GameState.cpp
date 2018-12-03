@@ -9,10 +9,10 @@
 namespace state
 {
   GameState::GameState()
-    : bigWasp{{Entity{0.01f, {0.0f, 0.0f}}, Entity{0.01f, {0.0f, 0.00f}}, Entity{0.015f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
+    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.025f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
-    for (uint32_t i(0); i < 20; ++i)
+    for (uint32_t i(0); i < 200; ++i)
       bigWasp.update(1);
     std::cout << bigWasp.size << std::endl;
     for (auto i = jsButtonWasPressed.begin() ; i != jsButtonWasPressed.end() ; ++i)
@@ -57,7 +57,7 @@ namespace state
 								   {
 								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
 								     mob.dead = true;
-								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size)) - bigWasp.entities[2].size);
+								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
 								   }
 							       });
@@ -99,7 +99,7 @@ namespace state
       float spreadMax;
     public:
       VShots(float spreadMax)
-	: spreadMax(spreadMax - 0.5f)
+	: spreadMax(spreadMax - 1.5f)
       {}
 
       void operator()(GameState &gameState, Mob &mob)
@@ -121,7 +121,7 @@ namespace state
     };
     if (rand() % 24 == 0)
       {
-        float power(float(rand() % 3 + 1));
+        float power(float(rand() % 4 + 1));
 	mobs.emplace_back(0.01f * power,
 			  claws::vect<float, 2u>{-1.0f, 0.99f},
 			  claws::vect<float, 2u>{0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
@@ -130,7 +130,7 @@ namespace state
       }
     if (rand() % 24 == 0)
       {
-        float power(float(rand() % 3 + 1));
+        float power(float(rand() % 4 + 1));
 	mobs.emplace_back(0.01f * power,
 			  claws::vect<float, 2u>{1.0f, 0.99f},
 			  claws::vect<float, 2u>{-0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
