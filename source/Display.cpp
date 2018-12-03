@@ -120,7 +120,38 @@ void Display::renderSingleAnim(AnimInfo const &anim, SpriteId spriteId)
     opengl::setUniform(0u, "tex", textureContext.program);
     glDrawArrays(GL_TRIANGLES, 0, 6);
   }
+}
 
+void Display::renderBack(float timer)
+{
+  {
+    Bind bind(textureContext);
+
+    glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
+
+    std::array<float, 6 * 4> data;
+
+    std::array<float, 12> corner{{0.0f, 0.0f,
+				  1.0f, 0.0f,
+				  0.0f, 1.0f,
+				  1.0f, 0.0f,
+				  0.0f, 1.0f,
+				  1.0f, 1.0f}};
+
+    for (uint32_t i(0u); i != 6; ++i)
+      {
+	for (uint32_t j(0u); j != 2; ++j)
+	  data[i * 4 + j] = (corner[i * 2 + j] - (1.0f - corner[i * 2 + j]));
+	data[i * 4 + 2] = (corner[i * 2]);
+	data[i * 4 + 3] = (corner[i * 2 + 1] + timer);
+      }
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
+    opengl::setUniform(dim, "dim", textureContext.program);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, spriteManager[SpriteId::Back].texture);
+    opengl::setUniform(0u, "tex", textureContext.program);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+  }
 }
 
 void Display::renderText(std::string const &text, unsigned int fontSize, claws::vect<float, 2u> step, claws::vect<float, 2u> textPos, claws::vect<float, 3u> color)
@@ -388,8 +419,10 @@ void Display::render(DisplayData const &data)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   //do final render here
-  glClearColor(0.15f, 0.08f, 0.1f, 0.0f);
+  glClearColor(0.0f, 0.2f, 0.2f, 0.0f);
   glClear(GL_COLOR_BUFFER_BIT);
+  renderBack(data.timer * 0.003);
+  renderColors({{claws::vect<float, 2u>(-1.0f, 1.0f), claws::vect<float, 2u>(1.0f, -1.0f), claws::vect<float, 4u>{0.0f, 0.0f, 0.04f, 0.8f}}});
   if (data.bigWasp)
     renderBigWasp(*data.bigWasp);
   for (size_t i(0u); i < data.anims.size(); ++i)
