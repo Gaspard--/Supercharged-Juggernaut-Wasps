@@ -8,6 +8,8 @@
 
 namespace state
 {
+  static constexpr claws::vect<float, 2u> downRotation{0.0f, -1.0f};
+
   GameState::GameState()
     : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.025f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
     , smolWasp{}
@@ -126,7 +128,7 @@ namespace state
 			  claws::vect<float, 2u>{-1.0f, 0.99f},
 			  claws::vect<float, 2u>{0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
 			  SpriteId::Libeflux,
-			  Behavior::NoRotation,
+			  Behavior::LookForward,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
     if (rand() % 24 == 0)
@@ -136,7 +138,7 @@ namespace state
 			  claws::vect<float, 2u>{1.0f, 0.99f},
 			  claws::vect<float, 2u>{-0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
 			  SpriteId::Libeflux,
-			  Behavior::NoRotation,
+			  Behavior::LookForward,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
     class RotateShots
@@ -161,7 +163,7 @@ namespace state
 			  claws::vect<float, 2u>{-0.9f + float(rand() % 19) * 0.1f, 0.99f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  SpriteId::Monarch,
-			  Behavior::NoRotation,
+			  Behavior::LookDown,
 			  std::make_unique<RepetitiveShotAi<RotateShots>>(30.0f));
       }
   }
@@ -340,6 +342,12 @@ namespace state
 											 uint32_t(mob.animationFrame)},
 											mob.position - bigWasp.entities[1].position});
 	    break;
+    case Behavior::LookDown: // 180.0f, 0.0f
+      displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
+                       mob.position + mob.size * 2.0f,
+                       uint32_t(mob.animationFrame)},
+                       downRotation});
+      break;
 	  default:
 	    ;
 	  }

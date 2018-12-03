@@ -15,6 +15,7 @@ enum class Behavior
   {
    LookAtPlayer,
    LookForward,
+   LookDown,
    NoRotation
   };
 

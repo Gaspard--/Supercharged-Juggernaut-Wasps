@@ -348,9 +348,9 @@ void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &st
 
 void Display::renderGameOver(uint32_t score, std::string const &strTime)
 {
-  renderText("Game Over", 300, {0.03f, 0.05f}, {-0.06f, 0.25f}, {1.0f, 1.0f, 1.0f});
-  renderText("Final Time  " + strTime, 200, {0.015f, 0.025f}, {-0.06f, 0.05f}, {1.0f, 1.0f, 1.0f});
-  renderText("Final Score " + std::to_string(score), 200, {0.015f, 0.025f}, {-0.06f, -0.05f}, {1.0f, 1.0f, 1.0f});
+  renderText("Game Over", 1000, {0.025f, 0.05f}, {-0.06f, 0.25f}, {1.0f, 1.0f, 1.0f});
+  renderText("Final Time  : " + strTime, 1000, {0.025f, 0.05f}, {-0.06f, 0.05f}, {1.0f, 1.0f, 1.0f});
+  renderText("Final Score : " + std::to_string(score), 1000, {0.025f, 0.05f}, {-0.06f, -0.05f}, {1.0f, 1.0f, 1.0f});
 }
 
 void Display::render(DisplayData const &data)
