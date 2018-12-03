@@ -212,7 +212,7 @@ namespace state
 	if (time < 0)
 	  {
 	    if (!(++phaseCounter %= 10))
-	      ++phase %= 3;
+	      ++phase %= 5;
 	    switch(phase)
 	      {
 	      case 0:
@@ -237,7 +237,7 @@ namespace state
 					       speed * 0.012f,
 					       SpriteId::Fireball,
 					       std::make_unique<NoPattern>());
-		time += 80.0f;
+		time += 100.0f;
 		break;
 	      case 2:
 		for (float i(0.1f); i < 2.5; i += 1.0f)
@@ -262,6 +262,22 @@ namespace state
 					       SpriteId::Fireball,
 					       std::make_unique<NoPattern>());
 		time += 10.0f;
+		break;
+	      case 4:
+		for (float i(0.1f); i < 2.5; i += 1.0f)
+		  {
+		    gameState.bullets.emplace_back(0.01f,
+						   mob.position,
+						   side * i * 0.0004f + speed * 0.0024f * (5.0f - i),
+						   SpriteId::Fireball,
+						   std::make_unique<SinCos>(i * 0.1f, 0.5f));
+		    gameState.bullets.emplace_back(0.01f,
+						   mob.position,
+						   -side * i * 0.0004f + speed * 0.0024f * (5.0f - i),
+						   SpriteId::Fireball,
+						   std::make_unique<SinCos>(i * 0.1f, 0.5f));
+		  }
+		time += 240.0f;
 		break;
 
 	      }
