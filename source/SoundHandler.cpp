@@ -13,6 +13,7 @@ void SoundHandler::initSoundHandler()
   _instance->addSoundBuffer(waspTakeHit,   "resources/wasp.ogg");
   _instance->addSoundBuffer(mobTakeHit,    "resources/mobKill.ogg");
   _instance->addSoundBuffer(smolWaspExist, "resources/smolWasp.ogg");
+  _instance->addSoundBuffer(gibSplosion,   "resources/fesse.ogg");
 }
 
 SoundHandler& SoundHandler::getInstance()
@@ -28,17 +29,17 @@ void SoundHandler::destroySoundHandler()
 void SoundHandler::playMainMusic()
 {
   mainMusic.setLoop(true);
-  mainMusic.setVolume(50);
+  mainMusic.setVolume(30);
   mainMusic.play();
 }
 
-void SoundHandler::playSound(sfxList id, float volume)
+void SoundHandler::playSound(sfxList id, float pitch, float volume)
 {
   auto sound = std::make_unique<sf::Sound>();
   sound->setBuffer(*_instance->getSoundBuffer(id));
   if (id != smolWaspExist)
   {
-    sound->setPitch(sfxPitch);
+    sound->setPitch((pitch == -1.0f) ? sfxPitch : pitch);
     sound->setLoop(false);
   }
   else

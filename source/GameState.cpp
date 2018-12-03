@@ -31,6 +31,8 @@ namespace state
 
     Entity entity{power, position};
 
+    SoundHandler::getInstance().playSound(SoundHandler::sfxList::gibSplosion, 5.0f);
+
     physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [](auto &entity, Bullet &bullet)
 								      {
 									auto diff(bullet.position - entity.position);

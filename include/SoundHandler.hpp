@@ -11,7 +11,8 @@ public:
   {
     waspTakeHit,
     mobTakeHit,
-    smolWaspExist
+    smolWaspExist,
+    gibSplosion
   };
 
   static void initSoundHandler();
@@ -21,7 +22,7 @@ public:
   float sfxPitch{100.0f};
 
   void playMainMusic();
-  void playSound(sfxList, float = 100.0f);
+  void playSound(sfxList, float = -1.0f, float = 100.0f);
   void deleteSounds();
   void addSoundBuffer(sfxList, std::string const&);
   void deleteLoopingSound();
