@@ -12,7 +12,7 @@ namespace state
     : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.025f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
-    for (uint32_t i(0); i < 200; ++i)
+    for (uint32_t i(0); i < 1000; ++i)
       bigWasp.update(1);
     std::cout << bigWasp.size << std::endl;
     for (auto i = jsButtonWasPressed.begin() ; i != jsButtonWasPressed.end() ; ++i)
@@ -127,6 +127,7 @@ namespace state
 			  claws::vect<float, 2u>{-1.0f, 0.99f},
 			  claws::vect<float, 2u>{0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
 			  SpriteId::SmolWaspIdle,
+			  Behavior::NoRotation,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
     if (rand() % 24 == 0)
@@ -136,6 +137,7 @@ namespace state
 			  claws::vect<float, 2u>{1.0f, 0.99f},
 			  claws::vect<float, 2u>{-0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
 			  SpriteId::SmolWaspIdle,
+			  Behavior::NoRotation,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
     class RotateShots
@@ -147,10 +149,11 @@ namespace state
       void operator()(GameState &gameState, Mob &mob)
       {
 	angle += 0.3f;
-	gameState.bullets.emplace_back(0.005f,
+	gameState.bullets.emplace_back(0.01f,
 				       mob.position,
 				       claws::vect<float, 2u>{sin(angle), cos(angle)} * 0.002f,
-				       claws::vect{1.0f, 0.0f, 0.5f, 1.0f},
+				       SpriteId::FlamingShot,
+				       // claws::vect{1.0f, 0.0f, 0.5f, 1.0f},
 				       std::make_unique<NoPattern>());
       }
     };
@@ -160,6 +163,7 @@ namespace state
 			  claws::vect<float, 2u>{-0.9f + float(rand() % 19) * 0.1f, 0.99f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  SpriteId::SmolWaspIdle,
+			  Behavior::NoRotation,
 			  std::make_unique<RepetitiveShotAi<RotateShots>>(30.0f));
       }
   }
@@ -306,10 +310,41 @@ namespace state
     displayData.bigWasp = bigWasp;
     displayData.smolWasp = smolWasp;
     for (auto const &bullet : bullets)
-      displayData.bullets.emplace_back(static_cast<BulletInfo>(bullet));
+      std::visit([&](auto const &renderData)
+	{
+	  if constexpr (std::is_same_v<std::decay_t<decltype(renderData)>, BulletSprite>)
+	    displayData.rotatedAnims[size_t(renderData.spriteId)].emplace_back(RotatedAnimInfo{{bullet.position - bullet.size * 2.0f,
+												bullet.position + bullet.size * 2.0f,
+												uint32_t(renderData.frame)},
+											       bullet.speed});
+	  else
+	    displayData.colors.emplace_back(ColorInfo{bullet.position - bullet.size,
+						      bullet.position + bullet.size,
+						      renderData});
+	}, bullet.renderData);
     for (auto const &mob : mobs)
       {
-        displayData.anims[size_t(mob.spriteId)].emplace_back(AnimInfo{mob.position - mob.size * 2.0f, mob.position + mob.size * 2.0f, uint32_t(mob.animationFrame)});
+	switch (mob.behavior)
+	  {
+	  case Behavior::NoRotation:
+	    displayData.anims[size_t(mob.spriteId)].emplace_back(AnimInfo{mob.position - mob.size * 2.0f,
+									  mob.position + mob.size * 2.0f,
+									  uint32_t(mob.animationFrame)});
+	    break;
+	  case Behavior::LookForward:
+	    displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
+											 mob.position + mob.size * 2.0f,
+											 uint32_t(mob.animationFrame)}, mob.speed});
+	    break;
+	  case Behavior::LookAtPlayer:
+	    displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
+											 mob.position + mob.size * 2.0f,
+											 uint32_t(mob.animationFrame)},
+											mob.position - bigWasp.entities[1].position});
+	    break;
+	  default:
+	    ;
+	  }
       }
   }
 }

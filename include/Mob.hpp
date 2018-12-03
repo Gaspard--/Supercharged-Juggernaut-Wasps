@@ -11,10 +11,18 @@ namespace state
   class GameState;
 }
 
+enum class Behavior
+  {
+   LookAtPlayer,
+   LookForward,
+   NoRotation
+  };
+
 struct MobInfo : public Entity
 {
   claws::vect<float, 2u> speed;
   SpriteId spriteId;
+  Behavior behavior;
   float animationFrame{0.0f};
 };
 
@@ -25,8 +33,8 @@ public:
 private:
   std::unique_ptr<AI> ai;
 public:
-  Mob(float size, claws::vect<float, 2> position, claws::vect<float, 2u> speed, SpriteId spriteId, std::unique_ptr<AI> &&ai)
-    : MobInfo{{size, position}, speed, spriteId}
+  Mob(float size, claws::vect<float, 2> position, claws::vect<float, 2u> speed, SpriteId spriteId, Behavior behavior, std::unique_ptr<AI> &&ai)
+    : MobInfo{{size, position}, speed, spriteId, behavior}
     , ai(std::move(ai))
   {
   }

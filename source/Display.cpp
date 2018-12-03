@@ -155,7 +155,6 @@ void Display::renderText(std::string const &text, unsigned int fontSize, claws::
 				     data[i * 4 + 1] = destCorner[1];
 				     data[i * 4 + 2] = corner[0];
 				     data[i * 4 + 3] = 1.0f - corner[1];
-				     std::cout << destCorner[0] << ", " << destCorner[1] << std::endl;
 				   }
 				 glBindBuffer(GL_ARRAY_BUFFER, textBuffer);
 				 glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
@@ -218,7 +217,7 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
 }
 
 
-void Display::renderBullets(std::vector<BulletInfo> const &bullets)
+void Display::renderColors(std::vector<ColorInfo> const &colorInfos)
 {
   {
     Bind bind(bulletContext);
@@ -227,28 +226,28 @@ void Display::renderBullets(std::vector<BulletInfo> const &bullets)
 
     std::vector<float> data;
 
-    data.reserve(bullets.size() * 6 * 6);
+    data.reserve(colorInfos.size() * 6 * 6);
 
-    for (auto const &bullet : bullets)
+    for (auto const &colorInfo : colorInfos)
       {
-	std::array<float, 12> corner{{-1.0f, -1.0f,
-				      1.0f, -1.0f,
-				      -1.0f, 1.0f,
-				      1.0f, -1.0f,
-				      -1.0f, 1.0f,
+	std::array<float, 12> corner{{0.0f, 0.0f,
+				      1.0f, 0.0f,
+				      0.0f, 1.0f,
+				      1.0f, 0.0f,
+				      0.0f, 1.0f,
 				      1.0f, 1.0f}};
 
 	for (uint32_t i(0u); i != 6; ++i)
 	  {
 	    for (uint32_t j(0u); j != 2; ++j)
-	      data.emplace_back(corner[i * 2 + j] * bullet.size + bullet.position[j]);
+	      data.emplace_back(colorInfo.destMax[j] * corner[i * 2 + j] + colorInfo.destMin[j] * (1.0f - corner[i * 2 + j]));
 	    for (uint32_t j(0u); j != 4; ++j)
-	      data.emplace_back(bullet.color[j]);
+	      data.emplace_back(colorInfo.color[j]);
 	  }
       }
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
     opengl::setUniform(dim, "dim", bulletContext.program);
-    glDrawArrays(GL_TRIANGLES, 0, uint32_t(bullets.size() * 6));
+    glDrawArrays(GL_TRIANGLES, 0, uint32_t(colorInfos.size() * 6));
   }
 }
 
@@ -289,6 +288,53 @@ void Display::renderAnims(std::vector<AnimInfo> const &anims, SpriteId spriteId)
   }
 }
 
+void Display::renderRotatedAnims(std::vector<RotatedAnimInfo> const &rotatedAnims, SpriteId spriteId)
+{
+  {
+    Bind bind(textureContext);
+
+    glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
+
+    std::vector<float> data;
+
+    data.reserve(rotatedAnims.size() * 6 * 4);
+
+    for (auto const &rotatedAnim : rotatedAnims)
+      {
+	claws::vect<float, 2> dir{rotatedAnim.dir / std::sqrt(rotatedAnim.dir.length2())};
+	claws::vect<float, 2> center((rotatedAnim.destMin + rotatedAnim.destMax) * 0.5f);
+	std::array<float, 12> corner{{0.0f, 0.0f,
+				      1.0f, 0.0f,
+				      0.0f, 1.0f,
+				      1.0f, 0.0f,
+				      0.0f, 1.0f,
+				      1.0f, 1.0f}};
+
+	
+	for (uint32_t i(0u); i != 6; ++i)
+	  {
+	    auto position(rotatedAnim.destMax * claws::vect<float, 2u>{corner[i * 2], corner[i * 2 + 1]} +
+			  rotatedAnim.destMin * claws::vect<float, 2u>{1.0f - corner[i * 2], 1.0f - corner[i * 2 + 1]});
+
+	    position -= center;
+	    position = (position * dir[1] + claws::vect<float, 2>{position[1], -position[0]} * dir[0]);
+	    position += center;
+	    for (uint32_t j(0u); j != 2; ++j)
+	      data.emplace_back(position[j]);
+	    data.emplace_back(corner[i * 2]);
+	    data.emplace_back((corner[i * 2 + 1] + float(rotatedAnim.frame)) / float(spriteManager[spriteId].imageCount));
+	  }
+      }
+    glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), data.data(), GL_STATIC_DRAW);
+    opengl::setUniform(dim, "dim", textureContext.program);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, spriteManager[spriteId].texture);
+    opengl::setUniform(0u, "tex", textureContext.program);
+    glDrawArrays(GL_TRIANGLES, 0, uint32_t(rotatedAnims.size() * 6));
+  }
+}
+
+
 void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &strTime)
 {
   uint32_t hps = uint32_t((bigWaspSize - BigWasp::minSize) * 10000);
@@ -304,15 +350,18 @@ void Display::render(DisplayData const &data)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   //do final render here
-  glClearColor(0.15f, 0.08f, 0.1f, 1.0f);
+  glClearColor(0.15f, 0.08f, 0.1f, 0.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   if (data.bigWasp)
     renderBigWasp(*data.bigWasp);
-  if (!data.bullets.empty())
-    renderBullets(data.bullets);
   for (size_t i(0u); i < data.anims.size(); ++i)
     if (!data.anims[i].empty())
       renderAnims(data.anims[i], SpriteId(i));
+  for (size_t i(0u); i < data.rotatedAnims.size(); ++i)
+    if (!data.rotatedAnims[i].empty())
+      renderRotatedAnims(data.rotatedAnims[i], SpriteId(i));
+  if (!data.colors.empty())
+    renderColors(data.colors);
   if (data.smolWasp)
     renderSmolWasp(*data.smolWasp);
   renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore, data.stringedTime);

@@ -29,6 +29,9 @@ inline Animation getAnimation()
     case SpriteId::WaspLegs:
       return loadAnim("resources/wasp legs.bmp", 1);
       break;
+    case SpriteId::FlamingShot:
+      return loadAnim("resources/fireball-spriteSheet.bmp", 5);
+      break;
     default:
       assert("missing animation definition");
     }
@@ -44,7 +47,6 @@ Animation const &SpriteManager::operator[](SpriteId spriteId) const noexcept
 {
   return animations[uint32_t(spriteId)];
 }
-
 
 SpriteManager::SpriteManager()
   : SpriteManager(std::make_index_sequence<size_t(SpriteId::SpriteCount)>())

@@ -13,6 +13,18 @@ struct AnimInfo
   uint32_t frame;
 };
 
+struct RotatedAnimInfo : public AnimInfo
+{
+  claws::vect<float, 2u> dir;
+};
+
+struct ColorInfo
+{
+  claws::vect<float, 2u> destMin;
+  claws::vect<float, 2u> destMax;
+  claws::vect<float, 4u> color;
+};
+
 struct DisplayData
 {
   std::optional<BigWasp> bigWasp{};
@@ -20,6 +32,7 @@ struct DisplayData
   bool gameOverHud{false};
   std::string stringedTime;
   uint32_t gameScore;
-  std::vector<BulletInfo> bullets{};
+  std::vector<ColorInfo> colors{};
   std::array<std::vector<AnimInfo>, size_t(SpriteId::SpriteCount)> anims;
+  std::array<std::vector<RotatedAnimInfo>, size_t(SpriteId::SpriteCount)> rotatedAnims;
 };
