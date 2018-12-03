@@ -79,9 +79,9 @@ namespace state
 								     {
 								       if (bigWasp.invulnFrames <= 0.0f)
 									 {
-									   SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit);
-									   bigWasp.invulnFrames = maxInvuln;
-									   bigWasp.size *= BigWasp::hitPenality;
+                     bigWasp.invulnFrames = maxInvuln;
+                     bigWasp.size *= BigWasp::hitPenality;
+									   SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit, 2 / bigWasp.size / 100);
 									   for (auto &entity : bigWasp.entities)
 									     entity.size *= BigWasp::hitPenality;
 									 }
@@ -91,7 +91,9 @@ namespace state
 							       {
 								 if (mob.size < bigWasp.size)
 								   {
-								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
+                     // std::cout << mob.size / bigWasp.size << std::endl;
+                     // std::cout << bigWasp.size / mob.size  << std::endl;
+								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit, mob.size / bigWasp.size);
 								     mob.dead = true;
 								     gameScore += uint32_t((mob.size / bigWasp.size + 0.1f) * 2000);
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
