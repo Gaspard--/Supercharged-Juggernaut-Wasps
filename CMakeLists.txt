@@ -12,6 +12,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules" ${CMAKE_MODULE_PATH})
 
 set(HEADER_DIRECTORY "include")
 set(SOURCE_DIRECTORY "source")
+set(RESOURCES_DIRECTORY "resources")
+set(SHADERS_DIRECTORY "shaders")
 
 if (WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
@@ -74,3 +76,5 @@ endif(WIN32)
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_gl_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${GLFW_STATIC_LIBRARIES})
+file(COPY ${SHADERS_DIRECTORY} DESTINATION .)
+file(COPY ${RESOURCES_DIRECTORY} DESTINATION .)
