@@ -14,7 +14,6 @@ namespace state
   {
     for (uint32_t i(0); i < 1000; ++i)
       bigWasp.update(1);
-    std::cout << bigWasp.size << std::endl;
     for (auto i = jsButtonWasPressed.begin() ; i != jsButtonWasPressed.end() ; ++i)
       *i = false;
   }
@@ -107,15 +106,15 @@ namespace state
       {
 	for (float i(0.1f); i < spreadMax; i += 1.0f)
 	  {
-	    gameState.bullets.emplace_back(0.007f,
+	    gameState.bullets.emplace_back(0.01f,
 					   mob.position,
 					   claws::vect<float, 2u>{i * 0.0004f, -0.0006f * (5.0F - i)},
-					   claws::vect{0.0f, 1.0f, 1.0f, 1.0f},
+					   SpriteId::Fireball,
 					   std::make_unique<NoPattern>());
-	    gameState.bullets.emplace_back(0.007f,
+	    gameState.bullets.emplace_back(0.01f,
 					   mob.position,
 					   claws::vect<float, 2u>{-i * 0.0004f, -0.0006f * (5.0F - i)},
-					   claws::vect{0.0f, 1.0f, 1.0f, 1.0f},
+					   SpriteId::Fireball,
 					   std::make_unique<NoPattern>());
 	  }
       }
@@ -126,7 +125,7 @@ namespace state
 	mobs.emplace_back(0.01f * power,
 			  claws::vect<float, 2u>{-1.0f, 0.99f},
 			  claws::vect<float, 2u>{0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
-			  SpriteId::SmolWaspIdle,
+			  SpriteId::Libeflux,
 			  Behavior::NoRotation,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
@@ -136,7 +135,7 @@ namespace state
 	mobs.emplace_back(0.01f * power,
 			  claws::vect<float, 2u>{1.0f, 0.99f},
 			  claws::vect<float, 2u>{-0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
-			  SpriteId::SmolWaspIdle,
+			  SpriteId::Libeflux,
 			  Behavior::NoRotation,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
@@ -152,8 +151,7 @@ namespace state
 	gameState.bullets.emplace_back(0.01f,
 				       mob.position,
 				       claws::vect<float, 2u>{sin(angle), cos(angle)} * 0.002f,
-				       SpriteId::FlamingShot,
-				       // claws::vect{1.0f, 0.0f, 0.5f, 1.0f},
+				       claws::vect{1.0f, 0.0f, 0.5f, 1.0f},
 				       std::make_unique<NoPattern>());
       }
     };
@@ -162,7 +160,7 @@ namespace state
 	mobs.emplace_back(0.05f,
 			  claws::vect<float, 2u>{-0.9f + float(rand() % 19) * 0.1f, 0.99f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
-			  SpriteId::SmolWaspIdle,
+			  SpriteId::Monarch,
 			  Behavior::NoRotation,
 			  std::make_unique<RepetitiveShotAi<RotateShots>>(30.0f));
       }

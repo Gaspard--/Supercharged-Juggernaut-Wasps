@@ -173,7 +173,7 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
     glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
 
     {
-      float animationFrameCount(float(spriteManager[SpriteId::SmolWaspIdle].imageCount));
+      float animationFrameCount(float(spriteManager[SpriteId::SmolWasp].imageCount));
       float animationOffset(float(uint32_t(smolWasp.animationFrame)));
       std::array<float, 16> data{{-1.0f, -1.0f, 0.0f, 0.0f,
 				  1.0f, -1.0f, 1.0f, 0.0f,
@@ -192,7 +192,7 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
     }
     opengl::setUniform(dim, "dim", textureContext.program);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, spriteManager[SpriteId::SmolWaspIdle].texture);
+    glBindTexture(GL_TEXTURE_2D, spriteManager[SpriteId::SmolWasp].texture);
     opengl::setUniform(0u, "tex", textureContext.program);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   }
@@ -346,6 +346,13 @@ void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &st
   renderText("Time  : " + strTime, 1000, {0.025f, 0.05f}, {0.62f / dim[0], 0.655f}, {1.0f, 1.0f, 1.0f});
 }
 
+void Display::renderGameOver(uint32_t score, std::string const &strTime)
+{
+  renderText("Game Over", 300, {0.03f, 0.05f}, {-0.06f, 0.25f}, {1.0f, 1.0f, 1.0f});
+  renderText("Final Time  " + strTime, 200, {0.015f, 0.025f}, {-0.06f, 0.05f}, {1.0f, 1.0f, 1.0f});
+  renderText("Final Score " + std::to_string(score), 200, {0.015f, 0.025f}, {-0.06f, -0.05f}, {1.0f, 1.0f, 1.0f});
+}
+
 void Display::render(DisplayData const &data)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -365,6 +372,8 @@ void Display::render(DisplayData const &data)
   if (data.smolWasp)
     renderSmolWasp(*data.smolWasp);
   renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore, data.stringedTime);
+  if (data.gameOverHud)
+    renderGameOver(data.gameScore, data.stringedTime);
 }
 
 void Display::resize(claws::vect<uint32_t, 2u> size)

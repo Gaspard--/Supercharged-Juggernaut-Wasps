@@ -2,6 +2,11 @@
 
 #include <iostream>
 
+static constexpr float upperLimit   =  0.99f;
+static constexpr float bottomLimit  = -0.99f;
+static constexpr float rightLimit   =  0.99f;
+static constexpr float leftLimit    = -0.99f;
+
 void BigWasp::update(float gameSpeed) noexcept
 {
   constexpr std::array<float, 3u> const flow{{0.05f, 0.02f, 0.002f}};
@@ -24,7 +29,25 @@ void BigWasp::update(float gameSpeed) noexcept
       entities[i].size = std::sqrt(area[i]);
     }
   speed *= std::pow(0.7f, gameSpeed);
+
+  auto backupPos(entities[0].position);
+
   entities[0].position += speed * gameSpeed;
+
+  if (entities[0].position[0] >  rightLimit || 
+      entities[0].position[0] <   leftLimit)
+  {
+    for (auto it(speed.begin()); it != speed.end(); ++it)
+      it[0] = 0.0f;
+    entities[0].position[0] = backupPos[0];
+  }
+  if (entities[0].position[1] >  upperLimit ||
+      entities[0].position[1] < bottomLimit)
+  {
+    for (auto it(speed.begin()); it != speed.end(); ++it)
+      it[1] = 0.0f;
+    entities[0].position[1] = backupPos[1];
+  }
   for (auto it(entities.begin() + 1); it != entities.end(); ++it)
     {
       it->position[0] += speed[0] * gameSpeed;

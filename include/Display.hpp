@@ -33,6 +33,7 @@ class Display
   void renderRotatedAnims(std::vector<RotatedAnimInfo> const &, SpriteId);
   void renderText(std::string const &txt, unsigned int fontSize, claws::vect<float, 2u> step, claws::vect<float, 2u> textPos, claws::vect<float, 3u> color);
   void renderHud(float bigWaspSize, uint32_t score, std::string const &strTime);
+  void renderGameOver(uint32_t score, std::string const &strTime);
 public:
 
   Display(GLFWwindow&);
