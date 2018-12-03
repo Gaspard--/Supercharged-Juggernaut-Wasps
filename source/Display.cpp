@@ -314,7 +314,7 @@ void Display::renderRotatedAnims(std::vector<RotatedAnimInfo> const &rotatedAnim
 				      0.0f, 1.0f,
 				      1.0f, 1.0f}};
 
-	
+
 	for (uint32_t i(0u); i != 6; ++i)
 	  {
 	    auto position(rotatedAnim.destMax * claws::vect<float, 2u>{corner[i * 2], corner[i * 2 + 1]} +
@@ -341,7 +341,7 @@ void Display::renderRotatedAnims(std::vector<RotatedAnimInfo> const &rotatedAnim
 
 void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &strTime, float timer)
 {
-  
+
   uint32_t hps = uint32_t((std::log(BigWasp::minSize) - std::log(bigWaspSize)) / std::log(BigWasp::hitPenality)) + 1;
   if (bigWaspSize < BigWasp::minSize)
     hps = 0;
@@ -367,9 +367,9 @@ void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &st
 
 void Display::renderGameOver(uint32_t score, std::string const &strTime)
 {
-  renderText("Game Over", 300, {0.07f, 0.07f}, {-0.06f, 0.25f}, {1.0f, 1.0f, 1.0f});
-  renderText("Final Time  " + strTime, 200, {0.05f, 0.05f}, {-0.06f, 0.05f}, {1.0f, 1.0f, 1.0f});
-  renderText("Final Score " + std::to_string(score), 200, {0.05f, 0.05f}, {-0.06f, -0.05f}, {1.0f, 1.0f, 1.0f});
+  renderText("Game Over", 300, {0.07f, 0.07f}, {-0.18f, 0.25f}, {1.0f, 1.0f, 1.0f});
+  renderText("Final Time  " + strTime, 200, {0.05f, 0.05f}, {-0.18f, 0.05f}, {1.0f, 1.0f, 1.0f});
+  renderText("Final Score " + std::to_string(score), 200, {0.05f, 0.05f}, {-0.18f, -0.05f}, {1.0f, 1.0f, 1.0f});
 }
 
 void Display::render(DisplayData const &data)
