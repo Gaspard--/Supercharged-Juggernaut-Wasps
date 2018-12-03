@@ -379,6 +379,8 @@ void Display::renderDeadScreen(const std::vector<std::pair<std::string, std::str
   for (auto i = fellows.begin() ; i != fellows.end() ; ++i) {
     renderText(i->first + " " + i->second, 200, {0.05f, 0.05f}, {-1.8f, y}, {1.0f, 1.0f, 1.0f});
     y -= 0.05f;
+    if (y <= -1.0f)
+      break;
   }
 }
 

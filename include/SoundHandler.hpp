@@ -10,7 +10,9 @@ public:
   enum sfxList
   {
     waspTakeHit,
-    mobTakeHit
+    mobTakeHit,
+    smolWaspExist,
+    gibSplosion
   };
 
   static void initSoundHandler();
@@ -20,9 +22,10 @@ public:
   float sfxPitch{100.0f};
 
   void playMainMusic();
-  void playSound(sfxList, float = 100.0f);
+  void playSound(sfxList, float = -1.0f, float = 100.0f);
   void deleteSounds();
   void addSoundBuffer(sfxList, std::string const&);
+  void deleteLoopingSound();
   sf::SoundBuffer* getSoundBuffer(sfxList) const;
 
   void setGlobalPitch(float pitch);
@@ -36,7 +39,7 @@ private:
   sf::Music mainMusic;
   std::map<sfxList, sf::SoundBuffer*> _sound;
   std::vector<std::unique_ptr<sf::Sound>> _soundsPlaying;
-
+  std::unique_ptr<sf::Sound> _soundLooping{nullptr};
 };
 
 #endif

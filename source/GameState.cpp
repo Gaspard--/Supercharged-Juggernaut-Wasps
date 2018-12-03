@@ -31,6 +31,8 @@ namespace state
 
     Entity entity{power, position};
 
+    SoundHandler::getInstance().playSound(SoundHandler::sfxList::gibSplosion, 5.0f);
+
     physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [](auto &entity, Bullet &bullet)
 								      {
 									auto diff(bullet.position - entity.position);
@@ -117,6 +119,7 @@ namespace state
 	  {
 	    explosion(bulletIndexes, smolWasp->position, smolWasp->size * 20.0f);
 	    smolWasp.reset();
+      SoundHandler::getInstance().deleteLoopingSound();
 	  }
       }
   }
@@ -303,7 +306,7 @@ namespace state
 			  Behavior::LookAtPlayer,
 			  std::make_unique<BossAi>());
       }
-      
+
   }
 
   StateType GameState::update(unsigned int &)
@@ -441,12 +444,13 @@ namespace state
   void GameState::makeSmolExplode()
   {
     smolWasp->dieCounter = true;
-    deadFellows.push_back(std::make_pair(DeadFellows::firstName[rand() % DeadFellows::firstName.size()], DeadFellows::name[rand() % DeadFellows::name.size()]));
-    std::cout << "Requiescat In Pace " << deadFellows.back().first << " " << deadFellows.back().second << " :'(" << std::endl;
+    deadFellows.insert(deadFellows.begin(), std::make_pair(DeadFellows::firstName[rand() % DeadFellows::firstName.size()], DeadFellows::name[rand() % DeadFellows::name.size()]));
+    std::cout << "Requiescat In Pace " << deadFellows.front().first << " " << deadFellows.front().second << " :'(" << std::endl;
   }
 
   void GameState::spawnSmol()
   {
+    SoundHandler::getInstance().playSound(SoundHandler::sfxList::smolWaspExist);
     smolWasp.emplace(SmolWasp{Entity{bigWasp.size * std::sqrt(0.1f), bigWasp.entities[1].position}, {0.0f, 0.0f}});
     bigWasp.size *= std::sqrt(0.9f);
     for (auto &entity : bigWasp.entities)
