@@ -23,11 +23,13 @@ namespace state
     bool joystickInUse{false};
     claws::vect<float, 2u> joystickVect;
     std::array<bool, 1> jsButtonWasPressed;
+    std::vector<Mob> boss;
     uint32_t gameScore{0};
 
     float gameSpeed{1.0f};
     float timer{0.0f};
     float lastSpawn{0.0f};
+    bool bossSpawned{false};
 
     void makeCollisions();
     void spawnWave();

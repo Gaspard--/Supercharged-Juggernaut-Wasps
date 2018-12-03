@@ -11,7 +11,7 @@ namespace state
   static constexpr claws::vect<float, 2u> downRotation{0.0f, -1.0f};
 
   GameState::GameState()
-    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.025f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
+    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.15f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
     for (uint32_t i(0); i < 10000; ++i)
@@ -53,6 +53,10 @@ namespace state
 						       mob.position += diff * 0.002f * entity.size;
 						       mob.size *= 0.9f;
 						     });
+    physic::checkCollisionsEntities(entity, boss, [](auto &entity, Mob &mob)
+						  {
+						    mob.size *= 0.9f;
+						  });
   }
 
   void GameState::makeCollisions()
@@ -80,9 +84,19 @@ namespace state
 									     entity.size *= BigWasp::hitPenality;
 									 }
 								       bullet.dead = true;
-								       std::cout << "hit!" << std::endl;
 								     });
     physic::checkCollisionsEntities(bigWasp.entities[0], mobs, [this](auto &, Mob &mob)
+							       {
+								 if (mob.size < bigWasp.size)
+								   {
+								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
+								     mob.dead = true;
+								     gameScore += uint32_t(mob.size / bigWasp.size * 100);
+								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
+								     bigWasp.entities[0].size += delta;
+								   }
+							       });
+    physic::checkCollisionsEntities(bigWasp.entities[0], boss, [this](auto &, Mob &mob)
 							       {
 								 if (mob.size < bigWasp.size)
 								   {
@@ -135,10 +149,12 @@ namespace state
 	  }
       }
     };
+    float size(std::sqrt(float(rand() % 16 + 1)));
+    float power(boss.empty() ? size : size * 0.5f); // mobs are less strong when boss is there
+
     if (rand() % 24 == 0)
       {
-        float power(float(rand() % 4 + 1));
-	mobs.emplace_back(0.01f * power,
+	mobs.emplace_back(0.01f * size,
 			  claws::vect<float, 2u>{-1.0f, 0.99f},
 			  claws::vect<float, 2u>{0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
 			  SpriteId::Libeflux,
@@ -147,8 +163,7 @@ namespace state
       }
     if (rand() % 24 == 0)
       {
-        float power(float(rand() % 4 + 1));
-	mobs.emplace_back(0.01f * power,
+    	mobs.emplace_back(0.01f * size,
 			  claws::vect<float, 2u>{1.0f, 0.99f},
 			  claws::vect<float, 2u>{-0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
 			  SpriteId::Libeflux,
@@ -173,13 +188,84 @@ namespace state
     };
     if (rand() % 24 == 0)
       {
-	mobs.emplace_back(0.05f,
+	mobs.emplace_back(0.08f,
 			  claws::vect<float, 2u>{-0.9f + float(rand() % 19) * 0.1f, 0.99f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  SpriteId::Monarch,
 			  Behavior::LookDown,
-			  std::make_unique<RepetitiveShotAi<RotateShots>>(30.0f));
+			  std::make_unique<RepetitiveShotAi<RotateShots>>(boss.empty() ? 30.0f : 120.0f)); // lower fire rate when boss present
       }
+    class BossAi : public AI
+    {
+      float time{0.0f};
+      float interval;
+      uint32_t phaseCounter{0u};
+      uint32_t phase{0u};
+
+    public:
+      BossAi(float interval)
+	: interval(interval)
+      {
+      }
+
+      virtual void update(Mob &mob, state::GameState &gameState) override
+      {
+	auto speed(gameState.bigWasp.entities[1].position - mob.position);
+	claws::vect<float, 2u> side({speed[1], -speed[0]});
+	if (time > interval)
+	  {
+	    if (!(++phaseCounter %= 10))
+	      ++phase %= 2;
+	    switch(phase)
+	      {
+	      case 0:
+		for (float i(0.1f); i < 2.5; i += 1.0f)
+		  {
+		    gameState.bullets.emplace_back(0.04f,
+						   mob.position,
+						   side * i * 0.0004f + speed * 0.0006f * (5.0f - i),
+						   SpriteId::Fireball,
+						   std::make_unique<NoPattern>());
+		    gameState.bullets.emplace_back(0.04f,
+						   mob.position,
+						   -side * i * 0.0004f + speed * 0.0006f * (5.0f - i),
+						   SpriteId::Fireball,
+						   std::make_unique<NoPattern>());
+		  }
+		break;
+	      case 1:
+		gameState.bullets.emplace_back(0.02f,
+					       mob.position,
+					       speed * 0.012f,
+					       SpriteId::Fireball,
+					       std::make_unique<NoPattern>());
+		break;
+
+	      }
+	    time -= interval;
+	  }
+	time += gameState.getGameSpeed();
+	mob.speed *= std::pow(0.9f, gameState.getGameSpeed());
+	mob.speed += speed * 0.0001f * gameState.getGameSpeed();
+      }
+    };
+
+
+    if (!bossSpawned && bigWasp.size > 0.15f)
+      {
+	bossSpawned = true;
+	for (auto &mob : mobs)
+	  {
+	    mob.speed += mob.position * 0.01f / mob.position.length2();
+	  }
+	boss.emplace_back(0.2f,
+			  claws::vect<float, 2u>{0.0f, 1.2f},
+			  claws::vect<float, 2u>{0.0f, -0.0007f},
+			  SpriteId::SmolWasp,
+			  Behavior::LookAtPlayer,
+			  std::make_unique<BossAi>(50.0f));
+      }
+      
   }
 
   StateType GameState::update(unsigned int &time)
@@ -223,6 +309,8 @@ namespace state
       smolWasp->position += smolWasp->speed * getGameSpeed();
     for (auto &mob : mobs)
       mob.update(*this);
+    for (auto &mob : boss)
+      mob.update(*this);
     for (auto &bullet : bullets)
       bullet.update(getGameSpeed());
     makeCollisions();
@@ -244,6 +332,10 @@ namespace state
 							      return true;
 							  return false;
 							}), mobs.end());
+    boss.erase(std::remove_if(boss.begin(), boss.end(), [](Mob const &mob)
+							{
+							  return mob.dead;
+							}), boss.end());
     if (bigWasp.size < BigWasp::minSize)
       return GAME_OVER_STATE;
     return StateType::CONTINUE;
@@ -323,55 +415,59 @@ namespace state
     displayData.timer = timer;
     for (auto const &bullet : bullets)
       std::visit([&](auto const &renderData)
-	{
-	  if constexpr (std::is_same_v<std::decay_t<decltype(renderData)>, BulletSprite>)
-	    displayData.rotatedAnims[size_t(renderData.spriteId)].emplace_back(RotatedAnimInfo{{bullet.position - bullet.size * 2.0f,
-												bullet.position + bullet.size * 2.0f,
-												uint32_t(renderData.frame)},
-											       bullet.speed});
-	  else
-	    displayData.colors.emplace_back(ColorInfo{bullet.position - bullet.size,
-						      bullet.position + bullet.size,
-						      renderData});
-	}, bullet.renderData);
+		 {
+		   if constexpr (std::is_same_v<std::decay_t<decltype(renderData)>, BulletSprite>)
+		     displayData.rotatedAnims[size_t(renderData.spriteId)].emplace_back(RotatedAnimInfo{{bullet.position - bullet.size * 2.0f,
+													 bullet.position + bullet.size * 2.0f,
+													 uint32_t(renderData.frame)},
+													bullet.speed});
+		   else
+		     displayData.colors.emplace_back(ColorInfo{bullet.position - bullet.size,
+							       bullet.position + bullet.size,
+							       renderData});
+		 }, bullet.renderData);
+    auto mobConvert([&](auto const &mob)
+		    {
+		      switch (mob.behavior)
+			{
+			case Behavior::NoRotation:
+			  displayData.anims[size_t(mob.spriteId)].emplace_back(AnimInfo{mob.position - mob.size * 2.0f,
+											mob.position + mob.size * 2.0f,
+											uint32_t(mob.animationFrame)});
+			  break;
+			case Behavior::LookForward:
+			  displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
+												       mob.position + mob.size * 2.0f,
+												       uint32_t(mob.animationFrame)}, mob.speed});
+			  break;
+			case Behavior::LookAtPlayer:
+			  displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
+												       mob.position + mob.size * 2.0f,
+												       uint32_t(mob.animationFrame)},
+												      mob.position - bigWasp.entities[1].position});
+			  break;
+			case Behavior::LookDown: // 180.0f, 0.0f
+			  displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
+												       mob.position + mob.size * 2.0f,
+												       uint32_t(mob.animationFrame)},
+												      downRotation});
+			  break;
+			default:
+			  ;
+			}
+		      if (mob.size < bigWasp.size)
+			{
+			  claws::vect<float, 2u> offset(0.0f, (std::sin(mob.animationFrame * 0.4f) + 1.0f) * mob.size * 0.2f);
+			  displayData.rotatedAnims[size_t(SpriteId::Target)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f + offset,
+													   mob.position + mob.size * 2.0f + offset,
+													   uint32_t(mob.animationFrame)},
+													  claws::vect<float, 2>{std::sin(mob.animationFrame * 0.1f), cos(mob.animationFrame * 0.1f)}
+			    });
+			}
+		    });
     for (auto const &mob : mobs)
-      {
-	switch (mob.behavior)
-	  {
-	  case Behavior::NoRotation:
-	    displayData.anims[size_t(mob.spriteId)].emplace_back(AnimInfo{mob.position - mob.size * 2.0f,
-									  mob.position + mob.size * 2.0f,
-									  uint32_t(mob.animationFrame)});
-	    break;
-	  case Behavior::LookForward:
-	    displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
-											 mob.position + mob.size * 2.0f,
-											 uint32_t(mob.animationFrame)}, mob.speed});
-	    break;
-	  case Behavior::LookAtPlayer:
-	    displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
-											 mob.position + mob.size * 2.0f,
-											 uint32_t(mob.animationFrame)},
-											mob.position - bigWasp.entities[1].position});
-	    break;
-    case Behavior::LookDown: // 180.0f, 0.0f
-      displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
-                       mob.position + mob.size * 2.0f,
-                       uint32_t(mob.animationFrame)},
-                       downRotation});
-      break;
-	  default:
-	    ;
-	  }
-	if (mob.size < bigWasp.size)
-	  {
-	    claws::vect<float, 2u> offset(0.0f, (std::sin(mob.animationFrame * 0.4f) + 1.0f) * mob.size * 0.2f);
-	    displayData.rotatedAnims[size_t(SpriteId::Target)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f + offset,
-											     mob.position + mob.size * 2.0f + offset,
-											     uint32_t(mob.animationFrame)},
-											    claws::vect<float, 2>{std::sin(mob.animationFrame * 0.1f), cos(mob.animationFrame * 0.1f)}
-	      });
-	  }
-      }
+      mobConvert(mob);
+    for (auto const &mob : boss)
+      mobConvert(mob);
   }
 }
