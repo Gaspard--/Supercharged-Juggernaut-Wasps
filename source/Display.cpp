@@ -202,6 +202,9 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
 void Display::renderBigWasp(BigWasp const &bigWasp)
 {
   {
+    renderSingleAnim({bigWasp.entities[1].position - bigWasp.size * 2.5f,
+		      bigWasp.entities[1].position + bigWasp.size * 2.5f,
+		      0}, SpriteId::WaspLegs);
     renderSingleAnim({bigWasp.entities[0].position - bigWasp.entities[0].size,
 		      bigWasp.entities[0].position + bigWasp.entities[0].size,
 		      0}, SpriteId::WaspHead);

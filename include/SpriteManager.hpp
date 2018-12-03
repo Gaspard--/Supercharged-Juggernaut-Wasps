@@ -10,6 +10,7 @@ enum class SpriteId : uint32_t
    WaspAbdomen,
    WaspBody,
    WaspHead,
+   WaspLegs,
    SpriteCount
   };
 
