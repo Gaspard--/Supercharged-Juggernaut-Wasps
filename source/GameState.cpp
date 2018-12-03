@@ -57,7 +57,7 @@ namespace state
 								   {
 								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
 								     mob.dead = true;
-								     gameScore += uint32_t(mob.size / bigWasp.size) * 1000;
+								     gameScore += uint32_t(mob.size / bigWasp.size * 100);
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
 								   }
@@ -164,7 +164,7 @@ namespace state
       }
   }
 
-  StateType GameState::update()
+  StateType GameState::update(unsigned int time)
   {
     gameSpeed *= 0.98f;
     gameSpeed += 0.02f * (smolWasp ? 0.3f : 1.0f);
@@ -226,7 +226,9 @@ namespace state
 							      return true;
 							  return false;
 							}), mobs.end());
-    // TODO: if (bigWasp.size < 0.1) gameover
+    if (!(time % 500))
+      gameScore += uint32_t(bigWasp.size * 1000.f);
+    // TODO: if (bigWasp.size < bigWasp::minSize) gameover
     return StateType::CONTINUE;
   }
 

@@ -15,6 +15,8 @@ class Logic
                                  std::chrono::high_resolution_clock,
                                  std::chrono::steady_clock>::type;
 
+  unsigned int time;
+
   decltype(Clock::now()) lastUpdate;
 
   static constexpr std::chrono::microseconds const getTickTime()
@@ -32,6 +34,8 @@ class Logic
 public:
 
   Logic();
+
+  std::string getTime(void) const;
 
   void tick(std::mutex &lock);
   void handleEvent(input::Input const &display, input::Event const& event);

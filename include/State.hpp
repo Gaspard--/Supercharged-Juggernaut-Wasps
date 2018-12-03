@@ -18,7 +18,7 @@ namespace state
 
   public:
     virtual ~State() = default;
-    virtual StateType update() = 0;
+    virtual StateType update(unsigned int time) = 0;
     virtual void handleKey(GLFWwindow *window, input::Key key) = 0;
     virtual void handleMouse(input::Input const &, GLFWwindow *window, input::Mouse mouse) = 0;
     virtual void handleButton(GLFWwindow *window, input::Button button) = 0;

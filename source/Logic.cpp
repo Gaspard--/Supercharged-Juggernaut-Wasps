@@ -11,6 +11,22 @@ Logic::Logic()
   , state(new state::GameState())
 {}
 
+std::string Logic::getTime(void) const
+{
+  auto secondTime((time * getTickTime().count()) / 1000000);
+  std::string   toReturn;
+
+  if (secondTime / 60 >= 10)
+    toReturn = std::to_string(secondTime / 60) + " m ";
+  else if (secondTime / 60)
+    toReturn = "0" + std::to_string(secondTime / 60) + " m ";
+  if ((secondTime) % 60 >= 10)
+    toReturn += std::to_string((secondTime) % 60) + " s";
+  else
+    toReturn += "0" + std::to_string((secondTime) % 60) + " s";
+  return (toReturn);
+}
+
 void Logic::tick(std::mutex &lock)
 {
   auto const now(Clock::now());
@@ -26,7 +42,8 @@ void Logic::tick(std::mutex &lock)
 
   {
     std::lock_guard<std::mutex> scopedLock(lock);
-    state::StateType type = state->update();
+    time++;
+    state::StateType type = state->update(time);
     switch (type)
       {
         case state::GAME_STATE:

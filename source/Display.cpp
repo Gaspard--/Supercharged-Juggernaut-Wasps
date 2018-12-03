@@ -289,6 +289,16 @@ void Display::renderAnims(std::vector<AnimInfo> const &anims, SpriteId spriteId)
   }
 }
 
+void Display::renderHud(float bigWaspSize, uint32_t score)
+{
+  uint32_t hps = uint32_t((bigWaspSize - BigWasp::minSize) * 10000);
+  if (bigWaspSize < BigWasp::minSize)
+    hps = 0;
+
+  renderText("Hps " + std::to_string(hps), 256, {0.03f, 0.05f}, {0.60f / dim[0], 0.855f}, {1.0f, 1.0f, 1.0f});
+  renderText("Score " + std::to_string(score), 256, {0.03f, 0.05f}, {0.60f / dim[0], 0.755f}, {1.0f, 1.0f, 1.0f});
+}
+
 void Display::render(DisplayData const &data)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -304,6 +314,7 @@ void Display::render(DisplayData const &data)
       renderAnims(data.anims[i], SpriteId(i));
   if (data.smolWasp)
     renderSmolWasp(*data.smolWasp);
+  renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore);
 }
 
 void Display::resize(claws::vect<uint32_t, 2u> size)
