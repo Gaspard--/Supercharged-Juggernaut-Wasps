@@ -264,7 +264,7 @@ namespace state
 			  Behavior::LookAtPlayer,
 			  std::make_unique<BossAi>(50.0f));
       }
-      
+
   }
 
   StateType GameState::update(unsigned int &)
@@ -402,8 +402,8 @@ namespace state
   void GameState::makeSmolExplode()
   {
     smolWasp->dieCounter = true;
-    deadFellows.push_back(std::make_pair(DeadFellows::firstName[rand() % DeadFellows::firstName.size()], DeadFellows::name[rand() % DeadFellows::name.size()]));
-    std::cout << "Requiescat In Pace " << deadFellows.back().first << " " << deadFellows.back().second << " :'(" << std::endl;
+    deadFellows.insert(deadFellows.begin(), std::make_pair(DeadFellows::firstName[rand() % DeadFellows::firstName.size()], DeadFellows::name[rand() % DeadFellows::name.size()]));
+    std::cout << "Requiescat In Pace " << deadFellows.front().first << " " << deadFellows.front().second << " :'(" << std::endl;
   }
 
   void GameState::spawnSmol()
