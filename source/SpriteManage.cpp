@@ -23,6 +23,9 @@ inline Animation getAnimation()
     case SpriteId::WaspBody:
       return loadAnim("resources/wasp body.bmp", 1);
       break;
+    case SpriteId::WaspHead:
+      return loadAnim("resources/wasp head.bmp", 1);
+      break;
     default:
       assert("missing animation definition");
     }
