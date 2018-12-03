@@ -11,7 +11,7 @@ namespace state
   static constexpr claws::vect<float, 2u> downRotation{0.0f, -1.0f};
 
   GameState::GameState()
-    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.15f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
+    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.025f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
     for (uint32_t i(0); i < 10000; ++i)
@@ -267,14 +267,14 @@ namespace state
 		time += 10.0f;
 		break;
 	      case 4:
-		for (float i(0.1f); i < 2.5; i += 1.0f)
+		for (float i(0.1f); i < 1.5; i += 1.0f)
 		  {
-		    gameState.bullets.emplace_back(0.01f,
+		    gameState.bullets.emplace_back(0.02f,
 						   mob.position,
 						   side * i * 0.0004f + speed * 0.0024f * (5.0f - i),
 						   SpriteId::Fireball,
 						   std::make_unique<SinCos>(i * 0.1f, 0.5f));
-		    gameState.bullets.emplace_back(0.01f,
+		    gameState.bullets.emplace_back(0.02f,
 						   mob.position,
 						   -side * i * 0.0004f + speed * 0.0024f * (5.0f - i),
 						   SpriteId::Fireball,
@@ -292,14 +292,14 @@ namespace state
     };
 
 
-    if (!bossSpawned && bigWasp.size > 0.15f)
+    if (!bossSpawned && bigWasp.size > 0.12f)
       {
 	bossSpawned = true;
 	for (auto &mob : mobs)
 	  {
 	    mob.speed += mob.position * 0.01f / mob.position.length2();
 	  }
-	boss.emplace_back(0.2f,
+	boss.emplace_back(0.15f,
 			  claws::vect<float, 2u>{0.0f, 1.2f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  SpriteId::SmolWasp,
