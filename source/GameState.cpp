@@ -449,7 +449,7 @@ namespace state
 			  displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,
 												       mob.position + mob.size * 2.0f,
 												       uint32_t(mob.animationFrame)},
-												      mob.position - bigWasp.entities[1].position});
+												      bigWasp.entities[1].position - mob.position});
 			  break;
 			case Behavior::LookDown: // 180.0f, 0.0f
 			  displayData.rotatedAnims[size_t(mob.spriteId)].emplace_back(RotatedAnimInfo{{mob.position - mob.size * 2.0f,

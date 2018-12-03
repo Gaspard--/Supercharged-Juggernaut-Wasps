@@ -213,10 +213,10 @@ void Display::renderBigWasp(BigWasp const &bigWasp)
     renderSingleAnim({bigWasp.entities[2].position - bigWasp.entities[2].size,
 		      bigWasp.entities[2].position + bigWasp.entities[2].size,
 		      0}, SpriteId::WaspAbdomen);
-    claws::vect<float, 2u> offset{0.0f, -bigWasp.size * 1.5};
+    claws::vect<float, 2u> offset{0.0f, -bigWasp.size * 1.5f};
     renderSingleAnim({bigWasp.entities[1].position - bigWasp.size * 2.5f + offset,
 		      bigWasp.entities[1].position + bigWasp.size * 2.5f + offset,
-		      bigWasp.frame}, SpriteId::WaspWing);
+		      uint32_t(bigWasp.frame)}, SpriteId::WaspWing);
   }
 }
 
