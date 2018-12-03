@@ -15,7 +15,7 @@ inline Animation getAnimation()
   switch (SpriteId(index))
     {
     case SpriteId::SmolWaspIdle:
-      return loadAnim("resources/bigWasp-spritesheet.bmp", 4);
+      return loadAnim("resources/bigWasp-spritesheet-test.bmp", 4);
       break;
     case SpriteId::WaspAbdomen:
       return loadAnim("resources/wasp abdomen mirrored.bmp", 1);
@@ -28,6 +28,18 @@ inline Animation getAnimation()
       break;
     case SpriteId::WaspLegs:
       return loadAnim("resources/wasp legs.bmp", 1);
+      break;
+    case SpriteId::GibSplosion:
+      return loadAnim("resources/gib-spriteSheet.bmp", 3);
+      break;
+    case SpriteId::Monarch:
+      return loadAnim("resources/monarch-spriteSheet.bmp", 7);
+      break;
+    case SpriteId::Libeflux:
+      return loadAnim("resources/libeflux-spriteSheet.bmp", 16);
+      break;
+    case SpriteId::Fireball:
+      return loadAnim("resources/fireball-spriteSheet.bmp", 5);
       break;
     default:
       assert("missing animation definition");

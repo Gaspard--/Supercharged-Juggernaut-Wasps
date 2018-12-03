@@ -44,7 +44,7 @@ namespace state
 									 {
 									   SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit);
 									   bigWasp.invulnFrames = maxInvuln;
-									   bigWasp.size *= std::sqrt(0.5f);
+									   // bigWasp.size *= std::sqrt(0.5f);
 									   for (auto &entity : bigWasp.entities)
 									     entity.size *= std::sqrt(0.5f);
 									 }
@@ -59,6 +59,7 @@ namespace state
 								     mob.dead = true;
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
+                     mob.spriteId = SpriteId::GibSplosion;
 								   }
 							       });
     if (smolWasp)
@@ -125,7 +126,7 @@ namespace state
 	mobs.emplace_back(0.01f * power,
 			  claws::vect<float, 2u>{-1.0f, 0.99f},
 			  claws::vect<float, 2u>{0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
-			  SpriteId::SmolWaspIdle,
+			  SpriteId::Monarch,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
     if (rand() % 24 == 0)
@@ -134,7 +135,7 @@ namespace state
 	mobs.emplace_back(0.01f * power,
 			  claws::vect<float, 2u>{1.0f, 0.99f},
 			  claws::vect<float, 2u>{-0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
-			  SpriteId::SmolWaspIdle,
+			  SpriteId::Monarch,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
     class RotateShots
@@ -158,7 +159,7 @@ namespace state
 	mobs.emplace_back(0.05f,
 			  claws::vect<float, 2u>{-0.9f + float(rand() % 19) * 0.1f, 0.99f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
-			  SpriteId::SmolWaspIdle,
+			  SpriteId::Libeflux,
 			  std::make_unique<RepetitiveShotAi<RotateShots>>(30.0f));
       }
   }
@@ -290,9 +291,11 @@ namespace state
   void GameState::spawnSmol()
   {
     smolWasp.emplace(SmolWasp{Entity{bigWasp.size * std::sqrt(0.1f), bigWasp.entities[1].position}, {0.0f, 0.0f}});
-    bigWasp.size *= std::sqrt(0.9f);
+    // bigWasp.size *= std::sqrt(0.9f);
+    bigWasp.size *= 1.1f;
     for (auto &entity : bigWasp.entities)
-      entity.size *= std::sqrt(0.9f);
+      entity.size *= 1.1f;
+      // entity.size *= std::sqrt(0.9f);
   }
 
   void GameState::getObjectsToRender(DisplayData &displayData)
