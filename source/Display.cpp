@@ -34,6 +34,7 @@ Display::Display(GLFWwindow &window)
   , rectContext(contextFromFiles("rect"))
   , textContext(contextFromFiles("text"))
   , bulletContext(contextFromFiles("bullet"))
+  , fontHandler("./resources/ObelixPro-Broken-cyr.ttf")
 {
   
   {
@@ -120,6 +121,48 @@ void Display::renderSingleAnim(AnimInfo const &anim, SpriteId spriteId)
     glDrawArrays(GL_TRIANGLES, 0, 6);
   }
 
+}
+
+void Display::renderText(std::string const &text, unsigned int fontSize, claws::vect<float, 2u> step, claws::vect<float, 2u> textPos, claws::vect<float, 3u> color)
+{
+  fontHandler.renderText(text, [this, textPos, color](claws::vect<float, 2u> pen, claws::vect<float, 2u> size, unsigned char *buffer, claws::vect<int, 2u> fontDim)
+			       {
+				 opengl::Texture texture;
+				 Bind bind(textContext);
+
+				 glActiveTexture(GL_TEXTURE0);
+				 glBindTexture(GL_TEXTURE_2D, texture);
+				 glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+				 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				 glTexImage2D(GL_TEXTURE_2D,
+					      0,
+					      GL_RED,
+					      fontDim[0],
+					      fontDim[1],
+					      0,
+					      GL_RED,
+					      GL_UNSIGNED_BYTE,
+					      static_cast<void *>(buffer));
+				 float data[16];
+
+				 for (unsigned int i(0); !(i & 4u); ++i)
+				   {
+				     claws::vect<float, 2u> corner{static_cast<float>(i & 1u), static_cast<float>(i >> 1u)};
+				     claws::vect<float, 2u> destCorner(pen + textPos + corner * size);
+
+				     data[i * 4 + 0] = corner[0];
+				     data[i * 4 + 1] = 1.0f - corner[1];
+				     data[i * 4 + 2] = destCorner[0];
+				     data[i * 4 + 3] = destCorner[1];
+				   }
+				 glBindBuffer(GL_ARRAY_BUFFER, textBuffer);
+				 glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
+				 opengl::setUniform(dim, "dim", textContext.program);
+				 opengl::setUniform(color, "textColor", textContext.program);
+				 opengl::setUniform(0u, "tex", textContext.program);
+				 glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			       }, fontSize, step);
 }
 
 void Display::renderSmolWasp(SmolWasp const &smolWasp)
