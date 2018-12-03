@@ -155,7 +155,7 @@ void Display::renderText(std::string const &text, unsigned int fontSize, claws::
 				     data[i * 4 + 1] = destCorner[1];
 				     data[i * 4 + 2] = corner[0];
 				     data[i * 4 + 3] = 1.0f - corner[1];
-				     std::cout << destCorner[0] << ", " << destCorner[1] << std::endl;
+				     // std::cout << destCorner[0] << ", " << destCorner[1] << std::endl;
 				   }
 				 glBindBuffer(GL_ARRAY_BUFFER, textBuffer);
 				 glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
@@ -174,7 +174,7 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
     glBindBuffer(GL_ARRAY_BUFFER, textureBuffer);
 
     {
-      float animationFrameCount(float(spriteManager[SpriteId::SmolWaspIdle].imageCount));
+      float animationFrameCount(float(spriteManager[SpriteId::SmolWasp].imageCount));
       float animationOffset(float(uint32_t(smolWasp.animationFrame)));
       std::array<float, 16> data{{-1.0f, -1.0f, 0.0f, 0.0f,
 				  1.0f, -1.0f, 1.0f, 0.0f,
@@ -193,7 +193,7 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
     }
     opengl::setUniform(dim, "dim", textureContext.program);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, spriteManager[SpriteId::SmolWaspIdle].texture);
+    glBindTexture(GL_TEXTURE_2D, spriteManager[SpriteId::SmolWasp].texture);
     opengl::setUniform(0u, "tex", textureContext.program);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   }

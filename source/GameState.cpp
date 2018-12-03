@@ -14,7 +14,6 @@ namespace state
   {
     for (uint32_t i(0); i < 200; ++i)
       bigWasp.update(1);
-    std::cout << bigWasp.size << std::endl;
     for (auto i = jsButtonWasPressed.begin() ; i != jsButtonWasPressed.end() ; ++i)
       *i = false;
   }
@@ -126,7 +125,7 @@ namespace state
 	mobs.emplace_back(0.01f * power,
 			  claws::vect<float, 2u>{-1.0f, 0.99f},
 			  claws::vect<float, 2u>{0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
-			  SpriteId::SmolWaspIdle,
+			  SpriteId::Monarch,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
     if (rand() % 24 == 0)
@@ -135,7 +134,7 @@ namespace state
 	mobs.emplace_back(0.01f * power,
 			  claws::vect<float, 2u>{1.0f, 0.99f},
 			  claws::vect<float, 2u>{-0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
-			  SpriteId::SmolWaspIdle,
+			  SpriteId::Libeflux,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
     class RotateShots

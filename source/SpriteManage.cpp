@@ -29,6 +29,18 @@ inline Animation getAnimation()
     case SpriteId::WaspLegs:
       return loadAnim("resources/wasp legs.bmp", 1);
       break;
+    case SpriteId::Fireball :
+      return loadAnim("resources/fireball-spriteSheet.bmp", 5);
+      break;
+    case SpriteId::Libeflux :
+      return loadAnim("resources/libeflux-spriteSheet.bmp", 16);
+      break;
+    case SpriteId::Monarch :
+      return loadAnim("resources/monarch-spriteSheet.bmp", 8);
+      break;
+    case SpriteId::SmolWasp :
+      return loadAnim("resources/smolWasp-spriteSheet.bmp", 6);
+      break;
     default:
       assert("missing animation definition");
     }
