@@ -9,6 +9,7 @@
 #include "Wasp.hpp"
 #include "Bullet.hpp"
 #include "Mob.hpp"
+#include "DeadFellows.hpp"
 
 namespace state
 {
@@ -25,6 +26,7 @@ namespace state
     std::array<bool, 1> jsButtonWasPressed;
     std::vector<Mob> boss;
     uint32_t gameScore{0};
+    std::vector<std::pair<std::string, std::string>> deadFellows;
 
     float gameSpeed{1.0f};
     float timer{0.0f};

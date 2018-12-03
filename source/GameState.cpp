@@ -425,6 +425,8 @@ namespace state
   void GameState::makeSmolExplode()
   {
     smolWasp->dieCounter = true;
+    deadFellows.push_back(std::make_pair(DeadFellows::firstName[rand() % DeadFellows::firstName.size()], DeadFellows::name[rand() % DeadFellows::name.size()]));
+    std::cout << "Requiescat In Pace " << deadFellows.back().first << " " << deadFellows.back().second << " :'(" << std::endl;
   }
 
   void GameState::spawnSmol()
@@ -437,6 +439,7 @@ namespace state
 
   void GameState::getObjectsToRender(DisplayData &displayData)
   {
+    displayData.deadFellows = deadFellows;
     displayData.gameScore = gameScore;
     displayData.bigWasp = bigWasp;
     displayData.smolWasp = smolWasp;
