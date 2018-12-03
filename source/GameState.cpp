@@ -72,22 +72,28 @@ namespace state
 	if (smolWasp->dieCounter == 15)
 	  {
 	    static constexpr float noScaleLimit(0.04f);
-	    smolWasp->size = 0.4f;
+	    smolWasp->size *= 20.0f;
 	    physic::checkCollisionsBullets(bulletIndexes, *smolWasp, bullets, [](auto &smolWasp, Bullet &bullet)
 									      {
 										auto diff(bullet.position - smolWasp.position);
 										if (diff.length2() < noScaleLimit * noScaleLimit)
-										  bullet.speed += diff * 0.0006f / (std::sqrt(diff.length2()) * noScaleLimit);
+										  diff /= (std::sqrt(diff.length2()) * noScaleLimit);
 										else
-										  bullet.speed += diff * 0.0006f / diff.length2();
+										  diff /= diff.length2();
+										bullet.speed += diff * 0.001f * smolWasp.size; 
+										bullet.position += diff * 0.002f * smolWasp.size;
 									      });
 	    physic::checkCollisionsEntities(*smolWasp, mobs, [](auto &smolWasp, Mob &mob)
 							     {
 							       auto diff(mob.position - smolWasp.position);
+
 							       if (diff.length2() < noScaleLimit * noScaleLimit)
-								 mob.speed += diff * 0.0003f / (std::sqrt(diff.length2()) * noScaleLimit);
+								 diff /= (std::sqrt(diff.length2()) * noScaleLimit);
 							       else
-								 mob.speed += diff * 0.0003f / (diff.length2());
+								 diff /= diff.length2();
+							       mob.speed += diff * 0.001f * smolWasp.size; 
+							       mob.position += diff * 0.002f * smolWasp.size;
+							       mob.size *= 0.9f;
 							     });
 	    smolWasp.reset();
 	  }

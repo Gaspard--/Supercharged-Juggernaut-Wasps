@@ -184,7 +184,7 @@ void Display::renderSmolWasp(SmolWasp const &smolWasp)
 	{
 	  for (uint32_t j(0u); j != 2; ++j)
 	    {
-	      (data[i * 4 + j] *= 0.03f) += smolWasp.position[j];
+	      (data[i * 4 + j] *= smolWasp.size * 2.0f) += smolWasp.position[j];
 	    }
 	  (data[i * 4 + 3] += animationOffset) /= animationFrameCount;
 	}
