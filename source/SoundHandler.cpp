@@ -10,8 +10,9 @@ void SoundHandler::initSoundHandler()
   _instance.reset(new SoundHandler());
   if (!_instance->mainMusic.openFromFile("resources/Wasp in the frost.wav"))
     throw ("Music not charged");
-  _instance->addSoundBuffer(waspTakeHit, "resources/wasp.ogg");
-  _instance->addSoundBuffer(mobTakeHit, "resources/mobKill.ogg");
+  _instance->addSoundBuffer(waspTakeHit,   "resources/wasp.ogg");
+  _instance->addSoundBuffer(mobTakeHit,    "resources/mobKill.ogg");
+  _instance->addSoundBuffer(smolWaspExist, "resources/smolWasp.ogg");
 }
 
 SoundHandler& SoundHandler::getInstance()
@@ -35,11 +36,31 @@ void SoundHandler::playSound(sfxList id, float volume)
 {
   auto sound = std::make_unique<sf::Sound>();
   sound->setBuffer(*_instance->getSoundBuffer(id));
-  sound->setLoop(false);
+  if (id != smolWaspExist)
+  {
+    sound->setPitch(sfxPitch);
+    sound->setLoop(false);
+  }
+  else
+  {
+    sound->setLoop(true);
+    sound->setPitch(100.0f);
+  }
   sound->setVolume(volume);
-  sound->setPitch(sfxPitch);
   sound->play();
-  _instance->_soundsPlaying.push_back(std::move(sound));
+  if (id != smolWaspExist)
+    _instance->_soundsPlaying.push_back(std::move(sound));
+  else
+  {
+    if (_instance->_soundLooping)
+      _instance->_soundLooping.reset(nullptr);
+    _instance->_soundLooping = std::move(sound);
+  }
+}
+
+void SoundHandler::deleteLoopingSound()
+{
+  _instance->_soundLooping.reset(nullptr);
 }
 
 void SoundHandler::deleteSounds()

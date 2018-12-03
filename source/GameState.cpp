@@ -103,6 +103,7 @@ namespace state
 	  {
 	    explosion(bulletIndexes, smolWasp->position, smolWasp->size * 20.0f);
 	    smolWasp.reset();
+      SoundHandler::getInstance().deleteLoopingSound();
 	  }
       }
   }
@@ -314,6 +315,7 @@ namespace state
 
   void GameState::spawnSmol()
   {
+    SoundHandler::getInstance().playSound(SoundHandler::sfxList::smolWaspExist);
     smolWasp.emplace(SmolWasp{Entity{bigWasp.size * std::sqrt(0.1f), bigWasp.entities[1].position}, {0.0f, 0.0f}});
     bigWasp.size *= std::sqrt(0.9f);
     for (auto &entity : bigWasp.entities)
