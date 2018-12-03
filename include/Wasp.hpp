@@ -9,7 +9,11 @@ static constexpr float maxInvuln  = 100.0f; // time in ms
 struct BigWasp
 {
   static constexpr float minSize = 0.02f;
+#ifdef _WIN32
+  static constexpr float hitPenality = 0.7071067812f;
+#else
   static constexpr float hitPenality = std::sqrt(0.5f);
+#endif
 
   claws::vect<Entity, 3u> entities;
   claws::vect<float, 2u> speed;
