@@ -28,6 +28,7 @@ namespace state
     float gameSpeed{1.0f};
     float timer{0.0f};
     float lastSpawn{0.0f};
+    float lastScore{0.0f};
 
     void makeCollisions();
     void spawnWave();

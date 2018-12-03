@@ -38,7 +38,7 @@ namespace state
 									  diff /= (std::sqrt(diff.length2()) * noScaleLimit);
 									else
 									  diff /= diff.length2();
-									bullet.speed += diff * 0.001f * entity.size; 
+									bullet.speed += diff * 0.001f * entity.size;
 									bullet.position += diff * 0.002f * entity.size;
 								      });
     physic::checkCollisionsEntities(entity, mobs, [](auto &entity, Mob &mob)
@@ -49,7 +49,7 @@ namespace state
 							 diff /= (std::sqrt(diff.length2()) * noScaleLimit);
 						       else
 							 diff /= diff.length2();
-						       mob.speed += diff * 0.001f * entity.size; 
+						       mob.speed += diff * 0.001f * entity.size;
 						       mob.position += diff * 0.002f * entity.size;
 						       mob.size *= 0.9f;
 						     });
@@ -88,7 +88,7 @@ namespace state
 								   {
 								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
 								     mob.dead = true;
-								     gameScore += uint32_t(mob.size / bigWasp.size * 100);
+								     gameScore += uint32_t((mob.size / bigWasp.size + 0.1f) * 2000);
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
 								   }
@@ -109,7 +109,6 @@ namespace state
 
   void GameState::spawnWave()
   {
-    gameScore += uint32_t(bigWasp.size * 1000.f);
     class VShots
     {
       float spreadMax;
@@ -182,19 +181,25 @@ namespace state
       }
   }
 
-  StateType GameState::update(unsigned int &time)
+  StateType GameState::update(unsigned int &)
   {
     gameSpeed *= 0.98f;
     gameSpeed += 0.02f * (smolWasp ? 0.3f : 1.0f);
     SoundHandler::getInstance().setGlobalPitch(getGameSpeed());
 
     constexpr float const spawnInterval{30.0f};
+    constexpr float const scoreInterval{120.0f};
 
     timer += getGameSpeed();
     if (timer > lastSpawn + spawnInterval)
       {
 	lastSpawn += spawnInterval;
 	spawnWave();
+      }
+    if (timer > lastScore + scoreInterval)
+      {
+	lastScore += scoreInterval;
+	gameScore += uint32_t(bigWasp.size * 2000.f);
       }
 
     if (bigWasp.invulnFrames > 0)
