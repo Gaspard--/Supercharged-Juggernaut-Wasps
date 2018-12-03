@@ -121,4 +121,5 @@ void Logic::checkEvents(input::Input &input)
 void Logic::getObjectsToRender(DisplayData &displayData)
 {
   state->getObjectsToRender(displayData);
+  displayData.stringedTime = getTime();
 }

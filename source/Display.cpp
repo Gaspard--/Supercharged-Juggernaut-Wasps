@@ -289,14 +289,15 @@ void Display::renderAnims(std::vector<AnimInfo> const &anims, SpriteId spriteId)
   }
 }
 
-void Display::renderHud(float bigWaspSize, uint32_t score)
+void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &strTime)
 {
   uint32_t hps = uint32_t((bigWaspSize - BigWasp::minSize) * 10000);
   if (bigWaspSize < BigWasp::minSize)
     hps = 0;
 
-  renderText("Hps " + std::to_string(hps), 256, {0.03f, 0.05f}, {0.60f / dim[0], 0.855f}, {1.0f, 1.0f, 1.0f});
-  renderText("Score " + std::to_string(score), 256, {0.03f, 0.05f}, {0.60f / dim[0], 0.755f}, {1.0f, 1.0f, 1.0f});
+  renderText("Hps " + std::to_string(hps), 200, {0.015f, 0.025f}, {0.62f / dim[0], 0.855f}, {1.0f, 1.0f, 1.0f});
+  renderText("Score " + std::to_string(score), 200, {0.015f, 0.025f}, {0.62f / dim[0], 0.755f}, {1.0f, 1.0f, 1.0f});
+  renderText("Time " + strTime, 200, {0.015f, 0.025f}, {0.62f / dim[0], 0.655f}, {1.0f, 1.0f, 1.0f});
 }
 
 void Display::render(DisplayData const &data)
@@ -314,7 +315,7 @@ void Display::render(DisplayData const &data)
       renderAnims(data.anims[i], SpriteId(i));
   if (data.smolWasp)
     renderSmolWasp(*data.smolWasp);
-  renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore);
+  renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore, data.stringedTime);
 }
 
 void Display::resize(claws::vect<uint32_t, 2u> size)

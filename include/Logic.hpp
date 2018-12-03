@@ -15,7 +15,7 @@ class Logic
                                  std::chrono::high_resolution_clock,
                                  std::chrono::steady_clock>::type;
 
-  unsigned int time;
+  unsigned int time{0};
 
   decltype(Clock::now()) lastUpdate;
 
