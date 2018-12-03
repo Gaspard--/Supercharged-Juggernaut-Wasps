@@ -342,10 +342,10 @@ void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &st
   if (bigWaspSize < BigWasp::minSize)
     hps = 0;
 
-  renderText("Size  : " + std::to_string(uint32_t(bigWaspSize * 1000.0f)), 400, {0.05f, 0.05f}, {1.0f, 0.855f}, {1.0f, 1.0f, 1.0f});
-  renderText("Hps   : " + std::to_string(hps), 400, {0.05f, 0.05f}, {1.0f, 0.755f}, {1.0f, 1.0f, 1.0f});
-  renderText("Score : " + std::to_string(score), 400, {0.05f, 0.05f}, {1.0f, 0.655f}, {1.0f, 1.0f, 1.0f});
-  renderText("Time  : " + strTime, 400, {0.05f, 0.05f}, {1.0f, 0.555f}, {1.0f, 1.0f, 1.0f});
+  renderText("  Size  : " + std::to_string(uint32_t(bigWaspSize * 1000.0f)), 400, {0.05f, 0.05f}, {1.0f, 0.855f}, {1.0f, 1.0f, 1.0f});
+  renderText("  Hps   : " + std::to_string(hps), 400, {0.05f, 0.05f}, {1.0f, 0.755f}, {1.0f, 1.0f, 1.0f});
+  renderText("  Score : " + std::to_string(score), 400, {0.05f, 0.05f}, {1.0f, 0.655f}, {1.0f, 1.0f, 1.0f});
+  renderText("  Time  : " + strTime, 400, {0.05f, 0.05f}, {1.0f, 0.555f}, {1.0f, 1.0f, 1.0f});
   auto secondTime((uint32_t(timer) * Logic::getTickTime().count()) / 1000000);
   std::string inGameTime;
 
@@ -357,7 +357,7 @@ void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &st
     inGameTime += std::to_string((secondTime) % 60) + " s";
   else
     inGameTime += "0" + std::to_string((secondTime) % 60) + " s";
-  renderText("In game time : " + inGameTime, 400, {0.05f, 0.05f}, {1.0f, 0.455f}, {1.0f, 1.0f, 1.0f});
+  renderText("  In game time : " + inGameTime, 400, {0.05f, 0.05f}, {1.0f, 0.455f}, {1.0f, 1.0f, 1.0f});
 
 }
 
