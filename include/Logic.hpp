@@ -11,11 +11,13 @@ class Display;
 class Logic
 {
 
+  static constexpr unsigned int eventDelay = 60;
   using Clock = std::conditional<std::chrono::high_resolution_clock::is_steady,
                                  std::chrono::high_resolution_clock,
                                  std::chrono::steady_clock>::type;
 
   unsigned int time{0};
+  unsigned int timeSinceStateStart{0};
 
   decltype(Clock::now()) lastUpdate;
 

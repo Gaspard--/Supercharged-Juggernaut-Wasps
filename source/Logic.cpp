@@ -49,15 +49,19 @@ void Logic::tick(std::mutex &lock)
       {
         case state::GAME_STATE:
 	  time = 0;
+	  timeSinceStateStart = 0;
           state.reset(new state::GameState());
           break;
         case state::GAME_OVER_STATE:
+	  timeSinceStateStart = 0;
           state.reset(new state::GameOverState(time, lastDispData));
           break;
         case state::BREAK:
           running = false;
           break;
         case state::CONTINUE:
+	  timeSinceStateStart++;
+	  break;
         default:
           break;
       }
@@ -102,25 +106,29 @@ void Logic::handleKey(GLFWwindow *window, input::Key key)
     default:
       break;
     }
-  state->handleKey(window, key);
+  if (timeSinceStateStart > eventDelay)
+    state->handleKey(window, key);
 }
 
 void Logic::handleMouse(input::Input const &disp, GLFWwindow *win, input::Mouse mouse)
 {
   //handle mouse moving here
-  state->handleMouse(disp, win, mouse);
+  if (timeSinceStateStart > eventDelay)
+    state->handleMouse(disp, win, mouse);
 }
 
 void Logic::handleButton(GLFWwindow *win, input::Button button)
 {
   //handle mouse button here
-  state->handleButton(win, button);
+  if (timeSinceStateStart > eventDelay)
+    state->handleButton(win, button);
 }
 
 void Logic::checkEvents(input::Input &input)
 {
   //check events there
-  state->checkEvents(input);
+  if (timeSinceStateStart > eventDelay)
+    state->checkEvents(input);
 }
 
 void Logic::getObjectsToRender(DisplayData &displayData)
