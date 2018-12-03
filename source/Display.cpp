@@ -372,6 +372,16 @@ void Display::renderGameOver(uint32_t score, std::string const &strTime)
   renderText("Final Score " + std::to_string(score), 200, {0.05f, 0.05f}, {-0.18f, -0.05f}, {1.0f, 1.0f, 1.0f});
 }
 
+void Display::renderDeadScreen(const std::vector<std::pair<std::string, std::string>>& fellows)
+{
+  renderText("Died for Motherland", 300, {0.07f, 0.07f}, {-1.8f, 0.855f}, {1.0f, 1.0f, 1.0f});
+  float y = 0.75f;
+  for (auto i = fellows.begin() ; i != fellows.end() ; ++i) {
+    renderText(i->first + " " + i->second, 200, {0.05f, 0.05f}, {-1.8f, y}, {1.0f, 1.0f, 1.0f});
+    y -= 0.05f;
+  }
+}
+
 void Display::render(DisplayData const &data)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -395,6 +405,8 @@ void Display::render(DisplayData const &data)
   renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore, data.stringedTime, data.timer);
   if (data.gameOverHud)
     renderGameOver(data.gameScore, data.stringedTime);
+  if (data.deadFellows.size())
+    renderDeadScreen(data.deadFellows);
 }
 
 void Display::resize(claws::vect<uint32_t, 2u> size)

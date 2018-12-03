@@ -29,6 +29,7 @@ struct DisplayData
 {
   std::optional<BigWasp> bigWasp{};
   std::optional<SmolWasp> smolWasp{};
+  std::vector<std::pair<std::string, std::string>> deadFellows;
   bool gameOverHud{false};
   float timer;
   std::string stringedTime;
