@@ -34,7 +34,7 @@ Display::Display(GLFWwindow &window)
   , rectContext(contextFromFiles("rect"))
   , textContext(contextFromFiles("text"))
   , bulletContext(contextFromFiles("bullet"))
-  , fontHandler("./resources/ObelixPro-Broken-cyr.ttf")
+  , fontHandler("./resources/FantasqueSansMono-Regular.ttf")
 {
 
   {
@@ -295,9 +295,9 @@ void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &st
   if (bigWaspSize < BigWasp::minSize)
     hps = 0;
 
-  renderText("Hps " + std::to_string(hps), 200, {0.015f, 0.025f}, {0.62f / dim[0], 0.855f}, {1.0f, 1.0f, 1.0f});
-  renderText("Score " + std::to_string(score), 200, {0.015f, 0.025f}, {0.62f / dim[0], 0.755f}, {1.0f, 1.0f, 1.0f});
-  renderText("Time " + strTime, 200, {0.015f, 0.025f}, {0.62f / dim[0], 0.655f}, {1.0f, 1.0f, 1.0f});
+  renderText("Hps   : " + std::to_string(hps), 1000, {0.025f, 0.05f}, {0.62f / dim[0], 0.855f}, {1.0f, 1.0f, 1.0f});
+  renderText("Score : " + std::to_string(score), 1000, {0.025f, 0.05f}, {0.62f / dim[0], 0.755f}, {1.0f, 1.0f, 1.0f});
+  renderText("Time  : " + strTime, 1000, {0.025f, 0.05f}, {0.62f / dim[0], 0.655f}, {1.0f, 1.0f, 1.0f});
 }
 
 void Display::render(DisplayData const &data)
