@@ -41,7 +41,7 @@ namespace physic
   }
 
   template<class EntityType, class Solver>
-  bool checkCollisionsBullets(std::map<claws::vect<uint32_t, 2u>, std::vector<uint32_t>> const &bulletIndexes,
+  void checkCollisionsBullets(std::map<claws::vect<uint32_t, 2u>, std::vector<uint32_t>> const &bulletIndexes,
 			      EntityType &entity,
 			      std::vector<Bullet> &bullets,
 			      Solver &&solver)
@@ -57,16 +57,14 @@ namespace physic
 	try
 	  {
 	    for (auto bulletIndex : bulletIndexes.at(itPos)) {
-	      if (usedBullets.find(bulletIndex) != usedBullets.end())
-		continue;
-	      usedBullets.insert(bulletIndex);
+	      // if (usedBullets.find(bulletIndex) != usedBullets.end())
+	      // 	continue;
+	      // usedBullets.insert(bulletIndex);
 	      if (haveCollision(entity, bullets[bulletIndex]))
-        {
-		      solver(entity, bullets[bulletIndex]);
-          return(true);
-        }
+		{
+		  solver(entity, bullets[bulletIndex]);
+		}
 	    }
-	  } catch (std::out_of_range const &) {return(false);}
-  return(false);
+	  } catch (std::out_of_range const &) {}
   }
 }

@@ -27,7 +27,7 @@ void SoundHandler::destroySoundHandler()
 void SoundHandler::playMainMusic()
 {
   mainMusic.setLoop(true);
-  mainMusic.setVolume(25);
+  mainMusic.setVolume(50);
   mainMusic.play();
 }
 

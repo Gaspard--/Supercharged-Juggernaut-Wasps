@@ -17,6 +17,9 @@ inline Animation getAnimation()
     case SpriteId::SmolWaspIdle:
       return loadAnim("resources/bigWasp-spritesheet.bmp", 4);
       break;
+    case SpriteId::WaspAbdomen:
+      return loadAnim("resources/wasp abdomen mirrored.bmp", 1);
+      break;
     default:
       assert("missing animation definition");
     }

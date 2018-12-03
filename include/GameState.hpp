@@ -23,7 +23,7 @@ namespace state
     claws::vect<float, 2u> joystickVect;
     std::array<bool, 1> jsButtonWasPressed;
 
-    float gameSpeed;
+    float gameSpeed{1.0f};
     float spawnTimer{100.0f};
 
     void makeCollisions();

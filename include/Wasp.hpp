@@ -8,9 +8,12 @@ static constexpr float maxInvuln  = 100.0f; // time in ms
 
 struct BigWasp
 {
-  claws::vect<Entity, 2u> entities;
+  claws::vect<Entity, 3u> entities;
   claws::vect<float, 2u> speed;
   float invulnFrames{0.0f};
+  float size{0.02f};
+
+  void update(float speed) noexcept;
 };
 
 struct SmolWasp : public Entity

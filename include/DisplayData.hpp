@@ -6,10 +6,17 @@
 
 #include <vector>
 
+struct AnimInfo
+{
+  claws::vect<float, 2u> destMin;
+  claws::vect<float, 2u> destMax;
+  uint32_t frame;
+};
+
 struct DisplayData
 {
   std::optional<BigWasp> bigWasp{};
   std::optional<SmolWasp> smolWasp{};
   std::vector<BulletInfo> bullets{};
-  std::vector<MobInfo> mobs{};
+  std::array<std::vector<AnimInfo>, size_t(SpriteId::SpriteCount)> anims;
 };

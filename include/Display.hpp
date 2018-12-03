@@ -23,10 +23,11 @@ class Display
   claws::vect<float, 2u> dim{1.0f, 0.0f};
   SpriteManager spriteManager;
 
+  void renderSingleAnim(AnimInfo const &anim, SpriteId spriteId);
   void renderBigWasp(BigWasp const &bigWasp);
   void renderSmolWasp(SmolWasp const &smolWasp);
   void renderBullets(std::vector<BulletInfo> const &bullets);
-  void renderMobs(std::vector<MobInfo> const &mobs);
+  void renderAnims(std::vector<AnimInfo> const &, SpriteId);
 public:
 
   Display(GLFWwindow&);

@@ -2,6 +2,7 @@
 
 #include "Entity.hpp"
 #include "AI.hpp"
+#include "SpriteManager.hpp"
 
 #include <memory>
 
@@ -13,6 +14,7 @@ namespace state
 struct MobInfo : public Entity
 {
   claws::vect<float, 2u> speed;
+  SpriteId spriteId;
   float animationFrame{0.0f};
 };
 
@@ -23,8 +25,8 @@ public:
 private:
   std::unique_ptr<AI> ai;
 public:
-  Mob(float size, claws::vect<float, 2> position, claws::vect<float, 2u> speed, std::unique_ptr<AI> &&ai)
-    : MobInfo{{size, position}, speed}
+  Mob(float size, claws::vect<float, 2> position, claws::vect<float, 2u> speed, SpriteId spriteId, std::unique_ptr<AI> &&ai)
+    : MobInfo{{size, position}, speed, spriteId}
     , ai(std::move(ai))
   {
   }
