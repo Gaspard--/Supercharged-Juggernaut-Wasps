@@ -15,7 +15,7 @@ inline Animation getAnimation()
   switch (SpriteId(index))
     {
     case SpriteId::SmolWaspIdle:
-      return loadAnim("resources/bigWasp-spritesheet.bmp", 4);
+      return loadAnim("resources/testWasp.bmp", 6);
       break;
     case SpriteId::WaspAbdomen:
       return loadAnim("resources/wasp abdomen mirrored.bmp", 1);

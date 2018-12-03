@@ -186,7 +186,7 @@ namespace state
 
     if (smolWasp)
       {
-	smolWasp->animationFrame += getGameSpeed() * 0.5f;
+	smolWasp->animationFrame += getGameSpeed() /* 0.5f*/;
 	if (gotoTarget)
 	  smolWasp->speed += (target - smolWasp->position) * 0.1f * getGameSpeed() * getGameSpeed();
 	else if (joystickInUse)
