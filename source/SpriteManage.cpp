@@ -38,7 +38,7 @@ inline Animation getAnimation()
       return loadAnim("resources/target.bmp", 1);
       break;
     case SpriteId::Gore:
-      return loadAnim("resources/monarch-spriteSheet.bmp", 8);
+      return loadAnim("resources/Gore-spriteSheet.bmp", 3);
       break;
     case SpriteId::Back:
       return loadAnim("resources/back_1.bmp", 1);

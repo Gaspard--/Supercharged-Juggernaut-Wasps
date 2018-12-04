@@ -94,23 +94,7 @@ namespace state
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
 								     bigWasp.entities[0].position[1] -= delta;
-								   }
-								 else
-								   {
-								     mob.size = std::sqrt(mob.size * mob.size - 0.00001f);
-								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.000007f);
-								   }
-							       });
-    physic::checkCollisionsEntities(bigWasp.entities[0], boss, [this](auto &, Mob &mob)
-							       {
-								 if (mob.size < bigWasp.size)
-								   {
-								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
-								     mob.dead = true;
-								     gameScore += uint32_t(mob.size / bigWasp.size * 100);
-								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
-								     bigWasp.entities[0].size += delta;
-								     bigWasp.entities[0].position[1] -= delta;
+                     gores.emplace_back(mob.size, mob.position);
 								   }
 								 else
 								   {
@@ -357,7 +341,7 @@ namespace state
           return(gore.animationFrame > gore.maxFrames);
         }), gores.end());
     for (auto &gore : gores)
-        gore.animationFrame += getGameSpeed() * 0.2f;
+      gore.animationFrame += getGameSpeed() * 0.2f;
     if (bigWasp.invulnFrames > 0)
       {
 	bigWasp.invulnFrames -= getGameSpeed();
