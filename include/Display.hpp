@@ -35,6 +35,7 @@ class Display
   void renderHud(float bigWaspSize, uint32_t score, std::string const &strTime, float time);
   void renderGameOver(uint32_t score, std::string const &strTime);
   void renderDeadScreen(const std::vector<std::pair<std::string, std::string>>& fellows);
+  void renderBack(float timer);
 
 public:
 

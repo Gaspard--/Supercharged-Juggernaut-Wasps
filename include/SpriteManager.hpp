@@ -18,6 +18,7 @@ enum class SpriteId : uint32_t
    SmolWasp,
    Target,
    Gore,
+   Back,
    SpriteCount
   };
 

@@ -12,7 +12,7 @@ namespace state
   static constexpr claws::vect<float, 2u> downRotation{0.0f, -1.0f};
 
   GameState::GameState()
-    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.15f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
+    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.025f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
     for (uint32_t i(0); i < 10000; ++i)
@@ -56,10 +56,6 @@ namespace state
 						       mob.position += diff * 0.002f * entity.size;
 						       mob.size *= 0.9f;
 						     });
-    physic::checkCollisionsEntities(entity, boss, [](auto &entity, Mob &mob)
-						  {
-						    mob.size *= 0.9f;
-						  });
   }
 
   void GameState::makeCollisions()
@@ -75,19 +71,19 @@ namespace state
 	for (itPos[1] = begin[1] ; itPos[1] != end[1] + 1; ++itPos[1])
 	  bulletIndexes[itPos].push_back(i);
     }
-    for (auto &entity : bigWasp.entities)
-      physic::checkCollisionsBullets(bulletIndexes, entity, bullets, [&](auto &, Bullet &bullet)
-								     {
-								       if (bigWasp.invulnFrames <= 0.0f)
-									 {
-                     bigWasp.invulnFrames = maxInvuln;
-                     bigWasp.size *= BigWasp::hitPenality;
-									   SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit, 2 / bigWasp.size / 100);
-									   for (auto &entity : bigWasp.entities)
-									     entity.size *= BigWasp::hitPenality;
-									 }
-								       bullet.dead = true;
-								     });
+    for (auto entityIt = bigWasp.entities.begin() + 1; entityIt != bigWasp.entities.end(); ++entityIt)
+      physic::checkCollisionsBullets(bulletIndexes, *entityIt, bullets, [&](auto &, Bullet &bullet)
+									{
+									  if (bigWasp.invulnFrames <= 0.0f)
+									    {
+									      bigWasp.invulnFrames = maxInvuln;
+									      bigWasp.size *= BigWasp::hitPenality;
+									      SoundHandler::getInstance().playSound(SoundHandler::waspTakeHit, 2 / bigWasp.size / 100);
+									      for (auto &entity : bigWasp.entities)
+										entity.size *= BigWasp::hitPenality;
+									    }
+									  bullet.dead = true;
+									});
     physic::checkCollisionsEntities(bigWasp.entities[0], mobs, [this](auto &, Mob &mob)
 							       {
 								 if (mob.size < bigWasp.size)
@@ -97,7 +93,12 @@ namespace state
 								     gameScore += uint32_t((mob.size / bigWasp.size + 0.1f) * 2000);
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
-                     gores.emplace_back(mob.size, mob.position);
+								     bigWasp.entities[0].position[1] -= delta;
+								   }
+								 else
+								   {
+								     mob.size = std::sqrt(mob.size * mob.size - 0.00001f);
+								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.000007f);
 								   }
 							       });
     physic::checkCollisionsEntities(bigWasp.entities[0], boss, [this](auto &, Mob &mob)
@@ -109,6 +110,12 @@ namespace state
 								     gameScore += uint32_t(mob.size / bigWasp.size * 100);
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
+								     bigWasp.entities[0].position[1] -= delta;
+								   }
+								 else
+								   {
+								     mob.size = std::sqrt(mob.size * mob.size - 0.00001f);
+								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.000007f);
 								   }
 							       });
     if (smolWasp)
@@ -156,19 +163,19 @@ namespace state
     float size(std::sqrt(float(rand() % 16 + 1)));
     float power(boss.empty() ? size : size * 0.5f); // mobs are less strong when boss is there
 
-    if (rand() % 24 == 0)
+    if (rand() % 22 == 0)
       {
 	mobs.emplace_back(0.01f * size,
-			  claws::vect<float, 2u>{-1.0f, 0.99f},
+			  claws::vect<float, 2u>{-1.0f, 0.99f - float(rand() % 4) * 0.01f},
 			  claws::vect<float, 2u>{0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
 			  SpriteId::Libeflux,
 			  Behavior::LookForward,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
-    if (rand() % 24 == 0)
+    if (rand() % 22 == 0)
       {
     	mobs.emplace_back(0.01f * size,
-			  claws::vect<float, 2u>{1.0f, 0.99f},
+			  claws::vect<float, 2u>{1.0f, 0.99f - float(rand() % 4) * 0.01f},
 			  claws::vect<float, 2u>{-0.003f, -0.0003f - float(rand() % 4) * 0.0001f},
 			  SpriteId::Libeflux,
 			  Behavior::LookForward,
@@ -190,7 +197,7 @@ namespace state
 				       std::make_unique<NoPattern>());
       }
     };
-    if (rand() % 24 == 0)
+    if (rand() % 33 == 0)
       {
 	mobs.emplace_back(0.08f,
 			  claws::vect<float, 2u>{-0.9f + float(rand() % 19) * 0.1f, 0.99f},
@@ -221,7 +228,7 @@ namespace state
 	    switch(phase)
 	      {
 	      case 0:
-		for (float i(0.1f); i < 2.5; i += 1.0f)
+		for (float i(0.1f); i < 2.5f; i += 1.0f)
 		  {
 		    gameState.bullets.emplace_back(0.04f,
 						   mob.position,
@@ -240,12 +247,12 @@ namespace state
 		gameState.bullets.emplace_back(0.02f,
 					       mob.position,
 					       speed * 0.012f,
-					       SpriteId::Fireball,
+					       claws::vect<float, 4u>{0.0f, 1.0f, 0.4f, 1.0f},
 					       std::make_unique<NoPattern>());
 		time += 100.0f;
 		break;
 	      case 2:
-		for (float i(0.1f); i < 2.5; i += 1.0f)
+		for (float i(0.1f); i < 2.5f; i += 1.0f)
 		  {
 		    gameState.bullets.emplace_back(0.04f,
 						   mob.position,
@@ -264,19 +271,32 @@ namespace state
 		gameState.bullets.emplace_back(0.02f,
 					       mob.position,
 					       speed * 0.012f,
-					       SpriteId::Fireball,
+					       claws::vect<float, 4u>{0.0f, 1.0f, 0.4f, 1.0f},
 					       std::make_unique<NoPattern>());
 		time += 10.0f;
 		break;
 	      case 4:
-		for (float i(0.1f); i < 2.5; i += 1.0f)
+		gameState.bullets.emplace_back(0.04f,
+					       mob.position,
+					       speed * 0.0006f,
+					       SpriteId::Fireball,
+					       std::make_unique<SinCos>(0.05f, 1.0f));
+		gameState.bullets.emplace_back(0.04f,
+					       mob.position,
+					       -speed * 0.0006f,
+					       SpriteId::Fireball,
+					       std::make_unique<SinCos>(0.05f, 1.0f));
+		time += 10.0f;
+		break;
+	      case 5:
+		for (float i(0.1f); i < 1.5; i += 1.0f)
 		  {
-		    gameState.bullets.emplace_back(0.01f,
+		    gameState.bullets.emplace_back(0.02f,
 						   mob.position,
 						   side * i * 0.0004f + speed * 0.0024f * (5.0f - i),
 						   SpriteId::Fireball,
 						   std::make_unique<SinCos>(i * 0.1f, 0.5f));
-		    gameState.bullets.emplace_back(0.01f,
+		    gameState.bullets.emplace_back(0.02f,
 						   mob.position,
 						   -side * i * 0.0004f + speed * 0.0024f * (5.0f - i),
 						   SpriteId::Fireball,
@@ -294,14 +314,14 @@ namespace state
     };
 
 
-    if (!bossSpawned && bigWasp.size > 0.15f)
+    if (!bossSpawned && bigWasp.size > 0.14f)
       {
 	bossSpawned = true;
 	for (auto &mob : mobs)
 	  {
 	    mob.speed += mob.position * 0.01f / mob.position.length2();
 	  }
-	boss.emplace_back(0.2f,
+	boss.emplace_back(0.18f,
 			  claws::vect<float, 2u>{0.0f, 1.2f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  SpriteId::SmolWasp,
