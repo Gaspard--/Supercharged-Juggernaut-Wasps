@@ -47,6 +47,9 @@ inline Animation getAnimation()
     case SpriteId::Target:
       return loadAnim("resources/target.bmp", 1);
       break;
+    case SpriteId::Gore:
+      return loadAnim("resources/monarch-spriteSheet.bmp", 8);
+      break;
     default:
       assert("missing animation definition");
     }
