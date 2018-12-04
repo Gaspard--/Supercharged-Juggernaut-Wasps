@@ -2,9 +2,10 @@
 
 namespace state
 {
-  GameOverState::GameOverState(unsigned int time, const DisplayData& dispData)
+  GameOverState::GameOverState(unsigned int time, const DisplayData& dispData, bool win)
     : frozenTime(time)
     , frozenDisplayData(dispData)
+    , win(win)
   {}
 
   StateType GameOverState::update(unsigned int& time)
@@ -44,5 +45,6 @@ namespace state
   {
     display = frozenDisplayData;
     display.gameOverHud = true;
+    display.win = win;
   }
 }

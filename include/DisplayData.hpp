@@ -38,4 +38,6 @@ struct DisplayData
   std::array<std::vector<AnimInfo>, size_t(SpriteId::SpriteCount)> anims;
   std::array<std::vector<RotatedAnimInfo>, size_t(SpriteId::SpriteCount)> rotatedAnims;
   float screenShake;
+  bool win{false};
+  bool tuto{false};
 };

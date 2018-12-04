@@ -356,7 +356,7 @@ namespace state
     if (bossSpawned && boss.empty())
       {
 	winCounter += getGameSpeed();
-	if (winCounter >= 200)
+	if (winCounter >= 400.0f)
 	  {
 	    won = true;
 	  }
@@ -436,6 +436,8 @@ namespace state
 							}), boss.end());
     if (bigWasp.size < BigWasp::minSize)
       return GAME_OVER_STATE;
+    else if (won)
+      return WIN_STATE;
     return StateType::CONTINUE;
   }
 

@@ -396,16 +396,19 @@ void Display::renderHud(float bigWaspSize, uint32_t score, std::string const &st
 
 }
 
-void Display::renderGameOver(uint32_t score, std::string const &strTime)
+void Display::renderGameOver(uint32_t score, std::string const &strTime, bool win)
 {
-  renderText("Game Over", 300, {0.07f, 0.07f}, {-0.18f, 0.25f}, {1.0f, 1.0f, 1.0f});
+  renderColors({{claws::vect<float, 2u>(-1.0f, 1.0f), claws::vect<float, 2u>(1.0f, -1.0f),
+	  win ? claws::vect<float, 4u>{0.06f, 0.06f, 0.04f, 0.8f}
+	: claws::vect<float, 4u>{0.5f, 0.01f, 0.04f, 0.8f}}});
+  renderText(win ? " You Win" : "Game Over", 300, {0.07f, 0.07f}, {-0.18f, 0.25f}, {1.0f, 1.0f, 1.0f});
   renderText("Final Time  " + strTime, 200, {0.05f, 0.05f}, {-0.18f, 0.05f}, {1.0f, 1.0f, 1.0f});
   renderText("Final Score " + std::to_string(score), 200, {0.05f, 0.05f}, {-0.18f, -0.05f}, {1.0f, 1.0f, 1.0f});
 }
 
 void Display::renderDeadScreen(const std::vector<std::pair<std::string, std::string>>& fellows)
 {
-  renderSingleAnim({{-1.75f, 0.65f}, {-1.03f, 0.97f}}, SpriteId::DeadFellows);
+  renderSingleAnim({{-1.75f, 0.65f}, {-1.03f, 0.97f}, 0}, SpriteId::DeadFellows);
   float y = 0.55f;
   for (auto i = fellows.begin() ; i != fellows.end() ; ++i) {
     renderText(i->first + " " + i->second, 200, {0.05f, 0.05f}, {-1.65f, y}, {1.0f, 1.0f, 1.0f});
@@ -439,9 +442,14 @@ void Display::render(DisplayData const &data)
 		{dim, claws::vect<float, 2u>(1.0f, -1.0f), claws::vect<float, 4u>{0.0f, 0.0f, 0.0f, 1.0f}}});
   renderHud((data.bigWasp ? data.bigWasp->size : BigWasp::minSize), data.gameScore, data.stringedTime, data.timer);
   if (data.gameOverHud)
-    renderGameOver(data.gameScore, data.stringedTime);
+    renderGameOver(data.gameScore, data.stringedTime, data.win);
   if (data.deadFellows.size())
     renderDeadScreen(data.deadFellows);
+  if (data.tuto)
+    renderSingleAnim(AnimInfo{claws::vect<float, 2u>{-1.0, -1.0},
+			      claws::vect<float, 2u>{1.0, 1.0},
+			      0}, SpriteId::Tuto);
+    
 }
 
 void Display::resize(claws::vect<uint32_t, 2u> size)

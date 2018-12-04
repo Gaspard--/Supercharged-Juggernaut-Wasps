@@ -2,6 +2,7 @@
 
 #include "Logic.hpp"
 #include "GameState.hpp"
+#include "TutoState.hpp"
 #include "GameOverState.hpp"
 
 #include <thread>
@@ -9,7 +10,7 @@
 
 Logic::Logic()
   : running(true)
-  , state(new state::GameState())
+  , state(new state::TutoState())
 {}
 
 std::string Logic::getTime(void) const
@@ -55,6 +56,10 @@ void Logic::tick(std::mutex &lock)
         case state::GAME_OVER_STATE:
 	  timeSinceStateStart = 0;
           state.reset(new state::GameOverState(time, lastDispData));
+          break;
+        case state::WIN_STATE:
+	  timeSinceStateStart = 0;
+	  state.reset(new state::GameOverState(time, lastDispData, true));
           break;
         case state::BREAK:
           running = false;

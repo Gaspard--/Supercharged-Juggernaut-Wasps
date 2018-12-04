@@ -11,6 +11,7 @@ namespace state
      CONTINUE,   // continue with current state
      GAME_STATE, // change for game_state
      GAME_OVER_STATE, // change for game_over_state
+     WIN_STATE, // change for game_over_state, but win
      BREAK       // quit
     };
 

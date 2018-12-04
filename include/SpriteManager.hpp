@@ -21,6 +21,7 @@ enum class SpriteId : uint32_t
    Gore,
    Back,
    DeadFellows,
+   Tuto,
    SpriteCount
   };
 
