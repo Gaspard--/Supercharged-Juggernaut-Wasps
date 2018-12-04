@@ -11,7 +11,7 @@ namespace state
   static constexpr claws::vect<float, 2u> downRotation{0.0f, -1.0f};
 
   GameState::GameState()
-    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.025f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
+    : bigWasp{{Entity{0.0f, {0.0f, 0.0f}}, Entity{0.0f, {0.0f, 0.00f}}, Entity{0.25f, {0.0f, -0.01f}}}, {0.0f, 0.0f}}
     , smolWasp{}
   {
     for (uint32_t i(0); i < 10000; ++i)
@@ -27,8 +27,9 @@ namespace state
 
   void GameState::explosion(std::map<claws::vect<uint32_t, 2u>, std::vector<uint32_t>> const &bulletIndexes, claws::vect<float, 2u> position, float power)
   {
-    static constexpr float noScaleLimit(0.04f);
+    screenShake += power * 10.0f;
 
+    static constexpr float noScaleLimit(0.04f);
     Entity entity{power, position};
 
     SoundHandler::getInstance().playSound(SoundHandler::sfxList::gibSplosion, -100.0f);
@@ -112,6 +113,8 @@ namespace state
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
 								     bigWasp.entities[0].position[1] -= delta;
+								     mobs.clear();
+								     bullets.clear();
 								   }
 								 else
 								   {
@@ -341,16 +344,34 @@ namespace state
     constexpr float const spawnInterval{30.0f};
     constexpr float const scoreInterval{120.0f};
 
-    timer += getGameSpeed();
-    if (timer > lastSpawn + spawnInterval)
+    if (screenShake > 0.0f)
       {
-	lastSpawn += spawnInterval;
-	spawnWave();
+	screenShake -= getGameSpeed();
+	if (screenShake < 0.0f)
+	  screenShake = 0.0f;
       }
-    if (timer > lastScore + scoreInterval)
+    timer += getGameSpeed();
+
+    if (bossSpawned && boss.empty())
       {
-	lastScore += scoreInterval;
-	gameScore += uint32_t(bigWasp.size * 2000.f);
+	winCounter += getGameSpeed();
+	if (winCounter >= 200)
+	  {
+	    won = true;
+	  }
+      }
+    else
+      {
+	if (timer > lastSpawn + spawnInterval)
+	  {
+	    lastSpawn += spawnInterval;
+	    spawnWave();
+	  }
+	if (timer > lastScore + scoreInterval)
+	  {
+	    lastScore += scoreInterval;
+	    gameScore += uint32_t(bigWasp.size * 2000.f);
+	  }
       }
 
     if (bigWasp.invulnFrames > 0)
@@ -543,5 +564,6 @@ namespace state
       mobConvert(mob);
     for (auto const &mob : boss)
       mobConvert(mob);
+    displayData.screenShake = screenShake;
   }
 }
