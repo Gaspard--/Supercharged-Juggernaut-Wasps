@@ -421,7 +421,7 @@ void Display::render(DisplayData const &data)
   //do final render here
   glClearColor(0.0f, 0.2f, 0.2f, 0.0f);
   glClear(GL_COLOR_BUFFER_BIT);
-  renderBack((data.timer + data.screenShake * sin(data.screenShake)) * 0.003f);
+  renderBack((data.timer + data.screenShake * sin(data.screenShake) * 2.0f) * 0.003f);
   renderColors({{claws::vect<float, 2u>(-1.0f, 1.0f), claws::vect<float, 2u>(1.0f, -1.0f), claws::vect<float, 4u>{data.screenShake * 0.01f, data.screenShake * 0.01f, 0.04f, 0.8f}}});
   if (data.bigWasp)
     renderBigWasp(*data.bigWasp);
