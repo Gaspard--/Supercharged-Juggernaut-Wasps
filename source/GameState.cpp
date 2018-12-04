@@ -99,7 +99,7 @@ namespace state
 								 else
 								   {
 								     mob.size = std::sqrt(mob.size * mob.size - 0.00001f);
-								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.00001f);
+								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.000007f);
 								   }
 							       });
     physic::checkCollisionsEntities(bigWasp.entities[0], boss, [this](auto &, Mob &mob)
@@ -116,7 +116,7 @@ namespace state
 								 else
 								   {
 								     mob.size = std::sqrt(mob.size * mob.size - 0.00001f);
-								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.00001f);
+								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.000007f);
 								   }
 							       });
     if (smolWasp)
@@ -161,10 +161,10 @@ namespace state
 	  }
       }
     };
-    float size(rand() & 1 ? std::sqrt(float(rand() % 16 + 1)) : 1);
+    float size(std::sqrt(float(rand() % 16 + 1)));
     float power(boss.empty() ? size : size * 0.5f); // mobs are less strong when boss is there
 
-    if (rand() % 24 == 0)
+    if (rand() % 22 == 0)
       {
 	mobs.emplace_back(0.01f * size,
 			  claws::vect<float, 2u>{-1.0f, 0.99f - float(rand() % 4) * 0.01f},
@@ -173,7 +173,7 @@ namespace state
 			  Behavior::LookForward,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
-    if (rand() % 24 == 0)
+    if (rand() % 22 == 0)
       {
     	mobs.emplace_back(0.01f * size,
 			  claws::vect<float, 2u>{1.0f, 0.99f - float(rand() % 4) * 0.01f},
@@ -198,7 +198,7 @@ namespace state
 				       std::make_unique<NoPattern>());
       }
     };
-    if (rand() % 35 == 0)
+    if (rand() % 33 == 0)
       {
 	mobs.emplace_back(0.08f,
 			  claws::vect<float, 2u>{-0.9f + float(rand() % 19) * 0.1f, 0.99f},
@@ -315,14 +315,14 @@ namespace state
     };
 
 
-    if (!bossSpawned && bigWasp.size > 0.12f)
+    if (!bossSpawned && bigWasp.size > 0.14f)
       {
 	bossSpawned = true;
 	for (auto &mob : mobs)
 	  {
 	    mob.speed += mob.position * 0.01f / mob.position.length2();
 	  }
-	boss.emplace_back(0.15f,
+	boss.emplace_back(0.18f,
 			  claws::vect<float, 2u>{0.0f, 1.2f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  SpriteId::SmolWasp,
