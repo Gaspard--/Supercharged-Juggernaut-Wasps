@@ -10,6 +10,7 @@
 #include "Bullet.hpp"
 #include "Mob.hpp"
 #include "DeadFellows.hpp"
+#include "Gore.hpp"
 
 namespace state
 {
@@ -17,6 +18,7 @@ namespace state
   {
     std::vector<Bullet> bullets;
     std::vector<Mob> mobs;
+    std::vector<Gore> gores;
     BigWasp bigWasp;
     std::optional<SmolWasp> smolWasp;
     claws::vect<float, 2u> target;

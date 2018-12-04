@@ -17,6 +17,7 @@ enum class SpriteId : uint32_t
    Monarch,
    SmolWasp,
    Target,
+   Gore,
    Back,
    DeadFellows,
    SpriteCount

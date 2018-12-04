@@ -2,6 +2,7 @@
 #include "Physic.hpp"
 #include "RepetitiveShotAI.hpp"
 #include "SoundHandler.hpp"
+// #include "SpriteManager.hpp"
 
 #include <iostream>
 #include <algorithm>
@@ -87,36 +88,18 @@ namespace state
 							       {
 								 if (mob.size < bigWasp.size)
 								   {
-								     // std::cout << mob.size / bigWasp.size << std::endl;
-								     // std::cout << bigWasp.size / mob.size  << std::endl;
-								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit, bigWasp.size / (mob.size * mob.size * 50.0));
+								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit, mob.size / bigWasp.size);
 								     mob.dead = true;
 								     gameScore += uint32_t((mob.size / bigWasp.size + 0.1f) * 2000);
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
 								     bigWasp.entities[0].position[1] -= delta;
+                     gores.emplace_back(mob.size, mob.position);
 								   }
 								 else
 								   {
 								     mob.size = std::sqrt(mob.size * mob.size - 0.00001f);
-								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.00001f);
-								   }
-							       });
-    physic::checkCollisionsEntities(bigWasp.entities[0], boss, [this](auto &, Mob &mob)
-							       {
-								 if (mob.size < bigWasp.size)
-								   {
-								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit);
-								     mob.dead = true;
-								     gameScore += uint32_t(mob.size / bigWasp.size * 100);
-								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
-								     bigWasp.entities[0].size += delta;
-								     bigWasp.entities[0].position[1] -= delta;
-								   }
-								 else
-								   {
-								     mob.size = std::sqrt(mob.size * mob.size - 0.00001f);
-								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.00001f);
+								     bigWasp.entities[0].size = std::sqrt(bigWasp.entities[0].size * bigWasp.entities[0].size + 0.000007f);
 								   }
 							       });
     if (smolWasp)
@@ -161,10 +144,10 @@ namespace state
 	  }
       }
     };
-    float size(rand() & 1 ? std::sqrt(float(rand() % 16 + 1)) : 1);
+    float size(std::sqrt(float(rand() % 16 + 1)));
     float power(boss.empty() ? size : size * 0.5f); // mobs are less strong when boss is there
 
-    if (rand() % 24 == 0)
+    if (rand() % 22 == 0)
       {
 	mobs.emplace_back(0.01f * size,
 			  claws::vect<float, 2u>{-1.0f, 0.99f - float(rand() % 4) * 0.01f},
@@ -173,7 +156,7 @@ namespace state
 			  Behavior::LookForward,
 			  std::make_unique<RepetitiveShotAi<VShots>>(120.0f, power));
       }
-    if (rand() % 24 == 0)
+    if (rand() % 22 == 0)
       {
     	mobs.emplace_back(0.01f * size,
 			  claws::vect<float, 2u>{1.0f, 0.99f - float(rand() % 4) * 0.01f},
@@ -198,7 +181,7 @@ namespace state
 				       std::make_unique<NoPattern>());
       }
     };
-    if (rand() % 35 == 0)
+    if (rand() % 33 == 0)
       {
 	mobs.emplace_back(0.08f,
 			  claws::vect<float, 2u>{-0.9f + float(rand() % 19) * 0.1f, 0.99f},
@@ -315,14 +298,14 @@ namespace state
     };
 
 
-    if (!bossSpawned && bigWasp.size > 0.12f)
+    if (!bossSpawned && bigWasp.size > 0.14f)
       {
 	bossSpawned = true;
 	for (auto &mob : mobs)
 	  {
 	    mob.speed += mob.position * 0.01f / mob.position.length2();
 	  }
-	boss.emplace_back(0.15f,
+	boss.emplace_back(0.18f,
 			  claws::vect<float, 2u>{0.0f, 1.2f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  SpriteId::SmolWasp,
@@ -352,7 +335,13 @@ namespace state
 	lastScore += scoreInterval;
 	gameScore += uint32_t(bigWasp.size * 2000.f);
       }
-
+    if (!gores.empty())
+      gores.erase(std::remove_if(gores.begin(), gores.end(), [](Gore const &gore)
+        {
+          return(gore.animationFrame > gore.maxFrames);
+        }), gores.end());
+    for (auto &gore : gores)
+      gore.animationFrame += getGameSpeed() * 0.2f;
     if (bigWasp.invulnFrames > 0)
       {
 	bigWasp.invulnFrames -= getGameSpeed();
@@ -487,6 +476,10 @@ namespace state
     displayData.bigWasp = bigWasp;
     displayData.smolWasp = smolWasp;
     displayData.timer = timer;
+    for (auto const &gore : gores)
+      displayData.anims[size_t(SpriteId::Gore)].emplace_back(AnimInfo{gore.position - gore.size * 2.0f,
+                      gore.position + gore.size * 2.0f,
+                      uint32_t(gore.animationFrame)});
     for (auto const &bullet : bullets)
       std::visit([&](auto const &renderData)
 		 {

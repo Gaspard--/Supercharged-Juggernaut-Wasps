@@ -36,10 +36,16 @@ inline Animation getAnimation()
       return loadAnim("resources/smolWasp-spriteSheet.bmp", 6);
     case SpriteId::Target:
       return loadAnim("resources/target.bmp", 1);
+      break;
+    case SpriteId::Gore:
+      return loadAnim("resources/Gore-spriteSheet.bmp", 3);
+      break;
     case SpriteId::Back:
       return loadAnim("resources/back_1.bmp", 1);
+      break;
     case SpriteId::DeadFellows:
       return loadAnim("resources/dead_screen.bmp", 1);
+      break;
     default:
       assert("missing animation definition");
     }
