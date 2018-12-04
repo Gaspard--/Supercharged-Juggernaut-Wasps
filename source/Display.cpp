@@ -446,8 +446,8 @@ void Display::render(DisplayData const &data)
   if (data.deadFellows.size())
     renderDeadScreen(data.deadFellows);
   if (data.tuto)
-    renderSingleAnim(AnimInfo{claws::vect<float, 2u>{-1.6, -1.0},
-			      claws::vect<float, 2u>{1.6, 1.0},
+    renderSingleAnim(AnimInfo{claws::vect<float, 2u>{-1.6f, -1.0f},
+			      claws::vect<float, 2u>{1.6f, 1.0f},
 			      0}, SpriteId::Tuto);
     
 }
