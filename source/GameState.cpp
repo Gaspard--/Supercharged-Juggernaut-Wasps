@@ -2,6 +2,7 @@
 #include "Physic.hpp"
 #include "RepetitiveShotAI.hpp"
 #include "SoundHandler.hpp"
+// #include "SpriteManager.hpp"
 
 #include <iostream>
 #include <algorithm>
@@ -88,14 +89,13 @@ namespace state
 							       {
 								 if (mob.size < bigWasp.size)
 								   {
-								     // std::cout << mob.size / bigWasp.size << std::endl;
-								     // std::cout << bigWasp.size / mob.size  << std::endl;
-								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit, bigWasp.size / (mob.size * mob.size * 50.0));
+								     SoundHandler::getInstance().playSound(SoundHandler::mobTakeHit, bigWasp.size / (mob.size * mob.size * 40.0f));
 								     mob.dead = true;
 								     gameScore += uint32_t((mob.size / bigWasp.size + 0.1f) * 2000);
 								     float delta(std::sqrt(physic::square(bigWasp.entities[2].size) + physic::square(mob.size) * 2.0f) - bigWasp.entities[2].size);
 								     bigWasp.entities[0].size += delta;
 								     bigWasp.entities[0].position[1] -= delta;
+								     gores.emplace_back(mob.size, mob.position);
 								   }
 								 else
 								   {
@@ -115,6 +115,7 @@ namespace state
 								     bigWasp.entities[0].position[1] -= delta;
 								     mobs.clear();
 								     bullets.clear();
+								     gores.emplace_back(mob.size, mob.position);
 								   }
 								 else
 								   {
@@ -373,7 +374,13 @@ namespace state
 	    gameScore += uint32_t(bigWasp.size * 2000.f);
 	  }
       }
-
+    if (!gores.empty())
+      gores.erase(std::remove_if(gores.begin(), gores.end(), [](Gore const &gore)
+        {
+          return(gore.animationFrame > gore.maxFrames);
+        }), gores.end());
+    for (auto &gore : gores)
+      gore.animationFrame += getGameSpeed() * 0.2f;
     if (bigWasp.invulnFrames > 0)
       {
 	bigWasp.invulnFrames -= getGameSpeed();
@@ -508,6 +515,10 @@ namespace state
     displayData.bigWasp = bigWasp;
     displayData.smolWasp = smolWasp;
     displayData.timer = timer;
+    for (auto const &gore : gores)
+      displayData.anims[size_t(SpriteId::Gore)].emplace_back(AnimInfo{gore.position - gore.size * 2.0f,
+                      gore.position + gore.size * 2.0f,
+                      uint32_t(gore.animationFrame)});
     for (auto const &bullet : bullets)
       std::visit([&](auto const &renderData)
 		 {

@@ -7,12 +7,16 @@ namespace DeadFellows
 {
   const std::vector<std::string> firstName =
   {
+   "Mike",
+   "Bob",
    "Jean-Abdala",
    "Peter",
    "Matt",
    "Manu",
    "Arthour",
    "Will",
+   "Jean Ménélique",
+   "Pol",
    "Jean",
    "Clovis",
    "Rodrigo",
@@ -60,6 +64,9 @@ const std::vector<std::string> name =
    "Govarit",
    "Sieledsova",
    "Hartnell",
+   "Zappa",
+   "Wakeman",
+   "Pot",
    "Plancher"
   };
 }
