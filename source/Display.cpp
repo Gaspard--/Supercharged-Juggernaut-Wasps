@@ -405,10 +405,10 @@ void Display::renderGameOver(uint32_t score, std::string const &strTime)
 
 void Display::renderDeadScreen(const std::vector<std::pair<std::string, std::string>>& fellows)
 {
-  renderText("Died for Motherland", 300, {0.07f, 0.07f}, {-1.8f, 0.855f}, {1.0f, 1.0f, 1.0f});
-  float y = 0.75f;
+  renderSingleAnim({{-1.75f, 0.65f}, {-1.03f, 0.97f}}, SpriteId::DeadFellows);
+  float y = 0.55f;
   for (auto i = fellows.begin() ; i != fellows.end() ; ++i) {
-    renderText(i->first + " " + i->second, 200, {0.05f, 0.05f}, {-1.8f, y}, {1.0f, 1.0f, 1.0f});
+    renderText(i->first + " " + i->second, 200, {0.05f, 0.05f}, {-1.65f, y}, {1.0f, 1.0f, 1.0f});
     y -= 0.05f;
     if (y <= -1.0f)
       break;

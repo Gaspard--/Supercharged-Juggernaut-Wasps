@@ -7,6 +7,8 @@ namespace DeadFellows
 {
   const std::vector<std::string> firstName =
   {
+   "Mike",
+   "Bob",
    "Jean-Abdala",
    "Peter",
    "Matt",

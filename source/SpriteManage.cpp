@@ -38,6 +38,8 @@ inline Animation getAnimation()
       return loadAnim("resources/target.bmp", 1);
     case SpriteId::Back:
       return loadAnim("resources/back_1.bmp", 1);
+    case SpriteId::DeadFellows:
+      return loadAnim("resources/dead_screen.bmp", 1);
     default:
       assert("missing animation definition");
     }
@@ -58,4 +60,3 @@ SpriteManager::SpriteManager()
   : SpriteManager(std::make_index_sequence<size_t(SpriteId::SpriteCount)>())
 {
 }
-
