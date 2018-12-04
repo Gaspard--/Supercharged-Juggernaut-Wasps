@@ -229,7 +229,7 @@ namespace state
 	if (time < 0)
 	  {
 	    if (!(++phaseCounter %= 10))
-	      ++phase %= 5;
+	      ++phase %= 6;
 	    switch(phase)
 	      {
 	      case 0:
@@ -319,14 +319,14 @@ namespace state
     };
 
 
-    if (!bossSpawned && bigWasp.size > 0.14f)
+    if (!bossSpawned && bigWasp.size > 0.13f)
       {
 	bossSpawned = true;
 	for (auto &mob : mobs)
 	  {
 	    mob.speed += mob.position * 0.01f / mob.position.length2();
 	  }
-	boss.emplace_back(0.18f,
+	boss.emplace_back(0.17f,
 			  claws::vect<float, 2u>{0.0f, 1.2f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
 			  SpriteId::Boss,
