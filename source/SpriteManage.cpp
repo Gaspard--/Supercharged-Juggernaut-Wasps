@@ -46,6 +46,9 @@ inline Animation getAnimation()
     case SpriteId::DeadFellows:
       return loadAnim("resources/dead_screen.bmp", 1);
       break;
+    case SpriteId::Boss:
+      return loadAnim("resources/Boss.bmp", 1);
+      break;
     default:
       assert("missing animation definition");
     }
