@@ -15,7 +15,7 @@ namespace DeadFellows
    "Manu",
    "Arthour",
    "Will",
-   "Jean Ménélique",
+   "Jean Menelique",
    "Pol",
    "Jean",
    "Clovis",
