@@ -329,7 +329,7 @@ namespace state
 	boss.emplace_back(0.18f,
 			  claws::vect<float, 2u>{0.0f, 1.2f},
 			  claws::vect<float, 2u>{0.0f, -0.0007f},
-			  SpriteId::SmolWasp,
+			  SpriteId::Boss,
 			  Behavior::LookAtPlayer,
 			  std::make_unique<BossAi>());
       }

@@ -39,13 +39,12 @@ inline Animation getAnimation()
       break;
     case SpriteId::Gore:
       return loadAnim("resources/Gore-spriteSheet.bmp", 3);
-      break;
     case SpriteId::Back:
       return loadAnim("resources/back_1.bmp", 1);
-      break;
     case SpriteId::DeadFellows:
       return loadAnim("resources/dead_screen.bmp", 1);
-      break;
+    case SpriteId::Boss:
+      return loadAnim("resources/Boss.bmp", 1);
     default:
       assert("missing animation definition");
     }
