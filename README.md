@@ -33,7 +33,7 @@ It's the war ! The Big Supercharged Juggernaut Wasp and all his smols fellows ar
 * [Matthias Rigaud](https://github.com/matthiasrigaud)
 
 ## Music
-* [Jakob Kellendonk](https://soundcloud.com/gaspard-4)
+* [Jakob Kellendonk](https://soundcloud.com/gaspard-4/wasp-in-the-frost-fade-out)
 
 ## Ludum Dare Page
 
