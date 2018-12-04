@@ -23,7 +23,7 @@ It's the war ! The Big Supercharged Juggernaut Wasp and all his smols fellows ar
 
 * You can use both Xbox360 controllers or mouse to play
 * Tutorial in-game for the controls
-* Don't hesitate to sacrifice your smol wasps, it's necessary !
+* Don't hesitate to sacrifice your smol wasps : they are usefull to deflect bullets and make the enemies smaller.
 * Enjoy our game :)
 
 ## Developers
